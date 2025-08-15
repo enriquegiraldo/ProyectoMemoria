@@ -1,0 +1,3 @@
+-- Initialization script (optional)
+-- You can add custom SQL here, e.g. extensions or initial roles.
+-- This file is intentionally left minimal so Docker bind mount does not fail.
