@@ -1,0 +1,109 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  memories   Memory[]
+  comments   Comment[]
+  likes      Like[]
+
+  @@map("users")
+}
+
+model Memory {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  imageUrl    String?
+  isPublic    Boolean  @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  authorId    String
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  comments    Comment[]
+  likes       Like[]
+  tags        Tag[]
+
+  @@map("memories")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  color       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relaciones
+  memories    Memory[]
+
+  @@map("categories")
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+
+  // Relaciones
+  memories   Memory[]
+
+  @@map("tags")
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  memoryId  String
+  memory    Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+
+  @@map("comments")
+}
+
+model Like {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // Relaciones
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  memoryId  String
+  memory    Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, memoryId])
+  @@map("likes")
+}
+
+enum Role {
+  USER
+  ADMIN
+}

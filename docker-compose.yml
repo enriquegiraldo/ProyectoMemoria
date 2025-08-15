@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: memoria_eterna_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: memoria_eterna
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - memoria_eterna_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: memoria_eterna_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - memoria_eterna_network
+
+  # Opcional: Adminer para gestionar la base de datos
+  adminer:
+    image: adminer:latest
+    container_name: memoria_eterna_adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - memoria_eterna_network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  memoria_eterna_network:
+    driver: bridge
