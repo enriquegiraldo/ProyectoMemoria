@@ -11,42 +11,73 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  password     String
+  role         Role     @default(USER)
+  bio          String?
+  avatarUrl    String?
+  relationship String? // Relación con el homenajeado (ej: "Hijo", "Amigo", etc.)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relaciones
-  memories   Memory[]
-  comments   Comment[]
-  likes      Like[]
+  events       Event[]       @relation("EventCreatedBy")
+  memories     Memory[]      @relation("MemoryCreatedBy")
+  testimonials Testimonial[] @relation("TestimonialCreatedBy")
+  comments     Comment[]     @relation("CommentCreatedBy")
+  likes        Like[]        @relation("LikeUser")
 
   @@map("users")
 }
 
 model Memory {
-  id          String   @id @default(cuid())
+  id          String     @id @default(cuid())
   title       String
   content     String
+  type        MemoryType @default(MESSAGE) // MESSAGE, PHOTO, VIDEO, etc.
   imageUrl    String?
-  isPublic    Boolean  @default(false)
-  publishedAt DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  videoUrl    String?
+  isPublic    Boolean    @default(true)
+  isFeatured  Boolean    @default(false)
+  publishedAt DateTime?  @default(now())
+  eventDate   DateTime? // Fecha del evento o recuerdo
+  location    String? // Ubicación opcional
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  eventId     String?
 
   // Relaciones
-  authorId    String
-  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  categoryId  String?
-  category    Category? @relation(fields: [categoryId], references: [id])
-  comments    Comment[]
-  likes       Like[]
-  tags        Tag[]
+  event        Event?        @relation("EventMemory", fields: [eventId], references: [id], onDelete: Cascade)
+  authorId     String
+  author       User          @relation("MemoryCreatedBy", fields: [authorId], references: [id], onDelete: Cascade)
+  categoryId   String?
+  category     Category?     @relation("MemoryCategory", fields: [categoryId], references: [id])
+  comments     Comment[]     @relation("CommentMemory")
+  likes        Like[]        @relation("LikeMemory")
+  tags         Tag[]         @relation("MemoryTag")
+  testimonials Testimonial[] @relation("TestimonialMemory")
 
   @@map("memories")
+}
+
+// Nuevo modelo para testimonios
+model Testimonial {
+  id           String   @id @default(cuid())
+  content      String
+  isApproved   Boolean  @default(false)
+  relationship String // Relación con el homenajeado
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relaciones
+  authorId String
+  author   User    @relation("TestimonialCreatedBy", fields: [authorId], references: [id], onDelete: Cascade)
+  memoryId String?
+  memory   Memory? @relation("TestimonialMemory", fields: [memoryId], references: [id], onDelete: Cascade)
+
+  @@map("testimonials")
 }
 
 model Category {
@@ -58,7 +89,7 @@ model Category {
   updatedAt   DateTime @updatedAt
 
   // Relaciones
-  memories    Memory[]
+  memories Memory[] @relation("MemoryCategory")
 
   @@map("categories")
 }
@@ -69,7 +100,7 @@ model Tag {
   createdAt DateTime @default(now())
 
   // Relaciones
-  memories   Memory[]
+  memories Memory[] @relation("MemoryTag")
 
   @@map("tags")
 }
@@ -81,10 +112,10 @@ model Comment {
   updatedAt DateTime @updatedAt
 
   // Relaciones
-  authorId  String
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  memoryId  String
-  memory    Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  authorId String
+  author   User   @relation("CommentCreatedBy", fields: [authorId], references: [id], onDelete: Cascade)
+  memoryId String
+  memory   Memory @relation("CommentMemory", fields: [memoryId], references: [id], onDelete: Cascade)
 
   @@map("comments")
 }
@@ -94,10 +125,10 @@ model Like {
   createdAt DateTime @default(now())
 
   // Relaciones
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  memoryId  String
-  memory    Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User   @relation("LikeUser", fields: [userId], references: [id], onDelete: Cascade)
+  memoryId String
+  memory   Memory @relation("LikeMemory", fields: [memoryId], references: [id], onDelete: Cascade)
 
   @@unique([userId, memoryId])
   @@map("likes")
@@ -106,4 +137,36 @@ model Like {
 enum Role {
   USER
   ADMIN
+  MODERATOR
+}
+
+enum MemoryType {
+  MESSAGE
+  PHOTO
+  VIDEO
+  AUDIO
+  DOCUMENT
+  TRIBUTE
+  STORY
+  MILESTONE
+}
+
+// Para agrupar memorias por eventos específicos
+model Event {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  location    String?
+  isPublic    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relaciones
+  memories    Memory[] @relation("EventMemory")
+  createdById String
+  createdBy   User     @relation("EventCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+
+  @@map("events")
 }
