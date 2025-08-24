@@ -1,0 +1,98 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: memoria-eterna-ingress
+  namespace: memoria-eterna
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://memoriaeterna.com,https://www.memoriaeterna.com"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "Content-Type, Authorization, x-api-key"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+    - hosts:
+        - memoriaeterna.com
+        - www.memoriaeterna.com
+        - api.memoriaeterna.com
+      secretName: memoria-eterna-tls
+  rules:
+    # Frontend
+    - host: memoriaeterna.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80
+    - host: www.memoriaeterna.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80
+    # API Gateway
+    - host: api.memoriaeterna.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: api-gateway-service
+                port:
+                  number: 80
+---
+# Ingress for monitoring (optional, for internal access)
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: monitoring-ingress
+  namespace: memoria-eterna-monitoring
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/auth-type: "basic"
+    nginx.ingress.kubernetes.io/auth-secret: "monitoring-auth"
+    nginx.ingress.kubernetes.io/auth-realm: "Monitoring Access"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  tls:
+    - hosts:
+        - monitoring.memoriaeterna.com
+      secretName: monitoring-tls
+  rules:
+    - host: monitoring.memoriaeterna.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana-service
+                port:
+                  number: 80
+---
+# Basic Auth Secret for Monitoring
+apiVersion: v1
+kind: Secret
+metadata:
+  name: monitoring-auth
+  namespace: memoria-eterna-monitoring
+type: Opaque
+data:
+  auth: YWRtaW46JDJ5JDEwJGRiVnFqVnFqVnFqVnFqVnFqVnFqVnFqVnFqVnFqVnFqVnFqVnFqVnFqVnFqVnFqVnE= # admin:$2y$10$dbVqjVqjVqjVqjVqjVqjVqjVqjVqjVqjVqjVqjVqjVqjVqjVqjVqjVqjVqjVq

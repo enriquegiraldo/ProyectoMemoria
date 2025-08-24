@@ -1,0 +1,39 @@
+{
+  "name": "Memoria Eterna",
+  "short_name": "MemoriaEterna",
+  "description": "Plataforma para preservar y compartir recuerdos de seres queridos",
+  "theme_color": "#3B82F6",
+  "background_color": "#FFFFFF",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "categories": [
+    "lifestyle",
+    "social",
+    "utilities"
+  ],
+  "lang": "es",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "related_applications": []
+}

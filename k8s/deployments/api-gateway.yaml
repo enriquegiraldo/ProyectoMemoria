@@ -1,0 +1,272 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: memoria-eterna
+  labels:
+    app: api-gateway
+    component: microservice
+    tier: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+        component: microservice
+        tier: frontend
+    spec:
+      containers:
+        - name: api-gateway
+          image: memoria-eterna/api-gateway:latest
+          ports:
+            - containerPort: 3000
+              name: http
+            - containerPort: 9090
+              name: metrics
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+            - name: METRICS_PORT
+              value: "9090"
+            # Database Configuration
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DATABASE_URL
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: REDIS_URL
+            # Security Configuration
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: JWT_SECRET
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: ENCRYPTION_KEY
+            # Enterprise Configuration
+            - name: MULTI_TENANT_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MULTI_TENANT_ENABLED
+            - name: TENANT_ISOLATION_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: TENANT_ISOLATION_MODE
+            # Monitoring Configuration
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: LOG_LEVEL
+            - name: LOG_FORMAT
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: LOG_FORMAT
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          volumeMounts:
+            - name: api-gateway-config
+              mountPath: /app/config
+              readOnly: true
+      volumes:
+        - name: api-gateway-config
+          configMap:
+            name: api-gateway-config
+---
+# API Gateway Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway-service
+  namespace: memoria-eterna
+  labels:
+    app: api-gateway
+    component: microservice
+    tier: frontend
+spec:
+  selector:
+    app: api-gateway
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+      name: http
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+      name: metrics
+  type: ClusterIP
+---
+# API Gateway ConfigMap
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-gateway-config
+  namespace: memoria-eterna
+data:
+  gateway.config.ts: |
+    export const gatewayConfig = {
+      services: [
+        {
+          name: 'auth-service',
+          url: 'http://auth-service:3001',
+          healthCheck: '/health',
+          timeout: 5000,
+          retries: 3,
+          circuitBreaker: {
+            failureThreshold: 5,
+            recoveryTimeout: 30000,
+            expectedFailures: 2
+          }
+        },
+        {
+          name: 'memories-service',
+          url: 'http://memories-service:3002',
+          healthCheck: '/health',
+          timeout: 5000,
+          retries: 3,
+          circuitBreaker: {
+            failureThreshold: 5,
+            recoveryTimeout: 30000,
+            expectedFailures: 2
+          }
+        },
+        {
+          name: 'media-service',
+          url: 'http://media-service:3003',
+          healthCheck: '/health',
+          timeout: 10000,
+          retries: 2,
+          circuitBreaker: {
+            failureThreshold: 3,
+            recoveryTimeout: 60000,
+            expectedFailures: 1
+          }
+        },
+        {
+          name: 'notifications-service',
+          url: 'http://notifications-service:3004',
+          healthCheck: '/health',
+          timeout: 5000,
+          retries: 3,
+          circuitBreaker: {
+            failureThreshold: 5,
+            recoveryTimeout: 30000,
+            expectedFailures: 2
+          }
+        },
+        {
+          name: 'payments-service',
+          url: 'http://payments-service:3006',
+          healthCheck: '/health',
+          timeout: 15000, // Longer timeout for payment operations
+          retries: 2,
+          circuitBreaker: {
+            failureThreshold: 3,
+            recoveryTimeout: 120000, // 2 minutes recovery time for payments
+            expectedFailures: 1
+          }
+        }
+      ],
+      rateLimit: {
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        maxRequests: 100,
+        skipSuccessfulRequests: false,
+        skipFailedRequests: false
+      },
+      security: {
+        enableAuth: true,
+        enableCors: true,
+        enableHelmet: true,
+        enableRateLimit: true,
+        jwtSecret: process.env.JWT_SECRET || 'your-jwt-secret',
+        apiKeyHeader: 'x-api-key'
+      },
+      cors: {
+        origin: ['https://memoriaeterna.com', 'https://www.memoriaeterna.com'],
+        credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'x-api-key']
+      },
+      routes: [
+        {
+          path: '/api/auth/*',
+          service: 'auth-service',
+          auth: true,
+          rateLimit: true
+        },
+        {
+          path: '/api/memories/*',
+          service: 'memories-service',
+          auth: true,
+          rateLimit: true
+        },
+        {
+          path: '/api/media/*',
+          service: 'media-service',
+          auth: true,
+          rateLimit: true
+        },
+        {
+          path: '/api/notifications/*',
+          service: 'notifications-service',
+          auth: true,
+          rateLimit: true
+        },
+        {
+          path: '/api/payments/*',
+          service: 'payments-service',
+          auth: true,
+          rateLimit: true
+        },
+        {
+          path: '/health',
+          service: 'api-gateway',
+          auth: false,
+          rateLimit: false
+        },
+        {
+          path: '/metrics',
+          service: 'api-gateway',
+          auth: false,
+          rateLimit: false
+        }
+      ]
+    };

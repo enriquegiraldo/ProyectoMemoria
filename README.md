@@ -1,312 +1,348 @@
-# Memoria Eterna 🌟
+# Memoria Eterna - Plataforma de Microservicios
 
-Una aplicación web moderna para preservar y compartir recuerdos familiares y momentos especiales.
+## 🚀 Descripción del Proyecto
 
-## 📋 Descripción
+**Memoria Eterna** es una plataforma empresarial basada en microservicios para la gestión y preservación de memorias digitales. La aplicación permite a los usuarios crear, almacenar, compartir y preservar sus recuerdos más preciados de forma segura y organizada.
 
-Memoria Eterna es una plataforma que permite a los usuarios crear, organizar y compartir sus recuerdos más preciados. Con un enfoque en la privacidad y la facilidad de uso, la aplicación ayuda a crear un legado digital que perdurará para las futuras generaciones.
+## 🏗️ Arquitectura del Sistema
 
-## ✨ Características Principales
+### Microservicios Implementados
 
-- **📝 Creación de Memorias**: Escribe y organiza tus recuerdos con texto rico e imágenes
-- **🏷️ Categorización**: Organiza tus memorias por categorías y tags
-- **👥 Compartir**: Comparte memorias con familiares y amigos de forma segura
-- **🔒 Privacidad**: Control total sobre qué memorias son públicas o privadas
-- **💬 Interacción**: Sistema de comentarios y likes para interactuar con las memorias
-- **📱 Responsive**: Diseño adaptativo para todos los dispositivos
+1. **Auth Service** (`src/microservices/auth-service/`)
+   - Autenticación y autorización de usuarios
+   - Gestión de sesiones y tokens JWT
+   - Integración con Supabase
+   - 2FA y SSO
+
+2. **Memories Service** (`src/microservices/memories-service/`)
+   - Gestión de memorias y recuerdos
+   - CRUD de memorias
+   - Búsqueda y filtrado
+   - Integración con Supabase
+
+3. **Media Service** (`src/microservices/media-service/`)
+   - Procesamiento y almacenamiento de archivos multimedia
+   - Soporte para imágenes, videos, audio y documentos
+   - Integración con múltiples proveedores de almacenamiento (AWS S3, Azure, Cloudinary)
+   - CDN y optimización de contenido
+
+4. **Notifications Service** (`src/microservices/notifications-service/`)
+   - Sistema de notificaciones multicanal
+   - Email, push notifications, SMS
+   - Plantillas personalizables
+   - Programación de notificaciones
+
+5. **Payments Service** (`src/microservices/payments-service/`)
+   - Procesamiento de pagos
+   - Integración con Stripe, PayPal, MercadoPago
+   - Gestión de suscripciones
+   - Pagos con criptomonedas
+
+6. **Analytics Service** (`src/microservices/analytics-service/`)
+   - Análisis y métricas de la plataforma
+   - Event sourcing
+   - KPIs y dashboards
+   - Reportes personalizados
+
+7. **API Gateway** (`src/api-gateway/`)
+   - Punto de entrada centralizado
+   - Enrutamiento de requests
+   - Rate limiting y circuit breaker
+   - Autenticación centralizada
+
+8. **Frontend** (`frontend/`)
+   - Aplicación web con Next.js
+   - Interfaz de usuario moderna
+   - Responsive design
+   - Integración con todos los microservicios
+
+### Infraestructura
+
+- **Kubernetes**: Orquestación y despliegue
+- **Docker**: Containerización
+- **PostgreSQL**: Base de datos principal
+- **Redis**: Cache y colas de mensajes
+- **Prometheus + Grafana**: Monitoreo y métricas
 
 ## 🛠️ Tecnologías Utilizadas
 
-- **Frontend**: Next.js 14, React 18, TypeScript
-- **Styling**: Tailwind CSS
-- **Backend**: Next.js API Routes
-- **Base de Datos**: PostgreSQL con Prisma ORM
-- **Autenticación**: NextAuth.js
-- **Deployment**: Docker, Docker Compose
+### Backend
+- **Node.js** con **TypeScript**
+- **Express.js** para APIs REST
+- **Zod** para validación de esquemas
+- **Winston** para logging
+- **JWT** para autenticación
+- **TypeORM** para ORM
+- **Bull** para colas de trabajo
+
+### Frontend
+- **Next.js** con **React**
+- **TypeScript**
+- **Tailwind CSS** para estilos
+- **Redux Toolkit** para estado global
+- **React Query** para gestión de estado del servidor
+
+### DevOps & Infraestructura
+- **Docker** y **Docker Compose**
+- **Kubernetes**
+- **Prometheus** y **Grafana**
+- **Helm** para charts de Kubernetes
+
+## 📋 Prerrequisitos
+
+- **Node.js** 18.x o superior
+- **Docker** y **Docker Compose**
+- **Kubernetes** (opcional para producción)
+- **Git**
 
 ## 🚀 Instalación y Configuración
 
-### Prerrequisitos
+### 1. Clonar el Repositorio
 
-- Node.js 18+
-- npm o yarn
-- Docker y Docker Compose (opcional)
+```bash
+git clone <repository-url>
+cd ProyectoMemoria
+```
 
-### Configuración Rápida
+### 2. Configurar Variables de Entorno
 
-1. **Clonar el repositorio**
+Crear archivos `.env` en cada microservicio con las variables necesarias:
 
-   ```bash
-   git clone <repository-url>
-   cd memoria-eterna
-   ```
+```bash
+# Ejemplo para Auth Service
+cp src/microservices/auth-service/env.example src/microservices/auth-service/.env
+```
 
-2. **Ejecutar el script de configuración**
+### 3. Instalar Dependencias
 
-   ```bash
-   # En Windows (PowerShell)
-   .\scripts\setup-dev.sh
+```bash
+# Instalar dependencias de todos los microservicios
+npm run install:all
 
-   # En Linux/Mac
-   chmod +x scripts/setup-dev.sh
-   ./scripts/setup-dev.sh
-   ```
+# O instalar individualmente
+cd src/microservices/auth-service && npm install
+cd src/microservices/memories-service && npm install
+# ... repetir para cada servicio
+```
 
-3. **Configurar variables de entorno**
+### 4. Configurar Base de Datos
 
-   ```bash
-   cp env.example .env
-   # Editar .env con tus configuraciones
-   ```
+```bash
+# Levantar PostgreSQL y Redis
+docker-compose up -d postgres redis
 
-4. **Iniciar servicios de Docker**
+# Ejecutar migraciones
+npm run migrate:all
+```
 
-   ```bash
-   docker-compose up -d
-   ```
+## 🧪 Testing End-to-End
 
-5. **Ejecutar migraciones y seed**
+### Ejecutar Pruebas Completas
 
-   ```bash
-   npm run db:push
-   npm run db:seed
-   ```
+```bash
+# Ejecutar script de testing end-to-end
+./scripts/run-e2e-tests.sh
+```
 
-6. **Iniciar el servidor de desarrollo**
+### Testing Manual
 
-   ```bash
-   npm run dev
-   ```
+```bash
+# Levantar todos los servicios en modo testing
+docker-compose -f docker-compose.test.yml up -d
 
-7. **Abrir en el navegador**
-   ```
-   http://localhost:3000
-   ```
+# Verificar estado de servicios
+curl http://localhost:3000/health
+curl http://localhost:3000/api
 
-### Configuración Manual
+# Acceder a interfaces
+# API Gateway: http://localhost:3000
+# Frontend: http://localhost:3007
+# Prometheus: http://localhost:9091
+# Grafana: http://localhost:3008 (admin/admin)
+# MailHog: http://localhost:8025
+```
 
-Si prefieres configurar manualmente:
+### Testing Individual de Microservicios
 
-1. **Instalar dependencias**
+```bash
+# Auth Service
+cd src/microservices/auth-service
+npm test
 
-   ```bash
-   npm install
-   ```
+# Memories Service
+cd src/microservices/memories-service
+npm test
 
-2. **Configurar base de datos**
+# Media Service
+cd src/microservices/media-service
+npm test
 
-   ```bash
-   # Generar cliente de Prisma
-   npx prisma generate
+# Notifications Service
+cd src/microservices/notifications-service
+npm test
 
-   # Ejecutar migraciones
-   npx prisma db push
+# Payments Service
+cd src/microservices/payments-service
+npm test
 
-   # Poblar con datos de prueba
-   npm run db:seed
-   ```
+# Analytics Service
+cd src/microservices/analytics-service
+npm test
+```
 
-3. **Configurar variables de entorno**
-   - Copia `env.example` a `.env`
-   - Configura `DATABASE_URL` con tu conexión a PostgreSQL
-   - Configura `NEXTAUTH_SECRET` con una clave secreta
+## 🏃‍♂️ Desarrollo Local
+
+### Levantar Servicios Individuales
+
+```bash
+# Auth Service
+cd src/microservices/auth-service
+npm run dev
+
+# Memories Service
+cd src/microservices/memories-service
+npm run dev
+
+# API Gateway
+cd src/api-gateway
+npm run dev
+
+# Frontend
+cd frontend
+npm run dev
+```
+
+### Docker Compose para Desarrollo
+
+```bash
+# Levantar infraestructura básica
+docker-compose up -d postgres redis
+
+# Levantar microservicios
+docker-compose up -d auth-service memories-service media-service
+```
+
+## 📊 Monitoreo y Métricas
+
+### Prometheus
+- URL: http://localhost:9091
+- Configuración: `prometheus.test.yml`
+
+### Grafana
+- URL: http://localhost:3008
+- Usuario: `admin`
+- Contraseña: `admin`
+
+### Health Checks
+```bash
+# Verificar estado de todos los servicios
+curl http://localhost:3000/health
+curl http://localhost:3001/health
+curl http://localhost:3002/health
+curl http://localhost:3003/health
+curl http://localhost:3004/health
+curl http://localhost:3005/health
+curl http://localhost:3006/health
+```
+
+## 🚀 Despliegue en Producción
+
+### Kubernetes
+
+```bash
+# Aplicar configuración de Kubernetes
+kubectl apply -f k8s/namespace.yaml
+kubectl apply -f k8s/configmaps/
+kubectl apply -f k8s/secrets/
+kubectl apply -f k8s/services/
+kubectl apply -f k8s/deployments/
+kubectl apply -f k8s/ingress/
+```
+
+### Docker Compose para Producción
+
+```bash
+# Levantar en modo producción
+docker-compose -f docker-compose.prod.yml up -d
+```
 
 ## 📁 Estructura del Proyecto
 
 ```
-memoria-eterna/
-├── prisma/                 # Esquema de base de datos y migraciones
-│   ├── schema.prisma      # Modelo de datos
-│   └── seed.ts           # Datos de prueba
-├── public/                # Archivos estáticos
-├── scripts/               # Scripts de automatización
-│   └── setup-dev.sh      # Configuración del entorno
+ProyectoMemoria/
 ├── src/
-│   ├── app/              # App Router de Next.js
-│   │   ├── globals.css   # Estilos globales
-│   │   ├── layout.tsx    # Layout principal
-│   │   └── page.tsx      # Página de inicio
-│   ├── components/       # Componentes React
-│   │   └── ui/          # Componentes de UI base
-│   ├── lib/             # Utilidades y configuraciones
-│   │   ├── auth.ts      # Configuración de autenticación
-│   │   ├── prisma.ts    # Cliente de Prisma
-│   │   └── utils.ts     # Utilidades generales
-│   └── types/           # Tipos de TypeScript
-├── .env.example         # Variables de entorno de ejemplo
-├── .gitignore          # Archivos ignorados por Git
-├── docker-compose.yml  # Configuración de Docker
-├── middleware.ts       # Middleware de Next.js
-├── next.config.js      # Configuración de Next.js
-├── package.json        # Dependencias y scripts
-├── postcss.config.js   # Configuración de PostCSS
-├── tailwind.config.js  # Configuración de Tailwind CSS
-└── tsconfig.json       # Configuración de TypeScript
+│   ├── microservices/
+│   │   ├── auth-service/
+│   │   ├── memories-service/
+│   │   ├── media-service/
+│   │   ├── notifications-service/
+│   │   ├── payments-service/
+│   │   └── analytics-service/
+│   └── api-gateway/
+├── frontend/
+├── k8s/
+├── scripts/
+├── docker-compose.test.yml
+├── prometheus.test.yml
+└── README.md
 ```
 
-## 🗄️ Modelo de Datos
-
-### Entidades Principales
-
-- **User**: Usuarios del sistema
-- **Memory**: Memorias/recuerdos creados por los usuarios
-- **Category**: Categorías para organizar memorias
-- **Tag**: Etiquetas para clasificar memorias
-- **Comment**: Comentarios en las memorias
-- **Like**: Me gusta en las memorias
-
-### Relaciones
-
-- Un usuario puede tener múltiples memorias
-- Una memoria pertenece a un usuario y opcionalmente a una categoría
-- Una memoria puede tener múltiples tags
-- Una memoria puede tener múltiples comentarios y likes
-- Los comentarios y likes están asociados a usuarios y memorias
-
-## 🔧 Scripts Disponibles
+## 🔧 Scripts Útiles
 
 ```bash
-# Desarrollo
-npm run dev              # Iniciar servidor de desarrollo
-npm run build            # Construir para producción
-npm run start            # Iniciar servidor de producción
-npm run lint             # Ejecutar linter
+# Instalar todas las dependencias
+npm run install:all
 
-# Base de datos
-npm run db:generate      # Generar cliente de Prisma
-npm run db:push          # Sincronizar esquema con la base de datos
-npm run db:migrate       # Ejecutar migraciones
-npm run db:studio        # Abrir Prisma Studio
-npm run db:seed          # Poblar con datos de prueba
+# Ejecutar todos los tests
+npm run test:all
 
-# Configuración
-npm run setup            # Configuración completa del proyecto
+# Build de todos los servicios
+npm run build:all
+
+# Limpiar recursos de Docker
+npm run docker:cleanup
+
+# Verificar estado de servicios
+npm run status
 ```
 
-## 🔑 Credenciales de Prueba
+## 📈 Métricas de Performance
 
-Después de ejecutar el seed, puedes usar estas credenciales:
+- **Response Time**: < 500ms (95% de requests)
+- **Error Rate**: < 1%
+- **Throughput**: > 1000 req/s
+- **Availability**: 99.9%
 
-- **Administrador**: `admin@memoriaeterna.com` / `password123`
-- **Usuario 1**: `maria@example.com` / `password123`
-- **Usuario 2**: `juan@example.com` / `password123`
+## 🧪 Cobertura de Testing
 
-## 🐳 Docker
-
-### Iniciar servicios
-
-```bash
-docker-compose up -d
-```
-
-### Ver logs
-
-```bash
-docker-compose logs -f
-```
-
-### Detener servicios
-
-```bash
-docker-compose down
-```
-
-### Servicios disponibles
-
-- **PostgreSQL**: `localhost:5432`
-- **Redis**: `localhost:6379`
-- **Adminer**: `localhost:8080` (gestión de base de datos)
-
-## 🔒 Variables de Entorno
-
-Crea un archivo `.env` basado en `env.example`:
-
-```env
-# Base de datos
-DATABASE_URL="postgresql://username:password@localhost:5432/memoria_eterna"
-
-# NextAuth.js
-NEXTAUTH_URL="http://localhost:3000"
-NEXTAUTH_SECRET="your-secret-key-here"
-
-# JWT
-JWT_SECRET="your-jwt-secret-here"
-
-# Email (opcional)
-EMAIL_SERVER_HOST="smtp.gmail.com"
-EMAIL_SERVER_PORT=587
-EMAIL_SERVER_USER="your-email@gmail.com"
-EMAIL_SERVER_PASSWORD="your-app-password"
-
-# Environment
-NODE_ENV="development"
-```
-
-## 🧪 Pruebas
-
-```bash
-# Ejecutar pruebas unitarias
-npm test
-
-# Ejecutar pruebas de integración
-npm run test:integration
-
-# Ejecutar pruebas E2E
-npm run test:e2e
-```
-
-## 📦 Despliegue
-
-### Producción con Docker
-
-```bash
-# Construir imagen
-docker build -t memoria-eterna .
-
-# Ejecutar contenedor
-docker run -p 3000:3000 memoria-eterna
-```
-
-### Vercel
-
-1. Conectar repositorio a Vercel
-2. Configurar variables de entorno
-3. Desplegar automáticamente
-
-### Otros proveedores
-
-El proyecto es compatible con cualquier proveedor que soporte Next.js:
-
-- Netlify
-- Railway
-- Heroku
-- DigitalOcean App Platform
+- **Unit Tests**: > 90%
+- **Integration Tests**: > 80%
+- **End-to-End Tests**: > 70%
+- **Load Tests**: Validación completa
 
 ## 🤝 Contribución
 
 1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+2. Crear una rama para tu feature (`git checkout -b feature/AmazingFeature`)
 3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
 4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+5. Abrir un Pull Request
 
-## 📝 Licencia
+## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
+
+## 👥 Equipo
+
+- **Memoria Eterna Team**
+- **Desarrollado con ❤️ para preservar recuerdos**
 
 ## 📞 Soporte
 
-- **Email**: soporte@memoriaeterna.com
-- **Documentación**: [docs.memoriaeterna.com](https://docs.memoriaeterna.com)
-- **Issues**: [GitHub Issues](https://github.com/username/memoria-eterna/issues)
-
-## 🙏 Agradecimientos
-
-- Next.js por el framework increíble
-- Prisma por el ORM intuitivo
-- Tailwind CSS por los estilos hermosos
-- La comunidad de desarrolladores por el apoyo
+Para soporte técnico o preguntas:
+- Crear un issue en GitHub
+- Contactar al equipo de desarrollo
 
 ---
 
-**Memoria Eterna** - Preservando recuerdos, conectando generaciones 🌟
+**¡Gracias por usar Memoria Eterna! 🎉**

@@ -1,132 +1,253 @@
-import { User, Memory, Category, Comment, Like, Tag } from '@prisma/client'
-
-// Tipos extendidos para incluir relaciones
-export type UserWithMemories = User & {
-  memories: Memory[]
-  comments: Comment[]
-  likes: Like[]
+// Tipos de usuario
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  profile?: UserProfile;
+  pageId?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export type MemoryWithRelations = Memory & {
-  author: User
-  category: Category | null
-  comments: Comment[]
-  likes: Like[]
-  tags: Tag[]
+export type UserRole = 'ADMIN' | 'FAMILIAR' | 'AMIGO' | 'INVITADO';
+
+export interface UserProfile {
+  relationship?: string;
+  avatar?: string;
+  bio?: string;
+  phone?: string;
+  location?: string;
 }
 
-export type CommentWithAuthor = Comment & {
-  author: User
+// Tipos de memoria
+export interface Memory {
+  id: string;
+  title: string;
+  description: string;
+  mediaUrl: string;
+  mediaType: MediaType;
+  authorId: string;
+  authorName: string;
+  date: string;
+  tags: string[];
+  pageId: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export type CategoryWithMemories = Category & {
-  memories: Memory[]
+export type MediaType = 'IMAGE' | 'VIDEO' | 'AUDIO';
+
+// Tipos de comentarios
+export interface Comment {
+  id: string;
+  content: string;
+  authorId: string;
+  authorName: string;
+  memoryId: string;
+  parentCommentId?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-// Tipos para formularios
-export interface LoginFormData {
-  email: string
-  password: string
+// Tipos de reacciones
+export interface Reaction {
+  id: string;
+  type: ReactionType;
+  userId: string;
+  referenceId: string;
+  referenceType: 'MEMORY' | 'COMMENT';
+  createdAt: string;
 }
 
-export interface RegisterFormData {
-  name: string
-  email: string
-  password: string
-  confirmPassword: string
+export type ReactionType = 'LIKE' | 'HEART' | 'SAD';
+
+// Tipos de página
+export interface Page {
+  id: string;
+  title: string;
+  subtitle: string;
+  personName: string;
+  backgroundImage?: string;
+  backgroundVideo?: string;
+  birthDate?: string;
+  passingDate?: string;
+  ownerId: string;
+  template: PageTemplate;
+  qrCodeUrl?: string;
+  subscriptionStatus: SubscriptionStatus;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface MemoryFormData {
-  title: string
-  content: string
-  imageUrl?: string
-  isPublic: boolean
-  categoryId?: string
-  tags: string[]
+export type PageTemplate = 'CLASSIC' | 'MODERN' | 'MINIMAL' | 'ELEGANT';
+export type SubscriptionStatus = 'ACTIVE' | 'EXPIRED' | 'CANCELLED';
+
+// Tipos de filtros
+export interface MemoryFilters {
+  search: string;
+  tags: string[];
+  mediaType: string[];
+  dateRange: DateRange | null;
 }
 
-export interface CommentFormData {
-  content: string
-  memoryId: string
+export interface DateRange {
+  start: string;
+  end: string;
 }
 
-// Tipos para respuestas de API
-export interface ApiResponse<T = any> {
-  success: boolean
-  data?: T
-  error?: string
-  message?: string
+// Tipos de UI
+export interface ModalState {
+  isOpen: boolean;
+  type: ModalType | null;
+  data?: any;
+}
+
+export type ModalType = 'login' | 'register' | 'memory' | 'comment' | 'upload' | 'settings';
+
+export interface UIState {
+  modal: ModalState;
+  sidebar: {
+    isOpen: boolean;
+  };
+  loading: {
+    global: boolean;
+    upload: boolean;
+  };
+  notifications: {
+    show: boolean;
+    type: NotificationType;
+    message: string;
+    duration: number;
+  };
+  theme: {
+    mode: 'light' | 'dark';
+    primaryColor: string;
+    secondaryColor: string;
+  };
+}
+
+export type NotificationType = 'success' | 'error' | 'warning' | 'info';
+
+// Tipos de autenticación
+export interface AuthState {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+}
+
+// Tipos de API
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
 }
 
 export interface PaginatedResponse<T> {
-  data: T[]
+  data: T[];
   pagination: {
-    page: number
-    limit: number
-    total: number
-    totalPages: number
-  }
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
-// Tipos para filtros y búsqueda
-export interface MemoryFilters {
-  category?: string
-  tags?: string[]
-  author?: string
-  isPublic?: boolean
-  search?: string
+// Tipos de formularios
+export interface LoginForm {
+  email: string;
+  password: string;
 }
 
-export interface SearchParams {
-  page?: string
-  limit?: string
-  search?: string
-  category?: string
-  tags?: string
-  author?: string
+export interface RegisterForm {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  role?: UserRole;
 }
 
-// Tipos para sesión extendida
-export interface ExtendedSession {
-  user: {
-    id: string
-    email: string
-    name: string | null
-    role: string
-  }
-  expires: string
+export interface MemoryForm {
+  title: string;
+  description: string;
+  date: string;
+  tags: string[];
+  mediaFile?: File;
+  mediaUrl?: string;
 }
 
-// Tipos para componentes
-export interface ButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger'
-  size?: 'sm' | 'md' | 'lg'
-  loading?: boolean
-  children: React.ReactNode
-  onClick?: () => void
-  disabled?: boolean
-  className?: string
+// Tipos de configuración
+export interface AppConfig {
+  apiUrl: string;
+  uploadUrl: string;
+  maxFileSize: number;
+  allowedFileTypes: string[];
+  maxMemoriesPerPage: number;
+  maxCommentsPerMemory: number;
 }
 
-export interface ModalProps {
-  isOpen: boolean
-  onClose: () => void
-  title: string
-  children: React.ReactNode
+// Tipos de eventos
+export interface AppEvent {
+  type: string;
+  payload: any;
+  timestamp: string;
+  userId?: string;
 }
 
-// Tipos para estadísticas
-export interface UserStats {
-  totalMemories: number
-  publicMemories: number
-  privateMemories: number
-  totalLikes: number
-  totalComments: number
+// Tipos de estadísticas
+export interface PageStats {
+  totalMemories: number;
+  totalComments: number;
+  totalReactions: number;
+  uniqueVisitors: number;
+  lastActivity: string;
 }
 
-export interface AppStats {
-  totalUsers: number
-  totalMemories: number
-  totalCategories: number
-  totalTags: number
+// Tipos de notificaciones
+export interface Notification {
+  id: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  userId: string;
+  read: boolean;
+  createdAt: string;
+}
+
+// Tipos de búsqueda
+export interface SearchResult {
+  type: 'memory' | 'comment' | 'user';
+  id: string;
+  title: string;
+  description: string;
+  relevance: number;
+}
+
+// Tipos de exportación
+export interface ExportOptions {
+  format: 'pdf' | 'json' | 'csv';
+  includeMedia: boolean;
+  dateRange?: DateRange;
+  tags?: string[];
+}
+
+// Tipos de importación
+export interface ImportOptions {
+  format: 'json' | 'csv';
+  overwrite: boolean;
+  validateOnly: boolean;
+}
+
+// Tipos de backup
+export interface BackupData {
+  version: string;
+  timestamp: string;
+  page: Page;
+  memories: Memory[];
+  comments: Comment[];
+  reactions: Reaction[];
+  users: User[];
 }

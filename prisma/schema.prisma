@@ -10,27 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  name         String
-  password     String
-  role         Role     @default(USER)
-  bio          String?
-  avatarUrl    String?
-  relationship String? // Relación con el homenajeado (ej: "Hijo", "Amigo", etc.)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
 
-  // Relaciones
-  events       Event[]       @relation("EventCreatedBy")
-  memories     Memory[]      @relation("MemoryCreatedBy")
-  testimonials Testimonial[] @relation("TestimonialCreatedBy")
-  comments     Comment[]     @relation("CommentCreatedBy")
-  likes        Like[]        @relation("LikeUser")
-
-  @@map("users")
-}
 
 model Memory {
   id          String     @id @default(cuid())
@@ -39,6 +19,7 @@ model Memory {
   type        MemoryType @default(MESSAGE) // MESSAGE, PHOTO, VIDEO, etc.
   imageUrl    String?
   videoUrl    String?
+  file_size   Int? // Tamaño del archivo en bytes
   isPublic    Boolean    @default(true)
   isFeatured  Boolean    @default(false)
   publishedAt DateTime?  @default(now())
@@ -92,6 +73,43 @@ model Category {
   memories Memory[] @relation("MemoryCategory")
 
   @@map("categories")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  password     String
+  role         Role     @default(USER)
+  bio          String?
+  avatarUrl    String?
+  relationship String? // Relación con el homenajeado (ej: "Hijo", "Amigo", etc.)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Stripe fields
+  stripe_customer_id      String?
+  stripe_subscription_id  String?
+  subscription_plan       SubscriptionPlan @default(FREE)
+  subscription_status     SubscriptionStatus @default(ACTIVE)
+  subscription_end_date   DateTime?
+  last_payment_date       DateTime?
+  last_payment_failed     DateTime?
+
+  // Relaciones
+  events       Event[]       @relation("EventCreatedBy")
+  memories     Memory[]      @relation("MemoryCreatedBy")
+  testimonials Testimonial[] @relation("TestimonialCreatedBy")
+  comments     Comment[]     @relation("CommentCreatedBy")
+  likes        Like[]        @relation("LikeUser")
+  notifications Notification[]
+  pushSubscriptions PushSubscription[]
+  userPoints   UserPoints[]
+  userBadges   UserBadge[]
+  userMissions UserMission[]
+  apiKeys      ApiKey[]
+
+  @@map("users")
 }
 
 model Tag {
@@ -169,4 +187,193 @@ model Event {
   createdBy   User     @relation("EventCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
 
   @@map("events")
+}
+
+// Analytics events table
+model AnalyticsEvent {
+  id         String   @id @default(cuid())
+  event      String
+  properties Json?
+  user_id    String?
+  timestamp  DateTime @default(now())
+  session_id String?
+  user_agent String?
+  page_url   String?
+  ip_address String?
+
+  @@map("analytics_events")
+}
+
+// Notifications table
+model Notification {
+  id         String   @id @default(cuid())
+  user_id    String
+  title      String
+  message    String
+  type       String   // info, success, warning, error
+  category   String   // memory, subscription, system, social
+  data       Json?
+  is_read    Boolean  @default(false)
+  read_at    DateTime?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+// Push subscriptions table
+model PushSubscription {
+  id         String   @id @default(cuid())
+  user_id    String
+  endpoint   String
+  p256dh     String
+  auth       String
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, endpoint])
+  @@map("push_subscriptions")
+}
+
+// Gamification tables
+model UserPoints {
+  id         String   @id @default(cuid())
+  user_id    String
+  points     Int      @default(0)
+  level      Int      @default(1)
+  experience Int      @default(0)
+  total_points_earned Int @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id])
+  @@map("user_points")
+}
+
+model Badge {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+  icon        String
+  color       String
+  points_required Int
+  category    String   // memory, social, achievement, special
+  is_hidden   Boolean  @default(false)
+  created_at  DateTime @default(now())
+
+  userBadges UserBadge[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  id         String   @id @default(cuid())
+  user_id    String
+  badge_id   String
+  earned_at  DateTime @default(now())
+  is_featured Boolean @default(false)
+
+  user   User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  badge  Badge @relation(fields: [badge_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, badge_id])
+  @@map("user_badges")
+}
+
+model Mission {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  type        String   // daily, weekly, monthly, special
+  target      Int      // objetivo a alcanzar
+  points_reward Int
+  badge_reward String? // ID del badge que otorga
+  is_active   Boolean  @default(true)
+  created_at  DateTime @default(now())
+
+  userMissions UserMission[]
+
+  @@map("missions")
+}
+
+model UserMission {
+  id         String   @id @default(cuid())
+  user_id    String
+  mission_id String
+  progress   Int      @default(0)
+  completed  Boolean  @default(false)
+  completed_at DateTime?
+  started_at DateTime @default(now())
+
+  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  mission Mission @relation(fields: [mission_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, mission_id])
+  @@map("user_missions")
+}
+
+model PointTransaction {
+  id         String   @id @default(cuid())
+  user_id    String
+  points     Int
+  type       String   // earned, spent, bonus, penalty
+  activity   String   // create_memory, comment, share, etc.
+  description String
+  created_at DateTime @default(now())
+
+  @@map("point_transactions")
+}
+
+// API Keys for public API
+model ApiKey {
+  id          String   @id @default(cuid())
+  user_id     String
+  name        String
+  key_hash    String   @unique
+  permissions Json     // Array of allowed endpoints
+  rate_limit  Int      @default(1000) // requests per hour
+  is_active   Boolean  @default(true)
+  last_used   DateTime?
+  expires_at  DateTime?
+  created_at  DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("api_keys")
+}
+
+// Webhooks for external integrations
+model Webhook {
+  id          String   @id @default(cuid())
+  user_id     String
+  url         String
+  events      Json     // Array of event types to listen for
+  secret      String
+  is_active   Boolean  @default(true)
+  last_triggered DateTime?
+  created_at  DateTime @default(now())
+
+  @@map("webhooks")
+}
+
+// Subscription plans enum
+enum SubscriptionPlan {
+  FREE
+  BASIC
+  PRO
+  ENTERPRISE
+}
+
+// Subscription status enum
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  UNPAID
+  TRIAL
 }
