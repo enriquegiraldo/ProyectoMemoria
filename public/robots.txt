@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://tu-dominio.com/sitemap.xml
+
+# PWA
+Allow: /manifest.json
+Allow: /sw.js
+Allow: /workbox-*.js

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: memoria-eterna
+  labels:
+    name: memoria-eterna
+    environment: production
+    project: memoria-eterna
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: memoria-eterna-monitoring
+  labels:
+    name: memoria-eterna-monitoring
+    environment: production
+    project: memoria-eterna
+    component: monitoring

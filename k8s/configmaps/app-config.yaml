@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: memoria-eterna
+data:
+  # Database Configuration
+  DATABASE_URL: "postgresql://postgres:password@postgres-service:5432/memoria_eterna"
+  REDIS_URL: "redis://redis-service:6379"
+  
+  # Supabase Configuration
+  NEXT_PUBLIC_SUPABASE_URL: "https://your-project.supabase.co"
+  SUPABASE_SERVICE_ROLE_KEY: "your-service-role-key"
+  
+  # Cloudinary Configuration
+  CLOUDINARY_CLOUD_NAME: "your-cloud-name"
+  CLOUDINARY_API_KEY: "your-api-key"
+  CLOUDINARY_API_SECRET: "your-api-secret"
+  
+  # Stripe Configuration
+  STRIPE_SECRET_KEY: "sk_test_your-stripe-secret-key"
+  STRIPE_WEBHOOK_SECRET: "whsec_your-webhook-secret"
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_test_your-stripe-publishable-key"
+  
+  # Analytics Configuration
+  MIXPANEL_TOKEN: "your-mixpanel-token"
+  NEXT_PUBLIC_MIXPANEL_TOKEN: "your-mixpanel-token"
+  
+  # PWA Configuration
+  NEXT_PUBLIC_VAPID_PUBLIC_KEY: "your-vapid-public-key"
+  
+  # Social Media Configuration
+  FACEBOOK_APP_ID: "your-facebook-app-id"
+  FACEBOOK_APP_SECRET: "your-facebook-app-secret"
+  TWITTER_API_KEY: "your-twitter-api-key"
+  TWITTER_API_SECRET: "your-twitter-api-secret"
+  LINKEDIN_CLIENT_ID: "your-linkedin-client-id"
+  LINKEDIN_CLIENT_SECRET: "your-linkedin-client-secret"
+  
+  # Email Configuration
+  SENDGRID_API_KEY: "your-sendgrid-api-key"
+  MAILGUN_API_KEY: "your-mailgun-api-key"
+  MAILGUN_DOMAIN: "your-mailgun-domain"
+  
+  # Enterprise Configuration
+  MULTI_TENANT_ENABLED: "true"
+  TENANT_ISOLATION_MODE: "database"
+  DEFAULT_TENANT_ID: "default"
+  
+  # Monitoring Configuration
+  LOG_LEVEL: "info"
+  LOG_FORMAT: "json"
+  METRICS_PORT: "9090"
+  
+  # Security Configuration
+  JWT_SECRET: "your-jwt-secret-key"
+  ENCRYPTION_KEY: "your-32-character-encryption-key"
+  
+  # Compliance Configuration
+  GDPR_DATA_RETENTION_DAYS: "2555"
+  GDPR_CONSENT_REQUIRED: "true"
+  HIPAA_COMPLIANCE_ENABLED: "true"
+  SOC2_AUDIT_ENABLED: "true"

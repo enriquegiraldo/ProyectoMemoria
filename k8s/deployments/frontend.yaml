@@ -1,0 +1,198 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: memoria-eterna
+  labels:
+    app: frontend
+    component: frontend
+    tier: frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+        component: frontend
+        tier: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: memoria-eterna/frontend:latest
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3000"
+            # Supabase Configuration
+            - name: NEXT_PUBLIC_SUPABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: NEXT_PUBLIC_SUPABASE_URL
+            - name: SUPABASE_SERVICE_ROLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: SUPABASE_SERVICE_ROLE_KEY
+            # Cloudinary Configuration
+            - name: CLOUDINARY_CLOUD_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: CLOUDINARY_CLOUD_NAME
+            - name: CLOUDINARY_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: CLOUDINARY_API_KEY
+            - name: CLOUDINARY_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CLOUDINARY_API_SECRET
+            # Stripe Configuration
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: STRIPE_SECRET_KEY
+            - name: STRIPE_WEBHOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: STRIPE_WEBHOOK_SECRET
+            - name: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+            # Analytics Configuration
+            - name: MIXPANEL_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MIXPANEL_TOKEN
+            - name: NEXT_PUBLIC_MIXPANEL_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: NEXT_PUBLIC_MIXPANEL_TOKEN
+            # PWA Configuration
+            - name: NEXT_PUBLIC_VAPID_PUBLIC_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: NEXT_PUBLIC_VAPID_PUBLIC_KEY
+            # Social Media Configuration
+            - name: FACEBOOK_APP_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: FACEBOOK_APP_ID
+            - name: FACEBOOK_APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: FACEBOOK_APP_SECRET
+            - name: TWITTER_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: TWITTER_API_KEY
+            - name: TWITTER_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: TWITTER_API_SECRET
+            - name: LINKEDIN_CLIENT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: LINKEDIN_CLIENT_ID
+            - name: LINKEDIN_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: LINKEDIN_CLIENT_SECRET
+            # Email Configuration
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: SENDGRID_API_KEY
+            - name: MAILGUN_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: MAILGUN_API_KEY
+            - name: MAILGUN_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MAILGUN_DOMAIN
+            # Enterprise Configuration
+            - name: MULTI_TENANT_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MULTI_TENANT_ENABLED
+            - name: TENANT_ISOLATION_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: TENANT_ISOLATION_MODE
+            - name: DEFAULT_TENANT_ID
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DEFAULT_TENANT_ID
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+---
+# Frontend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend-service
+  namespace: memoria-eterna
+  labels:
+    app: frontend
+    component: frontend
+    tier: frontend
+spec:
+  selector:
+    app: frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+      name: http
+  type: ClusterIP

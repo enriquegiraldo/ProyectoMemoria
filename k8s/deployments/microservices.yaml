@@ -1,0 +1,585 @@
+# Auth Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: memoria-eterna
+  labels:
+    app: auth-service
+    component: microservice
+    tier: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+        component: microservice
+        tier: backend
+    spec:
+      containers:
+        - name: auth-service
+          image: memoria-eterna/auth-service:latest
+          ports:
+            - containerPort: 3001
+              name: http
+            - containerPort: 9090
+              name: metrics
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3001"
+            - name: METRICS_PORT
+              value: "9090"
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DATABASE_URL
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: REDIS_URL
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: JWT_SECRET
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+---
+# Auth Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: memoria-eterna
+  labels:
+    app: auth-service
+    component: microservice
+    tier: backend
+spec:
+  selector:
+    app: auth-service
+  ports:
+    - protocol: TCP
+      port: 3001
+      targetPort: 3001
+      name: http
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+      name: metrics
+  type: ClusterIP
+---
+# Memories Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memories-service
+  namespace: memoria-eterna
+  labels:
+    app: memories-service
+    component: microservice
+    tier: backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: memories-service
+  template:
+    metadata:
+      labels:
+        app: memories-service
+        component: microservice
+        tier: backend
+    spec:
+      containers:
+        - name: memories-service
+          image: memoria-eterna/memories-service:latest
+          ports:
+            - containerPort: 3002
+              name: http
+            - containerPort: 9090
+              name: metrics
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3002"
+            - name: METRICS_PORT
+              value: "9090"
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DATABASE_URL
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: REDIS_URL
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3002
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3002
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+---
+# Memories Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: memories-service
+  namespace: memoria-eterna
+  labels:
+    app: memories-service
+    component: microservice
+    tier: backend
+spec:
+  selector:
+    app: memories-service
+  ports:
+    - protocol: TCP
+      port: 3002
+      targetPort: 3002
+      name: http
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+      name: metrics
+  type: ClusterIP
+---
+# Media Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: media-service
+  namespace: memoria-eterna
+  labels:
+    app: media-service
+    component: microservice
+    tier: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: media-service
+  template:
+    metadata:
+      labels:
+        app: media-service
+        component: microservice
+        tier: backend
+    spec:
+      containers:
+        - name: media-service
+          image: memoria-eterna/media-service:latest
+          ports:
+            - containerPort: 3003
+              name: http
+            - containerPort: 9090
+              name: metrics
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3003"
+            - name: METRICS_PORT
+              value: "9090"
+            # Cloudinary Configuration
+            - name: CLOUDINARY_CLOUD_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: CLOUDINARY_CLOUD_NAME
+            - name: CLOUDINARY_API_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: CLOUDINARY_API_KEY
+            - name: CLOUDINARY_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: CLOUDINARY_API_SECRET
+            # Database Configuration
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DATABASE_URL
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: REDIS_URL
+            # Enterprise Configuration
+            - name: MULTI_TENANT_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MULTI_TENANT_ENABLED
+            - name: TENANT_ISOLATION_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: TENANT_ISOLATION_MODE
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "4Gi"
+              cpu: "2000m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3003
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3003
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+---
+# Media Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: media-service
+  namespace: memoria-eterna
+  labels:
+    app: media-service
+    component: microservice
+    tier: backend
+spec:
+  selector:
+    app: media-service
+  ports:
+    - protocol: TCP
+      port: 3003
+      targetPort: 3003
+      name: http
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+      name: metrics
+  type: ClusterIP
+---
+# Notifications Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notifications-service
+  namespace: memoria-eterna
+  labels:
+    app: notifications-service
+    component: microservice
+    tier: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: notifications-service
+  template:
+    metadata:
+      labels:
+        app: notifications-service
+        component: microservice
+        tier: backend
+    spec:
+      containers:
+        - name: notifications-service
+          image: memoria-eterna/notifications-service:latest
+          ports:
+            - containerPort: 3004
+              name: http
+            - containerPort: 9090
+              name: metrics
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3004"
+            - name: METRICS_PORT
+              value: "9090"
+            # Database Configuration
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DATABASE_URL
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: REDIS_URL
+            # Supabase Configuration
+            - name: NEXT_PUBLIC_SUPABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: NEXT_PUBLIC_SUPABASE_URL
+            - name: SUPABASE_SERVICE_ROLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: SUPABASE_SERVICE_ROLE_KEY
+            # PWA Configuration
+            - name: NEXT_PUBLIC_VAPID_PUBLIC_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: NEXT_PUBLIC_VAPID_PUBLIC_KEY
+            - name: VAPID_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: VAPID_PRIVATE_KEY
+            # Email Configuration
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: SENDGRID_API_KEY
+            - name: MAILGUN_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: MAILGUN_API_KEY
+            - name: MAILGUN_DOMAIN
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MAILGUN_DOMAIN
+            # Enterprise Configuration
+            - name: MULTI_TENANT_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MULTI_TENANT_ENABLED
+            - name: TENANT_ISOLATION_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: TENANT_ISOLATION_MODE
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3004
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3004
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+---
+# Notifications Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: notifications-service
+  namespace: memoria-eterna
+  labels:
+    app: notifications-service
+    component: microservice
+    tier: backend
+spec:
+  selector:
+    app: notifications-service
+  ports:
+    - protocol: TCP
+      port: 3004
+      targetPort: 3004
+      name: http
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+      name: metrics
+  type: ClusterIP
+---
+# Payments Service Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments-service
+  namespace: memoria-eterna
+  labels:
+    app: payments-service
+    component: microservice
+    tier: backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: payments-service
+  template:
+    metadata:
+      labels:
+        app: payments-service
+        component: microservice
+        tier: backend
+    spec:
+      containers:
+        - name: payments-service
+          image: memoria-eterna/payments-service:latest
+          ports:
+            - containerPort: 3005
+              name: http
+            - containerPort: 9090
+              name: metrics
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: PORT
+              value: "3005"
+            - name: METRICS_PORT
+              value: "9090"
+            # Database Configuration
+            - name: DATABASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: DATABASE_URL
+            - name: REDIS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: REDIS_URL
+            # Stripe Configuration
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: STRIPE_SECRET_KEY
+            - name: STRIPE_WEBHOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: STRIPE_WEBHOOK_SECRET
+            - name: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+            # Enterprise Configuration
+            - name: MULTI_TENANT_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: MULTI_TENANT_ENABLED
+            - name: TENANT_ISOLATION_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: app-config
+                  key: TENANT_ISOLATION_MODE
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3005
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 3005
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+---
+# Payments Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments-service
+  namespace: memoria-eterna
+  labels:
+    app: payments-service
+    component: microservice
+    tier: backend
+spec:
+  selector:
+    app: payments-service
+  ports:
+    - protocol: TCP
+      port: 3005
+      targetPort: 3005
+      name: http
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
+      name: metrics
+  type: ClusterIP

@@ -1,0 +1,37 @@
+{
+  "ports": {
+    "redis": 6379,
+    "mailhog": 8025,
+    "grafana": 3008,
+    "prometheus": 9091,
+    "api_gateway": 3000,
+    "postgres": 5432,
+    "frontend": 3007
+  },
+  "version": "1.0.0",
+  "services": [
+    "auth-service",
+    "memories-service",
+    "media-service",
+    "notifications-service",
+    "analytics-service",
+    "api-gateway"
+  ],
+  "project_name": "Memoria Eterna",
+  "requirements": {
+    "docker": "20.10+",
+    "npm": "8.0+",
+    "nodejs": "18.0+",
+    "git": "2.30+",
+    "docker_compose": "2.0+"
+  },
+  "migration_date": "2025-08-24 12:17:50",
+  "directories": [
+    "src/microservices",
+    "src/api-gateway",
+    "frontend",
+    "k8s",
+    "scripts",
+    "test-results"
+  ]
+}

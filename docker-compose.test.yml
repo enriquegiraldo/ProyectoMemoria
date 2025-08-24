@@ -1,0 +1,306 @@
+version: '3.8'
+
+services:
+  # Base de datos de testing
+  postgres-test:
+    image: postgres:15
+    container_name: memoria-eterna-postgres-test
+    environment:
+      POSTGRES_DB: memoria_eterna_test
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U test_user -d memoria_eterna_test"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-test:
+    image: redis:7-alpine
+    container_name: memoria-eterna-redis-test
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Microservicios en modo testing
+  auth-service-test:
+    build:
+      context: ./src/microservices/auth-service
+      dockerfile: Dockerfile
+    container_name: memoria-eterna-auth-test
+    environment:
+      NODE_ENV: test
+      PORT: 3001
+      DATABASE_URL: postgresql://test_user:test_password@postgres-test:5432/memoria_eterna_test
+      REDIS_URL: redis://redis-test:6379
+      JWT_SECRET: test-jwt-secret-key-for-testing-purposes-only
+      SUPABASE_URL: http://localhost:8000
+      SUPABASE_ANON_KEY: test-anon-key
+      SUPABASE_SERVICE_KEY: test-service-key
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  memories-service-test:
+    build:
+      context: ./src/microservices/memories-service
+      dockerfile: Dockerfile
+    container_name: memoria-eterna-memories-test
+    environment:
+      NODE_ENV: test
+      PORT: 3002
+      DATABASE_URL: postgresql://test_user:test_password@postgres-test:5432/memoria_eterna_test
+      REDIS_URL: redis://redis-test:6379
+      JWT_SECRET: test-jwt-secret-key-for-testing-purposes-only
+      SUPABASE_URL: http://localhost:8000
+      SUPABASE_ANON_KEY: test-anon-key
+      SUPABASE_SERVICE_KEY: test-service-key
+    ports:
+      - "3002:3002"
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  media-service-test:
+    build:
+      context: ./src/microservices/media-service
+      dockerfile: Dockerfile
+    container_name: memoria-eterna-media-test
+    environment:
+      NODE_ENV: test
+      PORT: 3003
+      REDIS_URL: redis://redis-test:6379
+      JWT_SECRET: test-jwt-secret-key-for-testing-purposes-only
+      UPLOAD_MAX_SIZE: 10485760
+      UPLOAD_ALLOWED_TYPES: image/jpeg,image/png,image/gif,video/mp4,video/avi
+    ports:
+      - "3003:3003"
+    depends_on:
+      redis-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  notifications-service-test:
+    build:
+      context: ./src/microservices/notifications-service
+      dockerfile: Dockerfile
+    container_name: memoria-eterna-notifications-test
+    environment:
+      NODE_ENV: test
+      PORT: 3004
+      REDIS_URL: redis://redis-test:6379
+      JWT_SECRET: test-jwt-secret-key-for-testing-purposes-only
+      EMAIL_PROVIDER: smtp
+      SMTP_HOST: localhost
+      SMTP_PORT: 1025
+      SMTP_USER: test
+      SMTP_PASS: test
+    ports:
+      - "3004:3004"
+    depends_on:
+      redis-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  payments-service-test:
+    build:
+      context: ./src/microservices/payments-service
+      dockerfile: Dockerfile
+    container_name: memoria-eterna-payments-test
+    environment:
+      NODE_ENV: test
+      PORT: 3005
+      DATABASE_URL: postgresql://test_user:test_password@postgres-test:5432/memoria_eterna_test
+      REDIS_URL: redis://redis-test:6379
+      JWT_SECRET: test-jwt-secret-key-for-testing-purposes-only
+      STRIPE_SECRET_KEY: sk_test_test
+      STRIPE_WEBHOOK_SECRET: whsec_test
+      PAYPAL_CLIENT_ID: test_client_id
+      PAYPAL_CLIENT_SECRET: test_client_secret
+    ports:
+      - "3005:3005"
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  analytics-service-test:
+    build:
+      context: ./src/microservices/analytics-service
+      dockerfile: Dockerfile
+    container_name: memoria-eterna-analytics-test
+    environment:
+      NODE_ENV: test
+      PORT: 3006
+      DATABASE_URL: postgresql://test_user:test_password@postgres-test:5432/memoria_eterna_test
+      REDIS_URL: redis://redis-test:6379
+      JWT_SECRET: test-jwt-secret-key-for-testing-purposes-only
+    ports:
+      - "3006:3006"
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3006/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # API Gateway para testing
+  api-gateway-test:
+    build:
+      context: ./src/api-gateway
+      dockerfile: Dockerfile
+    container_name: memoria-eterna-api-gateway-test
+    environment:
+      NODE_ENV: test
+      PORT: 3000
+      JWT_SECRET: test-jwt-secret-key-for-testing-purposes-only
+      REDIS_URL: redis://redis-test:6379
+      AUTH_SERVICE_URL: http://auth-service-test:3001
+      MEMORIES_SERVICE_URL: http://memories-service-test:3002
+      MEDIA_SERVICE_URL: http://media-service-test:3003
+      NOTIFICATIONS_SERVICE_URL: http://notifications-service-test:3004
+      PAYMENTS_SERVICE_URL: http://payments-service-test:3005
+      ANALYTICS_SERVICE_URL: http://analytics-service-test:3006
+    ports:
+      - "3000:3000"
+    depends_on:
+      auth-service-test:
+        condition: service_healthy
+      memories-service-test:
+        condition: service_healthy
+      media-service-test:
+        condition: service_healthy
+      notifications-service-test:
+        condition: service_healthy
+      payments-service-test:
+        condition: service_healthy
+      analytics-service-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend para testing
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: memoria-eterna-frontend-test
+    environment:
+      NODE_ENV: test
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+    ports:
+      - "3007:3000"
+    depends_on:
+      api-gateway-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Servicios adicionales para testing
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: memoria-eterna-mailhog-test
+    ports:
+      - "1025:1025"  # SMTP
+      - "8025:8025"  # Web UI
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8025"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Prometheus para monitoreo de testing
+  prometheus-test:
+    image: prom/prometheus:latest
+    container_name: memoria-eterna-prometheus-test
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./prometheus.test.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Grafana para visualización de testing
+  grafana-test:
+    image: grafana/grafana:latest
+    container_name: memoria-eterna-grafana-test
+    ports:
+      - "3008:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_test_data:/var/lib/grafana
+    depends_on:
+      prometheus-test:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_test_data:
+  grafana_test_data:
+
+networks:
+  default:
+    name: memoria-eterna-test-network

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sin conexión - Memoria Eterna</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .offline-container {
+            text-align: center;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        .offline-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+        }
+
+        .offline-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .offline-message {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .offline-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .offline-features {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-list {
+            list-style: none;
+            text-align: left;
+        }
+
+        .feature-list li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        @media (max-width: 480px) {
+            .offline-container {
+                padding: 1rem;
+            }
+
+            .offline-title {
+                font-size: 1.5rem;
+            }
+
+            .offline-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon pulse">
+            📶
+        </div>
+        
+        <h1 class="offline-title">Sin conexión a internet</h1>
+        
+        <p class="offline-message">
+            Parece que has perdido la conexión a internet. 
+            No te preocupes, algunas funciones de Memoria Eterna 
+            siguen disponibles offline.
+        </p>
+
+        <div class="offline-actions">
+            <button class="btn btn-primary" onclick="window.location.reload()">
+                🔄 Reintentar
+            </button>
+            <button class="btn btn-secondary" onclick="goHome()">
+                🏠 Ir al inicio
+            </button>
+        </div>
+
+        <div class="offline-features">
+            <h3>Funciones disponibles offline:</h3>
+            <ul class="feature-list">
+                <li>Ver memorias previamente cargadas</li>
+                <li>Navegar por la aplicación</li>
+                <li>Acceder a contenido cacheado</li>
+                <li>Leer comentarios guardados</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function goHome() {
+            // Intentar ir al inicio, si falla mostrar mensaje
+            try {
+                window.location.href = '/';
+            } catch (error) {
+                alert('No se puede navegar sin conexión a internet');
+            }
+        }
+
+        // Verificar conexión periódicamente
+        function checkConnection() {
+            if (navigator.onLine) {
+                window.location.reload();
+            }
+        }
+
+        // Verificar cada 5 segundos
+        setInterval(checkConnection, 5000);
+
+        // Escuchar eventos de conexión
+        window.addEventListener('online', () => {
+            window.location.reload();
+        });
+
+        // Mostrar información de debug en desarrollo
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            console.log('Página offline cargada');
+            console.log('Service Worker disponible:', 'serviceWorker' in navigator);
+        }
+    </script>
+</body>
+</html>
