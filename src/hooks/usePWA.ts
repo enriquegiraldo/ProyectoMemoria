@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, useCallback } from 'react';
 
 interface BeforeInstallPromptEvent extends Event {
@@ -170,41 +171,4 @@ export const usePWA = (): PWAState & PWAActions => {
     checkForUpdate,
     showNotification,
   };
-};
-
-// Hook para manejar el estado offline/online
-export const useOnlineStatus = () => {
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
-  return isOnline;
-};
-
-// Hook para manejar el estado standalone
-export const useStandaloneStatus = () => {
-  const [isStandalone, setIsStandalone] = useState(
-    window.matchMedia('(display-mode: standalone)').matches
-  );
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(display-mode: standalone)');
-    const handleChange = (e: MediaQueryListEvent) => setIsStandalone(e.matches);
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
-  }, []);
-
-  return isStandalone;
 };

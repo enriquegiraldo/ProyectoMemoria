@@ -1,8 +1,8 @@
+"use client";
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Wifi, WifiOff, RefreshCw } from 'lucide-react';
-import { useOnlineStatus } from '../../hooks/usePWA';
-
+import { useOnlineStatus} from '../../hooks/useOnlineStatus';
 interface OfflineIndicatorProps {
   className?: string;
   showOnlineStatus?: boolean;
