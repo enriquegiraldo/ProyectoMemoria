@@ -92,106 +92,23 @@ export class GamificationService {
     7: { name: 'Dios de las Memorias', minExp: 10001, maxExp: Infinity },
   };
 
-  // Obtener puntos del usuario
-  static async getUserPoints(userId: string): Promise<UserPoints | null> {
+  static async addPoints(userId: string, type: string, description: string, points: number = 10) {
     try {
       const { data, error } = await supabase
         .from('user_points')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
+        .upsert({
+          user_id: userId,
+          points: points,
+          type: type,
+          description: description,
+          earned_at: new Date().toISOString()
+        });
 
       if (error) throw error;
       return data;
     } catch (error) {
-      console.error('Error fetching user points:', error);
-      return null;
-    }
-  }
-
-  // Crear o actualizar puntos del usuario
-  static async createOrUpdateUserPoints(userId: string): Promise<UserPoints | null> {
-    try {
-      let userPoints = await this.getUserPoints(userId);
-      
-      if (!userPoints) {
-        const { data, error } = await supabase
-          .from('user_points')
-          .insert({
-            user_id: userId,
-            points: 0,
-            level: 1,
-            experience: 0,
-            total_points_earned: 0,
-          })
-          .select()
-          .single();
-
-        if (error) throw error;
-        userPoints = data;
-      }
-
-      return userPoints;
-    } catch (error) {
-      console.error('Error creating/updating user points:', error);
-      return null;
-    }
-  }
-
-  // Agregar puntos al usuario
-  static async addPoints(
-    userId: string, 
-    activity: keyof typeof GamificationService.POINTS_MAP,
-    description?: string
-  ): Promise<boolean> {
-    try {
-      const points = this.POINTS_MAP[activity];
-      if (!points) return false;
-
-      // Obtener puntos actuales del usuario
-      let userPoints = await this.getUserPoints(userId);
-      if (!userPoints) {
-        userPoints = await this.createOrUpdateUserPoints(userId);
-        if (!userPoints) return false;
-      }
-
-      // Calcular nuevos puntos y nivel
-      const newPoints = userPoints.points + points;
-      const newTotalEarned = userPoints.total_points_earned + points;
-      const newExperience = userPoints.experience + points;
-      
-      // Calcular nuevo nivel
-      const newLevel = this.calculateLevel(newExperience);
-
-      // Actualizar puntos del usuario
-      const { error: updateError } = await supabase
-        .from('user_points')
-        .update({
-          points: newPoints,
-          level: newLevel,
-          experience: newExperience,
-          total_points_earned: newTotalEarned,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('user_id', userId);
-
-      if (updateError) throw updateError;
-
-      // Registrar transacción
-      await this.recordTransaction(userId, points, 'earned', activity, description || `Puntos por ${activity}`);
-
-      // Verificar si subió de nivel
-      if (newLevel > userPoints.level) {
-        await this.handleLevelUp(userId, newLevel);
-      }
-
-      // Verificar badges
-      await this.checkAndAwardBadges(userId, newPoints, activity);
-
-      return true;
-    } catch (error) {
       console.error('Error adding points:', error);
-      return false;
+      throw error;
     }
   }
 
@@ -277,23 +194,21 @@ export class GamificationService {
     }
   }
 
-  // Obtener badges del usuario
-  static async getUserBadges(userId: string): Promise<UserBadge[]> {
+  static async getUserBadges(userId: string) {
     try {
       const { data, error } = await supabase
         .from('user_badges')
         .select(`
           *,
-          badge:badges(*)
+          badges (*)
         `)
-        .eq('user_id', userId)
-        .order('earned_at', { ascending: false });
+        .eq('user_id', userId);
 
       if (error) throw error;
-      return data || [];
+      return data;
     } catch (error) {
-      console.error('Error fetching user badges:', error);
-      return [];
+      console.error('Error getting user badges:', error);
+      throw error;
     }
   }
 
@@ -380,33 +295,21 @@ export class GamificationService {
     }
   }
 
-  // Otorgar badge al usuario
-  private static async awardBadge(userId: string, badgeId: string): Promise<boolean> {
+  static async awardBadge(userId: string, badgeId: string) {
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('user_badges')
-        .insert({
+        .upsert({
           user_id: userId,
           badge_id: badgeId,
-          earned_at: new Date().toISOString(),
+          awarded_at: new Date().toISOString()
         });
 
       if (error) throw error;
-
-      // Crear notificación de badge
-      // await NotificationService.createNotification({
-      //   user_id: userId,
-      //   title: '¡Nuevo Badge Desbloqueado!',
-      //   message: `Has ganado un nuevo badge`,
-      //   type: 'success',
-      //   category: 'achievement',
-      //   data: { badgeId }
-      // });
-
-      return true;
+      return data;
     } catch (error) {
       console.error('Error awarding badge:', error);
-      return false;
+      throw error;
     }
   }
 
