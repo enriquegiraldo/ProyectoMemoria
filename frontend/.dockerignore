@@ -1,0 +1,9 @@
+node_modules
+.next
+.env
+.git
+.gitignore
+npm-debug.log
+.vscode
+dist
+coverage

@@ -15,7 +15,6 @@ export const metadata: Metadata = {
   authors: [{ name: 'Memoria Eterna Team' }],
   robots: 'index, follow',
   manifest: '/manifest.json',
-  themeColor: '#3B82F6',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -42,6 +41,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
+  themeColor: '#3B82F6',
 }
 
 export default function RootLayout({
