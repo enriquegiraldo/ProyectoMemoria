@@ -66,9 +66,6 @@ export const createMemory = createAsyncThunk(
     }
   }
 );
-    }
-  }
-);
 
 export const updateMemory = createAsyncThunk(
   'memories/updateMemory',
