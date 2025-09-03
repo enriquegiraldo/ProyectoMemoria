@@ -2,7 +2,7 @@
 
 import { useSession } from 'next-auth/react'
 import { Card, CardHeader, CardContent } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
+import  Button  from '@/components/ui/Button'
 import Link from 'next/link'
 
 export default function DashboardPage() {

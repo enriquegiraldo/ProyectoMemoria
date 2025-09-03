@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNotifications } from '../../hooks/useNotifications';
 import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
+import Button  from '../ui/Button';
 import { 
   Bell, 
   Check, 

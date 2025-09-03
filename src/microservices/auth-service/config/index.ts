@@ -1,3 +1,4 @@
+//src/microservices/auth-service/config/index.ts
 import { z } from 'zod';
 
 // Environment variables schema

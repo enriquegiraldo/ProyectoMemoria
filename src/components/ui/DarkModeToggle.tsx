@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
-import { Button } from './Button';
+import Button  from './Button';
 
 // Tipos para el tema
 type Theme = 'light' | 'dark' | 'system';

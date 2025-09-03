@@ -1,3 +1,4 @@
+// src/app/api/gamification/missions/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -114,23 +115,28 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const formattedCompletedMissions = completedMissions?.map(um => ({
-      id: um.mission.id,
-      name: um.mission.name,
-      description: um.mission.description,
-      type: um.mission.type,
-      target: um.mission.target,
-      pointsReward: um.mission.points_reward,
-      badgeReward: um.mission.badge_reward,
-      isActive: um.mission.is_active,
-      createdAt: um.mission.created_at,
+    const formattedCompletedMissions = completedMissions
+    ?.map(um => {
+      const mission = um.mission && um.mission.length > 0 ? um.mission[0] : null;
+      if (!mission) {return null;}
+      return {  
+      id: mission.id,
+      name: mission.name,
+      description:mission.description,
+      type: mission.type,
+      target: mission.target,
+      pointsReward: mission.points_reward,
+      badgeReward: mission.badge_reward,
+      isActive: mission.is_active,
+      createdAt: mission.created_at,
       userProgress: {
         progress: um.progress,
         completed: um.completed,
         completedAt: um.completed_at,
         startedAt: um.started_at
       }
-    })) || [];
+    }
+  }) .filter(Boolean) || [];
 
     return NextResponse.json({
       data: formattedCompletedMissions

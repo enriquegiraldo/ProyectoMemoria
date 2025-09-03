@@ -1,7 +1,10 @@
+// src/components/memorial/MemoryCard.tsx
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, MessageCircle, Share2, Play, Pause, Volume2, VolumeX } from 'lucide-react';
-import { Memory, Comment, Reaction } from '../../store/slices/memoriesSlice';
+// import { Memory, Comment, Reaction } from '../../store/slices/memoriesSlice';
+import { Memory, Comment, Reaction } from '../../types';
+
 import { useAuth } from '../../hooks/useAuth';
 import { useMemories } from '../../hooks/useMemories';
 
@@ -165,7 +168,7 @@ const MemoryCard: React.FC<MemoryCardProps> = ({
             </p>
           </div>
           
-          {canEdit && (
+          {canEdit() && (
             <div className="flex space-x-2">
               <button
                 onClick={() => onEdit?.(memory)}
@@ -271,7 +274,7 @@ const MemoryCard: React.FC<MemoryCardProps> = ({
               ))}
             </div>
 
-            {canComment && (
+            {canComment() && (
               <form onSubmit={handleComment} className="flex space-x-2">
                 <input
                   type="text"

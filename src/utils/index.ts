@@ -1,4 +1,15 @@
+// src/utils/index.ts
+import { formatDistanceToNow as dateFnsFormatDistanceToNow } from 'date-fns';
+import { es } from 'date-fns/locale';
 // Utilidades de fecha
+
+export const formatDistanceToNow = (date: Date, options?: object): string => {
+  return dateFnsFormatDistanceToNow(date, {
+    ...options,
+    addSuffix: true, // Añade "hace" o "en"
+    locale: es,      // Usa el formato en español
+  });
+}
 export const formatDate = (date: string | Date, options?: Intl.DateTimeFormatOptions): string => {
   const defaultOptions: Intl.DateTimeFormatOptions = {
     year: 'numeric',
@@ -9,19 +20,19 @@ export const formatDate = (date: string | Date, options?: Intl.DateTimeFormatOpt
   return new Date(date).toLocaleDateString('es-ES', options || defaultOptions);
 };
 
-export const formatRelativeTime = (date: string | Date): string => {
-  const now = new Date();
-  const targetDate = new Date(date);
-  const diffInSeconds = Math.floor((now.getTime() - targetDate.getTime()) / 1000);
+// export const formatRelativeTime = (date: string | Date): string => {
+//   const now = new Date();
+//   const targetDate = new Date(date);
+//   const diffInSeconds = Math.floor((now.getTime() - targetDate.getTime()) / 1000);
 
-  if (diffInSeconds < 60) return 'hace un momento';
-  if (diffInSeconds < 3600) return `hace ${Math.floor(diffInSeconds / 60)} minutos`;
-  if (diffInSeconds < 86400) return `hace ${Math.floor(diffInSeconds / 3600)} horas`;
-  if (diffInSeconds < 2592000) return `hace ${Math.floor(diffInSeconds / 86400)} días`;
-  if (diffInSeconds < 31536000) return `hace ${Math.floor(diffInSeconds / 2592000)} meses`;
+//   if (diffInSeconds < 60) return 'hace un momento';
+//   if (diffInSeconds < 3600) return `hace ${Math.floor(diffInSeconds / 60)} minutos`;
+//   if (diffInSeconds < 86400) return `hace ${Math.floor(diffInSeconds / 3600)} horas`;
+//   if (diffInSeconds < 2592000) return `hace ${Math.floor(diffInSeconds / 86400)} días`;
+//   if (diffInSeconds < 31536000) return `hace ${Math.floor(diffInSeconds / 2592000)} meses`;
   
-  return `hace ${Math.floor(diffInSeconds / 31536000)} años`;
-};
+//   return `hace ${Math.floor(diffInSeconds / 31536000)} años`;
+// };
 
 // Utilidades de validación
 export const validateEmail = (email: string): boolean => {

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardHeader, CardContent, CardFooter } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
+import  Button  from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 
 export default function PerfilPage() {

@@ -1,3 +1,4 @@
+// src/store/slices/memoriesSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Memory, Comment, Reaction, MemoriesState, CreateMemoryData, UpdateMemoryData, CreateCommentData } from '../../types';
 import { MemoriesService, MemoriesFilter } from '../../services/memoriesService';

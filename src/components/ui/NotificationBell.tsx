@@ -1,8 +1,9 @@
+// src/components/ui/NotificationBell.tsx
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, X, Check, Trash2 } from 'lucide-react';
 import { useNotifications } from '../../hooks/useNotifications';
-import { formatDistanceToNow } from '../../utils';
+import {formatDistanceToNow } from '../../utils';
 
 interface NotificationBellProps {
   className?: string;
@@ -148,7 +149,7 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ className = '' }) =
                                 {notification.message}
                               </p>
                               <p className="text-xs text-gray-400 mt-2">
-                                {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                                {formatDistanceToNow (new Date(notification.createdAt))}
                               </p>
                             </div>
 

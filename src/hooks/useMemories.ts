@@ -1,3 +1,4 @@
+// src/hooks/useMemories.ts
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
 import {
@@ -12,6 +13,7 @@ import {
   clearFilters,
   clearError,
 } from '../store/slices/memoriesSlice';
+import { Memory, Comment, Reaction } from '../types';
 
 export const useMemories = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -66,20 +68,20 @@ export const useMemories = () => {
   };
 
   // Helper functions
-  const getMemoryById = (id: string) => {
-    return memories.find(memory => memory.id === id);
+  const getMemoryById = (id: string): Memory | undefined => {
+    return memories.find((memory: Memory) => memory.id === id);
   };
 
-  const getCommentsByMemoryId = (memoryId: string) => {
-    return comments.filter(comment => comment.memoryId === memoryId);
+  const getCommentsByMemoryId = (memoryId: string): Comment[] => {
+    return comments.filter((comment: Comment) => comment.memoryId === memoryId);
   };
 
-  const getReactionsByReferenceId = (referenceId: string) => {
-    return reactions.filter(reaction => reaction.referenceId === referenceId);
+  const getReactionsByReferenceId = (referenceId: string): Reaction[] => {
+    return reactions.filter((reaction: Reaction) => reaction.referenceId === referenceId);
   };
 
-  const getFilteredMemories = () => {
-    let filtered = [...memories];
+  const getFilteredMemories = (): Memory[] => {
+    let filtered: Memory[] = [...memories];
 
     // Search filter
     if (filters.search) {
@@ -118,13 +120,13 @@ export const useMemories = () => {
     return filtered;
   };
 
-  const getMemoriesByType = (type: 'IMAGE' | 'VIDEO' | 'AUDIO') => {
-    return memories.filter(memory => memory.mediaType === type);
+  const getMemoriesByType = (type: 'IMAGE' | 'VIDEO' | 'AUDIO'): Memory[] => {
+    return memories.filter((memory: Memory) => memory.mediaType === type);
   };
 
-  const getRecentMemories = (limit: number = 10) => {
+  const getRecentMemories = (limit: number = 10): Memory[] => {
     return memories
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .sort((a: Memory, b:Memory) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .slice(0, limit);
   };
 

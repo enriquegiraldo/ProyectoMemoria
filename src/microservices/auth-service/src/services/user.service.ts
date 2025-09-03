@@ -1,6 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { config } from '../config';
-import { logger, auditLogger } from '../utils/logger';
+import { config } from '@/config';
+import { logger, auditLogger } from '@/utils/logger';
 import { CustomError, UserNotFoundError } from '../utils/errors';
 import { User } from './auth.service';
 
@@ -14,7 +14,7 @@ export interface UserProfile {
   emailVerified: boolean;
   twoFactorEnabled: boolean;
   accountLocked: boolean;
-  lastLoginAt?: Date;
+  lastLoginAt?: Date | undefined;
   createdAt: Date;
   updatedAt: Date;
 }

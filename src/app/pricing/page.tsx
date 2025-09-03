@@ -6,7 +6,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { usePayments } from '../../hooks/usePayments';
 import { PricingCard } from '../../components/pricing/PricingCard';
 import { SUBSCRIPTION_PLANS, type SubscriptionPlanId } from '../../lib/stripe';
-import { Button } from '../../components/ui/Button';
+import  Button  from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { 
   CreditCard, 

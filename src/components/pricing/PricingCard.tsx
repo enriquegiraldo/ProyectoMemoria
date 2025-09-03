@@ -1,7 +1,7 @@
 import React from 'react';
 import { Check, X } from 'lucide-react';
 import { SUBSCRIPTION_PLANS, type SubscriptionPlanId } from '../../lib/stripe';
-import { Button } from '../ui/Button';
+import  Button  from '../ui/Button';
 
 interface PricingCardProps {
   planId: SubscriptionPlanId;

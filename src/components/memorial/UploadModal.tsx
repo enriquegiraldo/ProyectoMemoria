@@ -1,16 +1,18 @@
+// src/components/memorial/UploadModal.tsx
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, Image, Video, Music, FileText, Tag, User } from 'lucide-react';
+import { X, Upload, Image, Video, Music, FileText, Tag } from 'lucide-react';
 import { MediaService } from '../../services/mediaService';
-import { MemoriesService } from '../../services/memoriesService';
 import { useAuth } from '../../hooks/useAuth';
-import { useMemories } from '../../hooks/useMemories';
-import { MediaType, CreateMemoryData } from '../../types';
+import { useAppDispatch } from '@/store'; // Importar useAppDispatch
+import { createMemory } from '@/store/slices/memoriesSlice'; // Importar el thunk correcto
+import { CreateMemoryData, MediaType } from '../../types';
 
 interface UploadModalProps {
   isOpen: boolean;
   onClose: () => void;
   pageId: string;
+  onSubmit: (formData: CreateMemoryData) => void;
 }
 
 interface UploadFormData {
@@ -21,9 +23,9 @@ interface UploadFormData {
   mediaType: MediaType | null;
 }
 
-const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) => {
+const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId, onSubmit }) => {
   const { user } = useAuth();
-  const { createNewMemory } = useMemories();
+  const dispatch = useAppDispatch(); // Usar useAppDispatch
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [formData, setFormData] = useState<UploadFormData>({
@@ -43,14 +45,13 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) =>
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validar archivo
     const validation = MediaService.validateFile(file);
     if (!validation.isValid) {
       setError(validation.error || 'Archivo no válido');
       return;
     }
 
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       mediaFile: file,
       mediaType: validation.mediaType!,
@@ -60,7 +61,7 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) =>
 
   const handleTagAdd = () => {
     if (currentTag.trim() && !formData.tags.includes(currentTag.trim())) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         tags: [...prev.tags, currentTag.trim()],
       }));
@@ -69,91 +70,161 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) =>
   };
 
   const handleTagRemove = (tagToRemove: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      tags: prev.tags.filter(tag => tag !== tagToRemove),
+      tags: prev.tags.filter((tag) => tag !== tagToRemove),
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
     
-    if (!user || !formData.mediaFile || !formData.title.trim()) {
-      setError('Por favor completa todos los campos requeridos');
-      return;
-    }
+  //   if (!user || !formData.mediaFile || !formData.title.trim()) {
+  //     setError('Por favor completa todos los campos requeridos');
+  //     return;
+  //   }
 
-    setIsUploading(true);
-    setUploadProgress(0);
-    setError(null);
+  //   setIsUploading(true);
+  //   setUploadProgress(0);
+  //   setError(null);
 
-    try {
-      // Simular progreso de subida
-      const progressInterval = setInterval(() => {
-        setUploadProgress(prev => {
-          if (prev >= 90) {
-            clearInterval(progressInterval);
-            return prev;
-          }
-          return prev + 10;
-        });
-      }, 200);
+  //   //let progressInterval: NodeJS.Timeout | undefined; // <-- 1. Declare the variable here
+  //   let progressInterval: NodeJS.Timeout | null = null; // Declarar fuera del try
+  //   try {
+  //     const progressInterval = setInterval(() => {
+  //       setUploadProgress((prev) => {
+  //         if (prev >= 90) {
+  //           clearInterval(progressInterval);
+  //           return prev;
+  //         }
+  //         return prev + 10;
+  //       });
+  //     }, 200);
 
-      // Subir archivo a Cloudinary
-      const uploadResult = await MediaService.uploadToCloudinary(formData.mediaFile, {
-        folder: `memories/${pageId}`,
-        tags: formData.tags,
+  //     const uploadResult = await MediaService.uploadToCloudinary(formData.mediaFile, {
+  //       folder: `memories/${pageId}`,
+  //       tags: formData.tags,
+  //     });
+
+  //     if (!uploadResult.success) {
+  //       throw new Error(uploadResult.error || 'Error al subir el archivo');
+  //     }
+
+  //     const memoryData: CreateMemoryData = {
+  //       title: formData.title,
+  //       description: formData.description,
+  //       mediaUrl: uploadResult.url,
+  //       mediaType: uploadResult.mediaType,
+  //       authorId: user.id,
+  //       pageId: pageId,
+  //       tags: formData.tags,
+  //     };
+
+  //     // Despachar el thunk createMemory, que ya incluye la llamada a MemoriesService.createMemory
+  //     const result = await dispatch(createMemory(memoryData)).unwrap();
+
+  //     clearInterval(progressInterval);
+  //     setUploadProgress(100);
+
+  //     // Llamar al onSubmit para actualizar el estado en el componente padre
+  //     onSubmit(memoryData);
+
+  //     setTimeout(() => {
+  //       setFormData({
+  //         title: '',
+  //         description: '',
+  //         tags: [],
+  //         mediaFile: null,
+  //         mediaType: null,
+  //       });
+  //       setUploadProgress(0);
+  //       setIsUploading(false);
+  //       onClose();
+  //     }, 500);
+  //   } catch (error) {
+  //     clearInterval(progressInterval);
+  //     setError(error instanceof Error ? error.message : 'Error inesperado');
+  //     setIsUploading(false);
+  //     setUploadProgress(0);
+  //   }
+  // };
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  if (!user || !formData.mediaFile || !formData.title.trim()) {
+    setError('Por favor completa todos los campos requeridos');
+    return;
+  }
+
+  setIsUploading(true);
+  setUploadProgress(0);
+  setError(null);
+
+  // Declarar la variable fuera del try-catch
+  let progressInterval: number | null = null;
+
+  try {
+    progressInterval = window.setInterval(() => {
+      setUploadProgress((prev) => {
+        if (prev >= 90) {
+          progressInterval && clearInterval(progressInterval);
+          return prev;
+        }
+        return prev + 10;
       });
+    }, 200);
 
-      if (!uploadResult.success) {
-        throw new Error(uploadResult.error || 'Error al subir el archivo');
-      }
+    const uploadResult = await MediaService.uploadToCloudinary(formData.mediaFile, {
+      folder: `memories/${pageId}`,
+      tags: formData.tags,
+    });
 
-      // Crear memoria en la base de datos
-      const memoryData: CreateMemoryData = {
-        title: formData.title,
-        description: formData.description,
-        mediaUrl: uploadResult.url,
-        mediaType: uploadResult.mediaType,
-        authorId: user.id,
-        pageId: pageId,
-        tags: formData.tags,
-      };
-
-      const memoryResult = await MemoriesService.createMemory(memoryData);
-
-      if (!memoryResult.success) {
-        throw new Error(memoryResult.error || 'Error al crear la memoria');
-      }
-
-      clearInterval(progressInterval);
-      setUploadProgress(100);
-
-      // Actualizar el estado global
-      await createNewMemory(memoryData);
-
-      // Limpiar formulario y cerrar modal
-      setTimeout(() => {
-        setFormData({
-          title: '',
-          description: '',
-          tags: [],
-          mediaFile: null,
-          mediaType: null,
-        });
-        setUploadProgress(0);
-        setIsUploading(false);
-        onClose();
-      }, 500);
-
-    } catch (error) {
-      clearInterval(progressInterval);
-      setError(error instanceof Error ? error.message : 'Error inesperado');
-      setIsUploading(false);
-      setUploadProgress(0);
+    if (!uploadResult.success) {
+      throw new Error(uploadResult.error || 'Error al subir el archivo');
     }
-  };
 
+    const memoryData: CreateMemoryData = {
+      title: formData.title,
+      description: formData.description,
+      mediaUrl: uploadResult.url,
+      mediaType: uploadResult.mediaType,
+      authorId: user.id,
+      pageId: pageId,
+      tags: formData.tags,
+    };
+
+    const result = await dispatch(createMemory(memoryData)).unwrap();
+
+    // Limpiar el intervalo si existe
+    if (progressInterval) {
+      clearInterval(progressInterval);
+    }
+    setUploadProgress(100);
+
+    onSubmit(memoryData);
+
+    setTimeout(() => {
+      setFormData({
+        title: '',
+        description: '',
+        tags: [],
+        mediaFile: null,
+        mediaType: null,
+      });
+      setUploadProgress(0);
+      setIsUploading(false);
+      onClose();
+    }, 500);
+  } catch (error) {
+    // Ahora progressInterval es accesible aquí
+    if (progressInterval) {
+      clearInterval(progressInterval);
+    }
+    setError(error instanceof Error ? error.message : 'Error inesperado');
+    setIsUploading(false);
+    setUploadProgress(0);
+  }
+};
   const getMediaIcon = () => {
     switch (formData.mediaType) {
       case 'IMAGE':
@@ -192,7 +263,6 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) =>
             className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header */}
             <div className="flex items-center justify-between p-6 border-b">
               <h2 className="text-xl font-semibold text-gray-900">
                 Compartir un Recuerdo
@@ -205,10 +275,7 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) =>
                 <X className="w-6 h-6" />
               </button>
             </div>
-
-            {/* Form */}
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
-              {/* File Upload */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Archivo Multimedia *
@@ -229,7 +296,6 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) =>
                     className="hidden"
                     disabled={isUploading}
                   />
-                  
                   {formData.mediaFile ? (
                     <div className="space-y-2">
                       <div className="flex items-center justify-center">
@@ -255,8 +321,6 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) =>
                   )}
                 </div>
               </div>
-
-              {/* Title */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Título *
@@ -264,30 +328,33 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) =>
                 <input
                   type="text"
                   value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  onChange={(e) => 
+                    setFormData((prev) => ({ ...prev, title: e.target.value }))
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Título del recuerdo"
                   disabled={isUploading}
                   required
                 />
               </div>
-
-              {/* Description */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Descripción
                 </label>
                 <textarea
                   value={formData.description}
-                  onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                  onChange={(e) => 
+                    setFormData((prev) => ({ 
+                      ...prev, 
+                      description: e.target.value, 
+                    }))
+                  }
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Cuenta la historia detrás de este recuerdo..."
                   rows={3}
                   disabled={isUploading}
                 />
               </div>
-
-              {/* Tags */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Etiquetas
@@ -298,7 +365,9 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) =>
                       type="text"
                       value={currentTag}
                       onChange={(e) => setCurrentTag(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleTagAdd())}
+                      onKeyPress={(e) => 
+                        e.key === 'Enter' && (e.preventDefault(), handleTagAdd())
+                      }
                       className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       placeholder="Agregar etiqueta"
                       disabled={isUploading}
@@ -312,7 +381,6 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) =>
                       <Tag className="w-4 h-4" />
                     </button>
                   </div>
-                  
                   {formData.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {formData.tags.map((tag, index) => (
@@ -335,15 +403,11 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) =>
                   )}
                 </div>
               </div>
-
-              {/* Error */}
               {error && (
                 <div className="p-3 bg-red-50 border border-red-200 rounded-md">
                   <p className="text-sm text-red-600">{error}</p>
                 </div>
               )}
-
-              {/* Upload Progress */}
               {isUploading && (
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm text-gray-600">
@@ -358,8 +422,6 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) =>
                   </div>
                 </div>
               )}
-
-              {/* Submit Button */}
               <div className="flex gap-3 pt-4">
                 <button
                   type="button"
@@ -372,7 +434,9 @@ const UploadModal: React.FC<UploadModalProps> = ({ isOpen, onClose, pageId }) =>
                 <button
                   type="submit"
                   className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                  disabled={isUploading || !formData.mediaFile || !formData.title.trim()}
+                  disabled={
+                    isUploading || !formData.mediaFile || !formData.title.trim()
+                  }
                 >
                   {isUploading ? (
                     <>

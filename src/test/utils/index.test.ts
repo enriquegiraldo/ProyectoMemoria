@@ -1,7 +1,8 @@
+// src/test/utils/index.test.ts
 import { describe, it, expect } from 'vitest';
 import {
   formatDate,
-  formatRelativeTime,
+  formatDistanceToNow,
   validateEmail,
   validatePassword,
   validateFile,
@@ -53,20 +54,18 @@ describe('Date Utilities', () => {
     });
   });
 
-  describe('formatRelativeTime', () => {
-    it('should format recent time correctly', () => {
-      const now = new Date();
-      const recent = new Date(now.getTime() - 5 * 60 * 1000); // 5 minutes ago
-      const formatted = formatRelativeTime(recent);
-      expect(formatted).toBe('5 minutes ago');
-    });
+ 
+describe('formatDistanceToNow', () => {
+  it('should format recent time correctly in Spanish', () => {
+    const recent = new Date(Date.now() - 5 * 60 * 1000); // 5 minutos antes
+    const formatted = formatDistanceToNow(recent);
+    expect(formatted).toBe('hace 5 minutos');
+  });
 
-    it('should format future time correctly', () => {
-      const now = new Date();
-      const future = new Date(now.getTime() + 2 * 60 * 60 * 1000); // 2 hours from now
-      const formatted = formatRelativeTime(future);
-      expect(formatted).toBe('in 2 hours');
-    });
+  it('should format hours correctly in Spanish', () => {
+    const past = new Date(Date.now() - 2 * 60 * 60 * 1000); // 2 horas antes
+    const formatted = formatDistanceToNow(past);
+    expect(formatted).toBe('hace alrededor de 2 horas');
   });
 });
 

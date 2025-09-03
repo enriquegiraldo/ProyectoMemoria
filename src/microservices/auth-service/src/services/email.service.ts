@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
-import { config } from '../config';
-import { logger } from '../utils/logger';
-import { CustomError, EmailError } from '../utils/errors';
+import { config } from '@/config';
+import { logger } from '@/utils/logger';
+import { CustomError, EmailError } from '@/utils/errors';
 
 export interface EmailData {
   to: string;
@@ -16,7 +16,7 @@ export interface WelcomeEmailData {
   lastName: string;
 }
 
-export interface VerificationEmailData {
+export interface VerificationEmailData {createTransport
   email: string;
   firstName: string;
   verificationToken: string;
@@ -38,16 +38,16 @@ export class EmailService {
   private transporter: nodemailer.Transporter;
 
   constructor() {
-    this.transporter = this.createTransporter();
+    this.transporter = this.createTransport();
   }
 
   /**
    * Create email transporter
    */
-  private createTransporter(): nodemailer.Transporter {
+  private createTransport(): nodemailer.Transporter {
     // For development, use a test account
     if (config.nodeEnv === 'development') {
-      return nodemailer.createTransporter({
+      return nodemailer.createTransport({
         host: 'smtp.ethereal.email',
         port: 587,
         secure: false,
@@ -61,7 +61,7 @@ export class EmailService {
     // For production, use configured email service
     if (config.email.sendgrid?.apiKey) {
       // Use SendGrid
-      return nodemailer.createTransporter({
+      return nodemailer.createTransport({
         host: 'smtp.sendgrid.net',
         port: 587,
         secure: false,
@@ -72,7 +72,7 @@ export class EmailService {
       });
     } else if (config.email.mailgun?.apiKey) {
       // Use Mailgun
-      return nodemailer.createTransporter({
+      return nodemailer.createTransport({
         host: 'smtp.mailgun.org',
         port: 587,
         secure: false,
@@ -84,7 +84,7 @@ export class EmailService {
     }
 
     // Fallback to console logging
-    return nodemailer.createTransporter({
+    return nodemailer.createTransport({
       streamTransport: true,
       newline: 'unix',
       buffer: true,

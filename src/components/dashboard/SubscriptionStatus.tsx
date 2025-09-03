@@ -1,7 +1,7 @@
 import React from 'react';
 import { usePayments } from '../../hooks/usePayments';
 import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
+import  Button  from '../ui/Button';
 import { 
   Crown, 
   CreditCard, 
@@ -187,9 +187,11 @@ export function SubscriptionStatus() {
                 <p className="text-sm font-medium text-orange-800">
                   Suscripción cancelada
                 </p>
+               {  subscription.currentPeriodEnd &&  ( 
                 <p className="text-sm text-orange-700">
                   Tu suscripción estará activa hasta el {new Date(subscription.currentPeriodEnd).toLocaleDateString()}
                 </p>
+                )}
               </div>
             </div>
           </div>

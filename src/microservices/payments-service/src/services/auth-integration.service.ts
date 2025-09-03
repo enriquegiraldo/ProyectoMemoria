@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { logger } from '../utils';
-import config from '../config';
+import { logger } from '@/utils';
+import config from '@/config';
 
 export interface UserInfo {
   id: string;

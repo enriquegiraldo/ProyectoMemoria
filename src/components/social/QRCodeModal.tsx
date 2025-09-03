@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from '../ui/Button';
+import Button  from '../ui/Button';
 import { SocialService } from '../../services/socialService';
 import { 
   QrCode, 

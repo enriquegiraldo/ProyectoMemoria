@@ -1,10 +1,11 @@
+// src/components/memorial/MemoriesGallery.tsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, Grid, List, Plus, X } from 'lucide-react';
 import { useMemories } from '../../hooks/useMemories';
 import { useAuth } from '../../hooks/useAuth';
 import MemoryCard from './MemoryCard';
-import { Memory } from '../../store/slices/memoriesSlice';
+import {Memory} from '../../types';
 
 interface MemoriesGalleryProps {
   pageId: string;
@@ -53,7 +54,7 @@ const MemoriesGallery: React.FC<MemoriesGalleryProps> = ({
   }, [searchTerm, selectedTags, selectedTypes, updateFilters]);
 
   const filteredMemories = getFilteredMemories();
-  const allTags = Array.from(new Set(memories.flatMap(m => m.tags)));
+  const allTags = Array.from(new Set(memories.flatMap((m:Memory) => m.tags)));
   const allTypes = ['IMAGE', 'VIDEO', 'AUDIO'];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -172,7 +173,7 @@ const MemoriesGallery: React.FC<MemoriesGalleryProps> = ({
           </button>
 
           {/* Add Memory Button */}
-          {canEdit && (
+          {canEdit() && (
             <button
               onClick={onAddMemory}
               className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -217,7 +218,9 @@ const MemoriesGallery: React.FC<MemoriesGalleryProps> = ({
                   Etiquetas
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {allTags.map(tag => (
+                  {allTags
+                  .filter((tag): tag is string => typeof tag === 'string')
+                  .map(tag => (
                     <button
                       key={tag}
                       onClick={() => handleTagToggle(tag)}
@@ -286,7 +289,7 @@ const MemoriesGallery: React.FC<MemoriesGalleryProps> = ({
               ? 'Aún no hay recuerdos compartidos en esta página.'
               : 'Intenta ajustar los filtros de búsqueda.'}
           </p>
-          {canEdit && memories.length === 0 && (
+          {canEdit() && memories.length === 0 && (
             <button
               onClick={onAddMemory}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useGamification } from '../../hooks/useGamification';
 import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
+import Button  from '../ui/Button';
 import { 
   Trophy, 
   Star, 

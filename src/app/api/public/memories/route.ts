@@ -1,3 +1,4 @@
+// src/app/api/public/memories/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '../../../../lib/supabase';
 
@@ -121,40 +122,46 @@ export async function GET(request: NextRequest) {
     }
 
     // Formatear respuesta
-    const formattedMemories = memories?.map(memory => ({
-      id: memory.id,
-      title: memory.title,
-      content: memory.content,
-      type: memory.type,
-      media: {
-        image: memory.image_url,
-        video: memory.video_url
-      },
-      metadata: {
-        isPublic: memory.is_public,
-        isFeatured: memory.is_featured,
-        publishedAt: memory.published_at,
-        eventDate: memory.event_date,
-        location: memory.location,
-        createdAt: memory.created_at,
-        updatedAt: memory.updated_at
-      },
-      author: memory.author ? {
-        id: memory.author.id,
-        name: memory.author.name,
-        avatar: memory.author.avatar_url
-      } : null,
-      category: memory.category ? {
-        id: memory.category.id,
-        name: memory.category.name,
-        color: memory.category.color
-      } : null,
-      tags: memory.tags?.map(t => t.tag) || [],
-      stats: {
-        comments: memory._count?.comments || 0,
-        likes: memory._count?.likes || 0
-      }
-    })) || [];
+const formattedMemories = memories?.map(memory => {
+  // Accede a los conteos por su posición en el array
+  const commentsCount = memory._count && memory._count[0] ? memory._count[0].count : 0;
+  const likesCount = memory._count && memory._count[1] ? memory._count[1].count : 0;
+
+  return {
+    id: memory.id,
+    title: memory.title,
+    content: memory.content,
+    type: memory.type,
+    media: {
+      image: memory.image_url,
+      video: memory.video_url
+    },
+    metadata: {
+      isPublic: memory.is_public,
+      isFeatured: memory.is_featured,
+      publishedAt: memory.published_at,
+      eventDate: memory.event_date,
+      location: memory.location,
+      createdAt: memory.created_at,
+      updatedAt: memory.updated_at
+    },
+    author: memory.author && memory.author.length > 0 ? {
+      id: memory.author[0].id,
+      name: memory.author[0].name,
+      avatar: memory.author[0].avatar_url
+    } : null,
+    category: memory.category && memory.category.length > 0 ? {
+      id: memory.category[0].id,
+      name: memory.category[0].name,
+      color: memory.category[0].color
+    } : null,
+    tags: memory.tags?.map(t => t.tag) || [],
+    stats: {
+      comments: commentsCount,
+      likes: likesCount
+    }
+  };
+}) || [];
 
     return NextResponse.json({
       data: formattedMemories,

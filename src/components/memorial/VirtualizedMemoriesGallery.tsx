@@ -1,3 +1,4 @@
+// src/components/memorial/VirtualizedMemoriesGallery.tsx
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FixedSizeList as List } from 'react-window';
