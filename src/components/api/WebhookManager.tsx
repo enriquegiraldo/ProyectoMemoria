@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
+import Button  from '../ui/Button';
 import { Webhook, Plus, Trash2, Activity } from 'lucide-react';
 
 interface WebhookData {

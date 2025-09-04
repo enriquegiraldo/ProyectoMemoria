@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { logger } from '../utils/logger';
+import { logger } from '@/utils/logger';
 import { CustomError } from '../utils/errors';
 
 // Error response interface
@@ -22,7 +22,7 @@ export const errorHandler = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   let statusCode = 500;
   let message = 'Internal Server Error';
   let errorDetails: any = {};
@@ -139,7 +139,7 @@ export const asyncHandler = (fn: Function) => {
 /**
  * 404 handler for unmatched routes
  */
-export const notFoundHandler = (req: Request, res: Response) => {
+export const notFoundHandler = (req: Request, res: Response): void => {
   const errorResponse: ErrorResponse = {
     success: false,
     message: `Route ${req.method} ${req.path} not found`,
@@ -163,7 +163,7 @@ export const notFoundHandler = (req: Request, res: Response) => {
  * Request timeout handler
  */
 export const timeoutHandler = (timeoutMs: number = 30000) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction): void => {
     const timeout = setTimeout(() => {
       if (!res.headersSent) {
         const errorResponse: ErrorResponse = {
@@ -202,7 +202,7 @@ export const securityErrorHandler = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   // Handle security-specific errors
   if (error.message.includes('CSRF') || error.message.includes('XSS')) {
     logger.warn('Security violation detected', {
@@ -214,7 +214,7 @@ export const securityErrorHandler = (
       userId: (req as any).user?.id || 'anonymous',
     });
 
-    return res.status(403).json({
+    res.status(403).json({
       success: false,
       message: 'Security violation detected',
       timestamp: new Date().toISOString(),
@@ -222,6 +222,7 @@ export const securityErrorHandler = (
       method: req.method,
       statusCode: 403,
     });
+    return;
   }
 
   next(error);
@@ -235,7 +236,7 @@ export const databaseErrorHandler = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   // Handle database-specific errors
   if (error.message.includes('connection') || error.message.includes('timeout')) {
     logger.error('Database connection error', {
@@ -245,7 +246,7 @@ export const databaseErrorHandler = (
       ip: req.ip,
     });
 
-    return res.status(503).json({
+    res.status(503).json({
       success: false,
       message: 'Database service temporarily unavailable',
       timestamp: new Date().toISOString(),
@@ -253,6 +254,7 @@ export const databaseErrorHandler = (
       method: req.method,
       statusCode: 503,
     });
+    return;
   }
 
   next(error);
@@ -266,7 +268,7 @@ export const rateLimitErrorHandler = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   if (error.message.includes('rate limit') || error.message.includes('too many requests')) {
     logger.warn('Rate limit exceeded', {
       method: req.method,
@@ -275,7 +277,7 @@ export const rateLimitErrorHandler = (
       userAgent: req.get('User-Agent'),
     });
 
-    return res.status(429).json({
+    res.status(429).json({
       success: false,
       message: 'Too many requests. Please try again later.',
       timestamp: new Date().toISOString(),
@@ -283,6 +285,7 @@ export const rateLimitErrorHandler = (
       method: req.method,
       statusCode: 429,
     });
+    return;
   }
 
   next(error);
@@ -296,7 +299,7 @@ export const validationErrorHandler = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   if (error.name === 'ValidationError' || error.message.includes('validation')) {
     logger.warn('Validation error', {
       error: error.message,
@@ -306,7 +309,7 @@ export const validationErrorHandler = (
       body: req.body,
     });
 
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       message: 'Validation error',
       details: error.message,
@@ -315,6 +318,7 @@ export const validationErrorHandler = (
       method: req.method,
       statusCode: 400,
     });
+    return;
   }
 
   next(error);
@@ -328,7 +332,7 @@ export const authenticationErrorHandler = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   if (
     error.message.includes('token') ||
     error.message.includes('authentication') ||
@@ -342,7 +346,7 @@ export const authenticationErrorHandler = (
       userAgent: req.get('User-Agent'),
     });
 
-    return res.status(401).json({
+    res.status(401).json({
       success: false,
       message: 'Authentication required',
       timestamp: new Date().toISOString(),
@@ -350,6 +354,7 @@ export const authenticationErrorHandler = (
       method: req.method,
       statusCode: 401,
     });
+    return;
   }
 
   next(error);
@@ -363,7 +368,7 @@ export const authorizationErrorHandler = (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
+): void => {
   if (
     error.message.includes('permission') ||
     error.message.includes('forbidden') ||
@@ -377,7 +382,7 @@ export const authorizationErrorHandler = (
       userId: (req as any).user?.id || 'anonymous',
     });
 
-    return res.status(403).json({
+    res.status(403).json({
       success: false,
       message: 'Access denied',
       timestamp: new Date().toISOString(),
@@ -385,6 +390,7 @@ export const authorizationErrorHandler = (
       method: req.method,
       statusCode: 403,
     });
+    return;
   }
 
   next(error);

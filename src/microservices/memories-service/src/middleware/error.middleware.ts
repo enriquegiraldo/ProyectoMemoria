@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { logger } from '../utils/logger';
+import { logger } from '@/utils/logger';
 import { handleError, formatErrorResponse, CustomError } from '../utils/errors';
 
 export const errorMiddleware = (

@@ -1,3 +1,4 @@
+// src/enterprise/compliance/gdpr/gdpr.service.ts
 import crypto from 'crypto';
 
 export interface GDPRConsent {
@@ -318,9 +319,11 @@ export class GDPRService {
       request.status = 'completed';
       request.completedAt = Date.now();
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       request.status = 'rejected';
-      request.response = { error: error.message };
+      request.response = {
+        error: error instanceof Error ? error.message : 'An unknown error occurred',
+      };
       return false;
     }
   }

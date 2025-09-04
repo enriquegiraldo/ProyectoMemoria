@@ -1,3 +1,4 @@
+// src/app/api/public/memories/[id]/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '../../../../../lib/supabase';
 
@@ -148,28 +149,28 @@ export async function GET(
         createdAt: memory.created_at,
         updatedAt: memory.updated_at
       },
-      author: memory.author ? {
-        id: memory.author.id,
-        name: memory.author.name,
-        avatar: memory.author.avatar_url,
-        bio: memory.author.bio,
-        relationship: memory.author.relationship
+      author: memory.author && memory.author.length > 0 ? {
+        id: memory.author[0].id,
+        name: memory.author[0].name,
+        avatar: memory.author[0].avatar_url,
+        bio: memory.author[0].bio,
+        relationship: memory.author[0].relationship
       } : null,
-      category: memory.category ? {
-        id: memory.category.id,
-        name: memory.category.name,
-        description: memory.category.description,
-        color: memory.category.color
+      category: memory.category && memory.category.length > 0 ? {
+        id: memory.category[0].id,
+        name: memory.category[0].name,
+        description: memory.category[0].description,
+        color: memory.category[0].color
       } : null,
       tags: memory.tags?.map(t => t.tag) || [],
       comments: memory.comments?.map(comment => ({
         id: comment.id,
         content: comment.content,
         createdAt: comment.created_at,
-        author: comment.author ? {
-          id: comment.author.id,
-          name: comment.author.name,
-          avatar: comment.author.avatar_url
+        author: comment.author && comment.author.length > 0 ? {
+          id: comment.author[0].id,
+          name: comment.author[0].name,
+          avatar: comment.author[0].avatar_url
         } : null
       })) || [],
       testimonials: memory.testimonials?.map(testimonial => ({
@@ -178,14 +179,14 @@ export async function GET(
         relationship: testimonial.relationship,
         isApproved: testimonial.is_approved,
         createdAt: testimonial.created_at,
-        author: testimonial.author ? {
-          id: testimonial.author.id,
-          name: testimonial.author.name,
-          avatar: testimonial.author.avatar_url
+        author: testimonial.author && testimonial.author.length > 0 ? {
+          id: testimonial.author[0].id,
+          name: testimonial.author[0].name,
+          avatar: testimonial.author[0].avatar_url
         } : null
       })) || [],
       stats: {
-        likes: memory._count?.likes || 0,
+        likes: memory._count && memory._count.length > 0 ? memory._count[0].count : 0,
         comments: memory.comments?.length || 0,
         testimonials: memory.testimonials?.length || 0
       }

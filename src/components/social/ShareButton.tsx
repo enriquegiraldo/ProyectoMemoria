@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from '../ui/Button';
+import Button  from '../ui/Button';
 import { SocialService, type SocialShareData } from '../../services/socialService';
 import { 
   Share2, 
@@ -15,7 +15,7 @@ import {
 interface ShareButtonProps {
   data: SocialShareData;
   className?: string;
-  variant?: 'default' | 'outline' | 'ghost';
+  variant?:  "outline" | "primary" | "secondary" | "ghost" | "danger"; // Mismos variantes que el botón
   size?: 'sm' | 'md' | 'lg';
   showLabel?: boolean;
 }
@@ -125,7 +125,7 @@ export function ShareButton({
           </div>
 
           {/* Native Share (si está disponible) */}
-          {navigator.share && (
+          {typeof navigator.share !== 'undefined' && (
             <div className="p-2">
               <Button
                 onClick={handleNativeShare}

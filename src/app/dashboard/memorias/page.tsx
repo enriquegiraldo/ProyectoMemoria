@@ -1,34 +1,34 @@
+// src/app/dashboard/memorias/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
-import { Card, CardHeader, CardContent } from "@/components/ui/Card";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Card, CardContent } from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import UploadModal from "@/components/memorial/UploadModal";
+import { CreateMemoryData, MediaType, ClientMemory } from "@/types";
+import { useAuth } from "@/hooks/useAuth";
+import { createMemory } from "@/store/slices/memoriesSlice";
+import { useAppDispatch } from "@/hooks/useAppDispatch";
+import type { AppDispatch } from "@/store";
+
+
+
 
 export default function MisMemoriasPage() {
+  const { user } = useAuth();
   const [showModal, setShowModal] = useState(false);
-  const handleSubmit = (formData: {
-    type: string;
-    author: string;
-    relationship: string;
-    content: string;
-    imageUrl?: string;
-  }) => {
-    // Aquí puedes manejar los datos del formulario
-    console.log(formData);
-    setShowModal(false);
-  };
+  const dispatch = useAppDispatch();
 
-  // Estado para almacenar las memorias
-  const [memories, setMemories] = useState([
+  const [memories, setMemories] = useState<ClientMemory[]>([
     {
       id: 1,
       type: "message",
-      author: "María Elena Puentes",
+      author: "Ana Giraldo Puentes",
       content:
         "Rubén siempre nos enseñó que la vida es un regalo que debemos valorar cada día. Su sonrisa iluminaba cualquier lugar.",
       date: "2024-01-15",
-      relationship: "Hermana"
+      relationship: "Hermana",
     },
     {
       id: 2,
@@ -38,7 +38,7 @@ export default function MisMemoriasPage() {
       imageUrl:
         "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop",
       date: "2023-12-20",
-      relationship: "Primo"
+      relationship: "Primo",
     },
     {
       id: 3,
@@ -47,17 +47,35 @@ export default function MisMemoriasPage() {
       content:
         "Recordaré siempre sus consejos y su manera única de ver el mundo. Un hombre extraordinario.",
       date: "2024-01-10",
-      relationship: "Amiga"
-    }
+      relationship: "Amiga",
+    },
   ]);
 
-  // Estado para filtrar memorias
+  const handleSubmit = (formData: CreateMemoryData) => {
+    console.log('Nueva memoria creada:', formData);
+
+    const newMemory: ClientMemory = {
+      id: memories.length + 1,
+      type: formData.mediaType === 'IMAGE' ? 'photo' : 'message',
+      author: user?.name || 'Usuario Anónimo',
+      content: formData.description,
+      imageUrl: formData.mediaType === 'IMAGE' ? formData.mediaUrl : undefined,
+      date: new Date().toISOString().split('T')[0],
+      relationship: user?.profile?.relationship || 'Desconocido',
+    };
+
+    setMemories((prevMemories) => [newMemory, ...prevMemories]);
+    dispatch(createMemory(formData));
+    setShowModal(false);
+  };
+
   const [filter, setFilter] = useState("all");
 
-  // Memorias filtradas según el tipo seleccionado
   const filteredMemories = memories.filter(
     (memory) => filter === "all" || memory.type === filter
   );
+
+  const pageId = user?.pageId || "12345";
 
   return (
     <div className="space-y-6">
@@ -73,7 +91,6 @@ export default function MisMemoriasPage() {
         </Button>
       </div>
 
-      {/* Filtros */}
       <div className="flex space-x-2 pb-4">
         <Button
           variant={filter === "all" ? "primary" : "outline"}
@@ -93,19 +110,26 @@ export default function MisMemoriasPage() {
           onClick={() => setFilter("photo")}>
           Fotos
         </Button>
-        <button onClick={() => setShowModal(true)}>
+        <Button
+          onClick={() =>
+            user && user.canEdit
+              ? setShowModal(true)
+              : alert('Inicia sesión para compartir un recuerdo')
+          }
+          disabled={!user || !user.canEdit}>
           Compartir un Recuerdo
-        </button>
-
-        {showModal && (
-          <UploadModal
-            onClose={() => setShowModal(false)}
-            onSubmit={handleSubmit}
-          />
-        )}
+        </Button>
       </div>
 
-      {/* Lista de memorias */}
+      {showModal && (
+        <UploadModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          onSubmit={handleSubmit}
+          pageId={pageId}
+        />
+      )}
+
       <div className="grid grid-cols-1 gap-6">
         {filteredMemories.length > 0 ? (
           filteredMemories.map((memory) => (

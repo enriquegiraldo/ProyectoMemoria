@@ -1,3 +1,4 @@
+// src/microservices/notifications-service/src/routes/health.routes.ts
 import { Router, Request, Response } from 'express';
 
 const router = Router();

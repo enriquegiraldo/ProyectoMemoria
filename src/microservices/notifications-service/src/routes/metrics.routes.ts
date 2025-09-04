@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { metrics } from '../utils';
+import { metrics } from '@/utils';
 
 const router = Router();
 

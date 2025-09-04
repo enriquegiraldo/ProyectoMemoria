@@ -1,5 +1,6 @@
+// src/components/ui/AnimatedCard.tsx
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionProps, Variant } from 'framer-motion';
 import { Card } from './Card';
 
 // Tipos para las props
@@ -12,12 +13,12 @@ interface AnimatedCardProps {
   click?: boolean;
   exit?: boolean;
   layout?: boolean;
-  whileHover?: object;
-  whileTap?: object;
-  initial?: object;
-  animate?: object;
-  exit?: object;
-  transition?: object;
+whileHover?: MotionProps['whileHover'];
+  whileTap?: MotionProps['whileTap'];
+  initial?: MotionProps['initial'];
+  animate?: MotionProps['animate'];
+  exitAnimation?: MotionProps['exit'];
+  transition?: MotionProps['transition'];
 }
 
 // Variantes de animación predefinidas
@@ -58,7 +59,7 @@ export function AnimatedCard({
   whileTap,
   initial,
   animate,
-  exit: exitAnimation,
+  exitAnimation: exitAnimation,
   transition,
 }: AnimatedCardProps) {
   // Configuración por defecto

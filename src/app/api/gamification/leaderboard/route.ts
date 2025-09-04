@@ -1,3 +1,4 @@
+// src/app/api/gamification/leaderboard/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '../../../../lib/supabase';
 
@@ -56,10 +57,10 @@ export async function GET(request: NextRequest) {
     // Formatear respuesta
     const formattedLeaderboard = leaderboard?.map((entry, index) => ({
       rank: offset + index + 1,
-      user: entry.user ? {
-        id: entry.user.id,
-        name: entry.user.name,
-        avatar: entry.user.avatar_url
+      user: entry.user && entry.user.length > 0 ? {
+        id: entry.user[0].id,
+        name: entry.user[0].name,
+        avatar: entry.user[0].avatar_url
       } : null,
       stats: {
         points: entry.points,

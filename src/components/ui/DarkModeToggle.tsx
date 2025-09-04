@@ -1,6 +1,7 @@
+// src/components/ui/DarkModeToggle.tsx
 import React, { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
-import { Button } from './Button';
+import Button from './Button';
 
 // Tipos para el tema
 type Theme = 'light' | 'dark' | 'system';
@@ -163,7 +164,7 @@ export function ThemeSelector() {
       {themes.map(({ value, label, icon }) => (
         <Button
           key={value}
-          variant={theme === value ? 'default' : 'outline'}
+          variant={theme === value ? 'primary' : 'outline'} // Cambiado de 'default' a 'primary'
           size="sm"
           onClick={() => setTheme(value)}
           className="flex items-center space-x-2"
@@ -179,9 +180,9 @@ export function ThemeSelector() {
 // Hook para usar el tema en otros componentes
 export function useDarkMode() {
   const { theme, setTheme, mounted } = useTheme();
-  
+
   const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  
+
   return {
     theme,
     setTheme,

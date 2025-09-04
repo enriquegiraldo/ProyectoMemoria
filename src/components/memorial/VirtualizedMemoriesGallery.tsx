@@ -1,3 +1,4 @@
+// src/components/memorial/VirtualizedMemoriesGallery.tsx
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FixedSizeList as List } from 'react-window';
@@ -9,18 +10,20 @@ import { useAuth } from '../../hooks/useAuth';
 import MemoryCard from './MemoryCard';
 import AdvancedSearch from './AdvancedSearch';
 import { Memory } from '../../types';
+import { fetchMemories } from '../../store/slices/memoriesSlice';
+import { useContainerWidth } from '../../hooks/useContainerWidth';
 
 interface VirtualizedMemoriesGalleryProps {
   pageId?: string;
   className?: string;
 }
 
-const ITEM_HEIGHT = 400; // Altura fija para cada item
+const ITEM_HEIGHT = 400;
 const ITEMS_PER_PAGE = 20;
 
 const VirtualizedMemoriesGallery: React.FC<VirtualizedMemoriesGalleryProps> = ({
   pageId,
-  className = ''
+  className = '',
 }) => {
   const { memories, isLoading, error, loadMemories, filters, updateFilters } = useMemories();
   const { isAuthenticated } = useAuth();
@@ -38,16 +41,17 @@ const VirtualizedMemoriesGallery: React.FC<VirtualizedMemoriesGalleryProps> = ({
   // Memoizar las memorias filtradas
   const filteredMemories = useMemo(() => {
     if (!memories) return [];
-    
+
     let filtered = [...memories];
 
     // Aplicar filtros
     if (filters.search) {
       const searchLower = filters.search.toLowerCase();
-      filtered = filtered.filter(memory =>
-        memory.title.toLowerCase().includes(searchLower) ||
-        memory.description.toLowerCase().includes(searchLower) ||
-        memory.tags.some(tag => tag.toLowerCase().includes(searchLower))
+      filtered = filtered.filter(
+        memory =>
+          memory.title.toLowerCase().includes(searchLower) ||
+          memory.description.toLowerCase().includes(searchLower) ||
+          memory.tags.some(tag => tag.toLowerCase().includes(searchLower)),
       );
     }
 
@@ -57,7 +61,7 @@ const VirtualizedMemoriesGallery: React.FC<VirtualizedMemoriesGalleryProps> = ({
 
     if (filters.tags && filters.tags.length > 0) {
       filtered = filtered.filter(memory =>
-        memory.tags.some(tag => filters.tags!.includes(tag))
+        memory.tags.some(tag => filters.tags!.includes(tag)),
       );
     }
 
@@ -70,7 +74,7 @@ const VirtualizedMemoriesGallery: React.FC<VirtualizedMemoriesGalleryProps> = ({
           case 'title':
             return a.title.localeCompare(b.title);
           case 'author':
-            return a.author.name.localeCompare(b.author.name);
+            return a.authorName.localeCompare(b.authorName);
           default:
             return 0;
         }
@@ -95,55 +99,64 @@ const VirtualizedMemoriesGallery: React.FC<VirtualizedMemoriesGalleryProps> = ({
       pageId,
       page: nextPage,
       limit: ITEMS_PER_PAGE,
-      ...filters
+      ...filters,
     });
 
-    if (result && result.length < ITEMS_PER_PAGE) {
-      setHasMore(false);
+    // Verificar si la acción fue exitosa y el payload es un arreglo
+    if (result.type === fetchMemories.fulfilled.type && Array.isArray(result.payload)) {
+      if (result.payload.length < ITEMS_PER_PAGE) {
+        setHasMore(false);
+      }
     }
     setCurrentPage(nextPage);
   }, [currentPage, hasMore, isLoading, loadMemories, pageId, filters]);
 
   // Función para renderizar cada item
-  const renderMemoryItem = useCallback(({ index, style }: { index: number; style: React.CSSProperties }) => {
-    const memory = filteredMemories[index];
-    
-    if (!memory) {
-      return (
-        <div style={style} className="flex items-center justify-center p-4">
-          <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
-        </div>
-      );
-    }
+  const renderMemoryItem = useCallback(
+    ({ index, style }: { index: number; style: React.CSSProperties }) => {
+      const memory = filteredMemories[index];
 
-    return (
-      <motion.div
-        style={style}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3, delay: index * 0.05 }}
-        className="p-2"
-      >
-        <MemoryCard
-          memory={memory}
-          viewMode={viewMode}
-          className="h-full"
-        />
-      </motion.div>
-    );
-  }, [filteredMemories, viewMode]);
+      if (!memory) {
+        return (
+          <div style={style} className="flex items-center justify-center p-4">
+            <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
+          </div>
+        );
+      }
+
+
+      return (
+        <motion.div
+          style={style}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3, delay: index * 0.05 }}
+          className="p-2"
+        >
+          <MemoryCard memory={memory} viewMode={viewMode} className="h-full" />
+        </motion.div>
+      );
+    },
+    [filteredMemories, viewMode],
+  );
 
   // Función para verificar si un item está cargado
-  const isItemLoaded = useCallback((index: number) => {
-    return index < filteredMemories.length;
-  }, [filteredMemories.length]);
+  const isItemLoaded = useCallback(
+    (index: number) => {
+      return index < filteredMemories.length;
+    },
+    [filteredMemories.length],
+  );
 
   // Función para cargar más items
-  const loadMoreItems = useCallback((startIndex: number, stopIndex: number) => {
-    if (!isLoading && hasMore) {
-      loadMoreMemories();
-    }
-  }, [isLoading, hasMore, loadMoreMemories]);
+  const loadMoreItems = useCallback(
+    (startIndex: number, stopIndex: number) => {
+      if (!isLoading && hasMore) {
+        loadMoreMemories();
+      }
+    },
+    [isLoading, hasMore, loadMoreMemories],
+  );
 
   // Calcular altura total de la lista
   const listHeight = Math.min(filteredMemories.length * ITEM_HEIGHT, 800);
@@ -169,7 +182,7 @@ const VirtualizedMemoriesGallery: React.FC<VirtualizedMemoriesGalleryProps> = ({
       </div>
     );
   }
-
+const { ref: containerRef, width: containerWidth } = useContainerWidth();
   return (
     <div className={`space-y-6 ${className}`}>
       {/* Header con controles */}
@@ -178,9 +191,7 @@ const VirtualizedMemoriesGallery: React.FC<VirtualizedMemoriesGalleryProps> = ({
           <h2 className="text-2xl font-bold text-gray-900">
             Memorias ({filteredMemories.length})
           </h2>
-          {isLoading && (
-            <Loader2 className="w-5 h-5 animate-spin text-blue-600" />
-          )}
+          {isLoading && <Loader2 className="w-5 h-5 animate-spin text-blue-600" />}
         </div>
 
         <div className="flex items-center gap-2">
@@ -236,7 +247,6 @@ const VirtualizedMemoriesGallery: React.FC<VirtualizedMemoriesGalleryProps> = ({
           {isAuthenticated && (
             <button
               onClick={() => {
-                // Abrir modal de añadir memoria
                 console.log('Abrir modal de añadir memoria');
               }}
               className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -301,7 +311,10 @@ const VirtualizedMemoriesGallery: React.FC<VirtualizedMemoriesGalleryProps> = ({
                   placeholder="Separar con comas"
                   value={filters.tags?.join(', ') || ''}
                   onChange={(e) => {
-                    const tags = e.target.value.split(',').map(tag => tag.trim()).filter(Boolean);
+                    const tags = e.target.value
+                      .split(',')
+                      .map(tag => tag.trim())
+                      .filter(Boolean);
                     updateFilters({ tags: tags.length > 0 ? tags : undefined });
                   }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -327,7 +340,7 @@ const VirtualizedMemoriesGallery: React.FC<VirtualizedMemoriesGalleryProps> = ({
 
       {/* Lista virtualizada */}
       {filteredMemories.length > 0 ? (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden w-full">
           <InfiniteLoader
             isItemLoaded={isItemLoaded}
             itemCount={itemCount}
@@ -338,6 +351,7 @@ const VirtualizedMemoriesGallery: React.FC<VirtualizedMemoriesGalleryProps> = ({
               <List
                 ref={ref}
                 height={listHeight}
+                width={containerWidth} // Agregado: ancho del contenedor
                 itemCount={itemCount}
                 itemSize={ITEM_HEIGHT}
                 onItemsRendered={onItemsRendered}

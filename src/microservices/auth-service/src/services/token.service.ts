@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { config } from '../config';
-import { logger } from '../utils/logger';
+import { config } from '@/config';
+import { logger } from '@/utils/logger';
 import { CustomError, TokenError, TokenExpiredError, TokenInvalidError } from '../utils/errors';
 
 export interface TokenPayload {

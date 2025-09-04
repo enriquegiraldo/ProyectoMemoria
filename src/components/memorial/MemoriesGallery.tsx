@@ -1,10 +1,11 @@
+// src/components/memorial/MemoriesGallery.tsx
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, Grid, List, Plus, X } from 'lucide-react';
 import { useMemories } from '../../hooks/useMemories';
 import { useAuth } from '../../hooks/useAuth';
 import MemoryCard from './MemoryCard';
-import { Memory } from '../../store/slices/memoriesSlice';
+import { Memory } from '../../types';
 
 interface MemoriesGalleryProps {
   pageId: string;
@@ -38,22 +39,24 @@ const MemoriesGallery: React.FC<MemoriesGalleryProps> = ({
   const [showFilters, setShowFilters] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
+  const [selectedType, setSelectedType] = useState<string | undefined>(undefined); // Cambiado de selectedTypes a selectedType
 
   useEffect(() => {
-    loadMemories(pageId);
+    if (pageId) {
+      loadMemories({ pageId, page: 1, limit: 20 }); // Corregido: pasar objeto con page y limit
+    }
   }, [pageId, loadMemories]);
 
   useEffect(() => {
     updateFilters({
       search: searchTerm,
       tags: selectedTags,
-      mediaType: selectedTypes,
+      mediaType: selectedType, // Usar selectedType (string | undefined)
     });
-  }, [searchTerm, selectedTags, selectedTypes, updateFilters]);
+  }, [searchTerm, selectedTags, selectedType, updateFilters]);
 
   const filteredMemories = getFilteredMemories();
-  const allTags = Array.from(new Set(memories.flatMap(m => m.tags)));
+  const allTags = Array.from(new Set(memories.flatMap((m: Memory) => m.tags)));
   const allTypes = ['IMAGE', 'VIDEO', 'AUDIO'];
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -69,17 +72,13 @@ const MemoriesGallery: React.FC<MemoriesGalleryProps> = ({
   };
 
   const handleTypeToggle = (type: string) => {
-    setSelectedTypes(prev =>
-      prev.includes(type)
-        ? prev.filter(t => t !== type)
-        : [...prev, type]
-    );
+    setSelectedType(prev => (prev === type ? undefined : type)); // Seleccionar un solo tipo o deseleccionar
   };
 
   const clearAllFilters = () => {
     setSearchTerm('');
     setSelectedTags([]);
-    setSelectedTypes([]);
+    setSelectedType(undefined); // Cambiado de selectedTypes a selectedType
     resetFilters();
   };
 
@@ -111,7 +110,7 @@ const MemoriesGallery: React.FC<MemoriesGalleryProps> = ({
       <div className="text-center py-8">
         <p className="text-red-600 mb-4">{error}</p>
         <button
-          onClick={() => loadMemories(pageId)}
+          onClick={() => loadMemories({ pageId, page: 1, limit: 20 })} // Corregido
           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
         >
           Reintentar
@@ -172,7 +171,7 @@ const MemoriesGallery: React.FC<MemoriesGalleryProps> = ({
           </button>
 
           {/* Add Memory Button */}
-          {canEdit && (
+          {canEdit() && (
             <button
               onClick={onAddMemory}
               className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
@@ -217,19 +216,21 @@ const MemoriesGallery: React.FC<MemoriesGalleryProps> = ({
                   Etiquetas
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {allTags.map(tag => (
-                    <button
-                      key={tag}
-                      onClick={() => handleTagToggle(tag)}
-                      className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                        selectedTags.includes(tag)
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                      }`}
-                    >
-                      {tag}
-                    </button>
-                  ))}
+                  {allTags
+                    .filter((tag): tag is string => typeof tag === 'string')
+                    .map(tag => (
+                      <button
+                        key={tag}
+                        onClick={() => handleTagToggle(tag)}
+                        className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                          selectedTags.includes(tag)
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    ))}
                 </div>
               </div>
 
@@ -244,7 +245,7 @@ const MemoriesGallery: React.FC<MemoriesGalleryProps> = ({
                       key={type}
                       onClick={() => handleTypeToggle(type)}
                       className={`px-3 py-1 rounded-full text-sm transition-colors ${
-                        selectedTypes.includes(type)
+                        selectedType === type
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                       }`}
@@ -257,7 +258,7 @@ const MemoriesGallery: React.FC<MemoriesGalleryProps> = ({
             </div>
 
             {/* Clear Filters */}
-            {(searchTerm || selectedTags.length > 0 || selectedTypes.length > 0) && (
+            {(searchTerm || selectedTags.length > 0 || selectedType) && (
               <div className="mt-4 pt-4 border-t border-gray-200">
                 <button
                   onClick={clearAllFilters}
@@ -286,7 +287,7 @@ const MemoriesGallery: React.FC<MemoriesGalleryProps> = ({
               ? 'Aún no hay recuerdos compartidos en esta página.'
               : 'Intenta ajustar los filtros de búsqueda.'}
           </p>
-          {canEdit && memories.length === 0 && (
+          {canEdit() && memories.length === 0 && (
             <button
               onClick={onAddMemory}
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"

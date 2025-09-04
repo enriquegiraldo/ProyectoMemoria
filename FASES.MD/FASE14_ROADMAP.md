@@ -252,7 +252,7 @@ POST   /api/webhooks/retry/:id          # Reintentar evento
 ### Payment Providers
 ```json
 {
-  "stripe": "^14.10.0",
+  "stripe": "^18.4.0",
   "paypal-rest-sdk": "^1.8.1",
   "mercadopago": "^2.0.7",
   "bitcoin-core": "^5.0.0",

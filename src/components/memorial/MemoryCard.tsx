@@ -1,12 +1,15 @@
+// src/components/memorial/MemoryCard.tsx
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Heart, MessageCircle, Share2, Play, Pause, Volume2, VolumeX } from 'lucide-react';
-import { Memory, Comment, Reaction } from '../../store/slices/memoriesSlice';
+import { Memory, Comment, Reaction } from '../../types';
 import { useAuth } from '../../hooks/useAuth';
 import { useMemories } from '../../hooks/useMemories';
 
 interface MemoryCardProps {
   memory: Memory;
+  viewMode?: 'grid' | 'list'; // Prop ya definida
+  className?: string;
   onEdit?: (memory: Memory) => void;
   onDelete?: (id: string) => void;
   onView?: (memory: Memory) => void;
@@ -14,6 +17,8 @@ interface MemoryCardProps {
 
 const MemoryCard: React.FC<MemoryCardProps> = ({
   memory,
+  viewMode = 'grid', // Valor por defecto: grid
+  className = '',
   onEdit,
   onDelete,
   onView,
@@ -82,7 +87,7 @@ const MemoryCard: React.FC<MemoryCardProps> = ({
           <motion.img
             src={memory.mediaUrl}
             alt={memory.title}
-            className="w-full h-48 object-cover rounded-t-lg cursor-pointer"
+            className={`w-full ${viewMode === 'list' ? 'h-32' : 'h-48'} object-cover ${viewMode === 'grid' ? 'rounded-t-lg' : 'rounded-l-lg'}`}
             whileHover={{ scale: 1.02 }}
             onClick={() => onView?.(memory)}
           />
@@ -90,7 +95,7 @@ const MemoryCard: React.FC<MemoryCardProps> = ({
       
       case 'VIDEO':
         return (
-          <div className="relative w-full h-48 bg-gray-900 rounded-t-lg overflow-hidden">
+          <div className={`relative w-full ${viewMode === 'list' ? 'h-32' : 'h-48'} bg-gray-900 ${viewMode === 'grid' ? 'rounded-t-lg' : 'rounded-l-lg'} overflow-hidden`}>
             <video
               src={memory.mediaUrl}
               className="w-full h-full object-cover"
@@ -102,7 +107,7 @@ const MemoryCard: React.FC<MemoryCardProps> = ({
             <div className="absolute inset-0 flex items-center justify-center">
               <button
                 onClick={() => {
-                  const video = document.querySelector('video') as HTMLVideoElement;
+                  const video = document.querySelector(`video[src="${memory.mediaUrl}"]`) as HTMLVideoElement;
                   if (video) {
                     if (isPlaying) {
                       video.pause();
@@ -127,7 +132,7 @@ const MemoryCard: React.FC<MemoryCardProps> = ({
       
       case 'AUDIO':
         return (
-          <div className="w-full h-24 bg-gradient-to-r from-blue-500 to-purple-600 rounded-t-lg flex items-center justify-center">
+          <div className={`w-full ${viewMode === 'list' ? 'h-20' : 'h-24'} bg-gradient-to-r from-blue-500 to-purple-600 ${viewMode === 'grid' ? 'rounded-t-lg' : 'rounded-l-lg'} flex items-center justify-center`}>
             <div className="text-center text-white">
               <Volume2 className="w-8 h-8 mx-auto mb-2" />
               <p className="text-sm font-medium">{memory.title}</p>
@@ -150,22 +155,22 @@ const MemoryCard: React.FC<MemoryCardProps> = ({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+      className={`bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 ${viewMode === 'list' ? 'flex flex-row' : 'flex flex-col'} ${className}`}
     >
       {renderMedia()}
       
-      <div className="p-4">
+      <div className={`p-4 ${viewMode === 'list' ? 'flex-1' : ''}`}>
         <div className="flex items-start justify-between mb-3">
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-1">
               {memory.title}
             </h3>
             <p className="text-sm text-gray-600 mb-2">
-              Por {memory.authorName} • {formatDate(memory.date)}
+              Por {memory.authorName} • {formatDate(memory.createdAt)} {/* Cambiado de memory.date a memory.createdAt */}
             </p>
           </div>
           
-          {canEdit && (
+          {canEdit() && (
             <div className="flex space-x-2">
               <button
                 onClick={() => onEdit?.(memory)}
@@ -271,7 +276,7 @@ const MemoryCard: React.FC<MemoryCardProps> = ({
               ))}
             </div>
 
-            {canComment && (
+            {canComment() && (
               <form onSubmit={handleComment} className="flex space-x-2">
                 <input
                   type="text"

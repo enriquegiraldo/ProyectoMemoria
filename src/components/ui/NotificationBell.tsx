@@ -1,8 +1,8 @@
+// src/components/ui/NotificationBell.tsx
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, X, Check, Trash2 } from 'lucide-react';
 import { useNotifications } from '../../hooks/useNotifications';
-import { formatDistanceToNow } from '../../utils';
 
 interface NotificationBellProps {
   className?: string;
@@ -17,6 +17,7 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ className = '' }) =
     markAsRead,
     markAllAsRead,
     removeNotification,
+    formatTime,
   } = useNotifications();
 
   const handleNotificationClick = (notificationId: string, isRead: boolean) => {
@@ -34,8 +35,8 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ className = '' }) =
     removeNotification(notificationId);
   };
 
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
+  const getNotificationIcon = (category: string) => {
+    switch (category) {
       case 'MEMORY_ADDED':
         return '📸';
       case 'COMMENT_ADDED':
@@ -59,7 +60,7 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ className = '' }) =
         className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-full"
       >
         <Bell className="w-6 h-6" />
-        
+
         {/* Badge de notificaciones no leídas */}
         {unreadCount > 0 && (
           <motion.div
@@ -125,35 +126,37 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ className = '' }) =
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       className={`p-4 hover:bg-gray-50 transition-colors cursor-pointer ${
-                        !notification.isRead ? 'bg-blue-50' : ''
+                        !notification.is_read ? 'bg-blue-50' : ''
                       }`}
-                      onClick={() => handleNotificationClick(notification.id, notification.isRead)}
+                      onClick={() => handleNotificationClick(notification.id, notification.is_read)}
                     >
                       <div className="flex items-start gap-3">
                         {/* Icono */}
                         <div className="flex-shrink-0 text-2xl">
-                          {getNotificationIcon(notification.type)}
+                          {getNotificationIcon(notification.category)}
                         </div>
 
                         {/* Contenido */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between">
                             <div className="flex-1">
-                              <p className={`text-sm font-medium ${
-                                !notification.isRead ? 'text-gray-900' : 'text-gray-700'
-                              }`}>
+                              <p
+                                className={`text-sm font-medium ${
+                                  !notification.is_read ? 'text-gray-900' : 'text-gray-700'
+                                }`}
+                              >
                                 {notification.title}
                               </p>
                               <p className="text-sm text-gray-600 mt-1">
                                 {notification.message}
                               </p>
                               <p className="text-xs text-gray-400 mt-2">
-                                {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
+                                {formatTime(notification.created_at)}
                               </p>
                             </div>
 
                             {/* Indicador de no leída */}
-                            {!notification.isRead && (
+                            {!notification.is_read && (
                               <div className="flex-shrink-0 ml-2">
                                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                               </div>

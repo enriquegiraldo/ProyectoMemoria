@@ -1,24 +1,43 @@
 #!/bin/bash
 # Script de instalación para Memoria Eterna
-# Ejecutar en WSL Ubuntu en la PC destino
-
-set -e  # Salir si hay algún error
+# Ejecutar en WSL Ubuntu desde la raíz del proyecto
 
 echo "🚀 INSTALANDO MEMORIA ETERNA"
 echo "============================"
 
-# Verificar si estamos en WSL
-if [[ ! -f /proc/version ]] || ! grep -q Microsoft /proc/version; then
-    echo "❌ Error: Este script debe ejecutarse en WSL"
+# Verificar si estamos en WSL (CORREGIDO)
+if [[ -f /proc/version ]] && grep -q -i microsoft /proc/version; then
+    echo "✅ Ejecutándose en WSL"
+elif [[ -f /proc/version ]] && grep -q -i wsl /proc/version; then
+    echo "✅ Ejecutándose en WSL2"
+else
+    echo "⚠️  Advertencia: No se detectó WSL, continuando..."
+fi
+
+# Verificar estructura del proyecto (NUEVO)
+echo "🔍 Verificando estructura del proyecto..."
+PROJECT_ROOT="$(pwd)"
+MICROSERVICES_DIR="$PROJECT_ROOT/src/microservices"
+API_GATEWAY_DIR="$PROJECT_ROOT/src/api-gateway"
+FRONTEND_DIR="$PROJECT_ROOT/frontend"
+
+if [[ ! -d "$MICROSERVICES_DIR" ]]; then
+    echo "❌ Error: No se encontró la carpeta src/microservices"
+    echo "   Asegúrate de ejecutar desde la raíz del proyecto ProyectoMemoria/"
     exit 1
 fi
 
-# Verificar que estamos en el directorio correcto
-if [[ ! -f "package.json" ]] || [[ ! -f "docker-compose.yml" ]]; then
-    echo "❌ Error: Este script debe ejecutarse desde la raíz del proyecto Memoria Eterna"
-    echo "Asegúrate de estar en el directorio que contiene package.json y docker-compose.yml"
+if [[ ! -d "$API_GATEWAY_DIR" ]]; then
+    echo "❌ Error: No se encontró la carpeta src/api-gateway"
     exit 1
 fi
+
+if [[ ! -d "$FRONTEND_DIR" ]]; then
+    echo "❌ Error: No se encontró la carpeta frontend"
+    exit 1
+fi
+
+echo "✅ Estructura del proyecto verificada"
 
 # Actualizar sistema
 echo "📦 Actualizando sistema..."
@@ -28,172 +47,169 @@ sudo apt update && sudo apt upgrade -y
 echo "📦 Instalando dependencias del sistema..."
 sudo apt install -y curl wget git unzip build-essential
 
-# Instalar Node.js
-echo "📦 Instalando Node.js..."
+# Instalar Node.js (versión 18)
 if ! command -v node &> /dev/null; then
-    curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+    echo "📦 Instalando Node.js..."
+    curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
     sudo apt-get install -y nodejs
 else
-    echo "✅ Node.js ya está instalado: $(node --version)"
+    echo "✅ Node.js ya instalado: $(node -v)"
 fi
 
-# Instalar Docker si no está instalado
-echo "📦 Verificando Docker..."
+# Instalar Git
+if ! command -v git &> /dev/null; then
+    echo "📦 Instalando Git..."
+    sudo apt install git -y
+else
+    echo "✅ Git ya instalado: $(git --version)"
+fi
+
+# Instalar Docker
 if ! command -v docker &> /dev/null; then
     echo "📦 Instalando Docker..."
-    curl -fsSL https://get.docker.com -o get-docker.sh
-    sudo sh get-docker.sh
+    sudo apt-get remove docker docker-engine docker.io containerd runc -y 2>/dev/null || true
+    sudo apt-get install ca-certificates curl gnupg lsb-release -y
+    sudo mkdir -p /etc/apt/keyrings
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    echo \
+      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+      $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    sudo apt update
+    sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
     sudo usermod -aG docker $USER
-    rm get-docker.sh
-    echo "✅ Docker instalado. Por favor, reinicia tu sesión de WSL para que los cambios surtan efecto."
+    echo "✅ Docker instalado. IMPORTANTE: Reinicia la terminal para aplicar permisos de grupo."
 else
-    echo "✅ Docker ya está instalado: $(docker --version)"
+    echo "✅ Docker ya instalado: $(docker --version)"
 fi
 
-# Instalar Docker Compose si no está instalado
-if ! command -v docker-compose &> /dev/null; then
+# Verificar Docker Compose
+if ! command -v docker-compose &> /dev/null && ! docker compose version &> /dev/null; then
     echo "📦 Instalando Docker Compose..."
-    sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    sudo chmod +x /usr/local/bin/docker-compose
+    sudo apt install docker-compose -y
 else
-    echo "✅ Docker Compose ya está instalado: $(docker-compose --version)"
+    echo "✅ Docker Compose disponible"
 fi
 
-# Verificar instalaciones
-echo "✅ Verificando instalaciones..."
-node --version
-npm --version
-git --version
-docker --version
-docker-compose --version
-
-# Instalar dependencias del proyecto principal
-echo "📦 Instalando dependencias del proyecto principal..."
-npm install
-
-# Instalar dependencias en cada microservicio
+# Instalar dependencias en microservicios
 echo "📦 Instalando dependencias en microservicios..."
-for service in auth-service memories-service media-service notifications-service payments-service analytics-service; do
-    if [[ -d "src/microservices/$service" ]]; then
-        echo "Instalando dependencias en $service..."
-        cd "src/microservices/$service"
-        if [[ -f "package.json" ]]; then
+for service in auth-service memories-service media-service notifications-service analytics-service; do
+    SERVICE_PATH="$MICROSERVICES_DIR/$service"
+    if [ -d "$SERVICE_PATH" ]; then
+        echo "➡️ Instalando dependencias en $service"
+        cd "$SERVICE_PATH"
+        if [ -f "package.json" ]; then
             npm install
+            if [ $? -eq 0 ]; then
+                echo "✅ $service - dependencias instaladas"
+            else
+                echo "❌ Error instalando dependencias en $service"
+            fi
         else
-            echo "⚠️  No se encontró package.json en $service"
+            echo "⚠️ No se encontró package.json en $service"
         fi
-        cd ../../..
+        cd "$PROJECT_ROOT"
     else
-        echo "⚠️  No se encontró el directorio $service"
+        echo "⚠️ Carpeta no encontrada: $service"
     fi
 done
 
-# Instalar dependencias en API Gateway
-echo "📦 Instalando dependencias en API Gateway..."
-if [[ -d "src/api-gateway" ]]; then
-    cd src/api-gateway
-    if [[ -f "package.json" ]]; then
+# Instalar dependencias en api-gateway
+if [ -d "$API_GATEWAY_DIR" ]; then
+    echo "📦 Instalando dependencias en api-gateway..."
+    cd "$API_GATEWAY_DIR"
+    if [ -f "package.json" ]; then
         npm install
+        if [ $? -eq 0 ]; then
+            echo "✅ api-gateway - dependencias instaladas"
+        else
+            echo "❌ Error instalando dependencias en api-gateway"
+        fi
     else
-        echo "⚠️  No se encontró package.json en api-gateway"
+        echo "⚠️ No se encontró package.json en api-gateway"
     fi
-    cd ../..
+    cd "$PROJECT_ROOT"
 else
-    echo "⚠️  No se encontró el directorio api-gateway"
+    echo "❌ No se encontró la carpeta api-gateway"
 fi
 
 # Instalar dependencias en frontend
-echo "📦 Instalando dependencias en frontend..."
-if [[ -d "frontend" ]]; then
-    cd frontend
-    if [[ -f "package.json" ]]; then
+if [ -d "$FRONTEND_DIR" ]; then
+    echo "📦 Instalando dependencias en frontend..."
+    cd "$FRONTEND_DIR"
+    if [ -f "package.json" ]; then
         npm install
+        if [ $? -eq 0 ]; then
+            echo "✅ frontend - dependencias instaladas"
+        else
+            echo "❌ Error instalando dependencias en frontend"
+        fi
     else
-        echo "⚠️  No se encontró package.json en frontend"
+        echo "⚠️ No se encontró package.json en frontend"
     fi
-    cd ..
+    cd "$PROJECT_ROOT"
 else
-    echo "⚠️  No se encontró el directorio frontend"
+    echo "❌ No se encontró la carpeta frontend"
 fi
 
 # Configurar variables de entorno
 echo "⚙️ Configurando variables de entorno..."
-if [[ -f ".env.example" ]]; then
-    if [[ ! -f ".env" ]]; then
-        cp .env.example .env
-        echo "✅ Archivo .env creado desde .env.example"
-        echo "⚠️  IMPORTANTE: Edita el archivo .env con tus credenciales reales"
-    else
-        echo "✅ Archivo .env ya existe"
-    fi
-else
-    echo "⚠️  No se encontró .env.example"
-fi
-
-# Configurar variables de entorno para microservicios
-for service in auth-service memories-service media-service notifications-service payments-service analytics-service; do
-    if [[ -d "src/microservices/$service" ]]; then
-        if [[ -f "src/microservices/$service/.env.example" ]]; then
-            if [[ ! -f "src/microservices/$service/.env" ]]; then
-                cp "src/microservices/$service/.env.example" "src/microservices/$service/.env"
-                echo "✅ Configurado $service"
-            else
-                echo "✅ $service ya tiene archivo .env"
-            fi
+for service in auth-service memories-service media-service notifications-service analytics-service; do
+    SERVICE_PATH="$MICROSERVICES_DIR/$service"
+    if [ -f "$SERVICE_PATH/.env.example" ]; then
+        if [ -f "$SERVICE_PATH/.env" ]; then
+            echo "⚠️ $service ya tiene archivo .env (no sobrescrito)"
         else
-            echo "⚠️  No se encontró .env.example en $service"
+            cp "$SERVICE_PATH/.env.example" "$SERVICE_PATH/.env"
+            echo "✅ Configurado $service"
         fi
+    else
+        echo "⚠️ No se encontró .env.example en $service"
     fi
 done
 
-# Configurar variables de entorno para API Gateway
-if [[ -d "src/api-gateway" ]] && [[ -f "src/api-gateway/.env.example" ]]; then
-    if [[ ! -f "src/api-gateway/.env" ]]; then
-        cp "src/api-gateway/.env.example" "src/api-gateway/.env"
-        echo "✅ Configurado api-gateway"
+if [ -f "$API_GATEWAY_DIR/.env.example" ]; then
+    if [ -f "$API_GATEWAY_DIR/.env" ]; then
+        echo "⚠️ api-gateway ya tiene archivo .env (no sobrescrito)"
     else
-        echo "✅ api-gateway ya tiene archivo .env"
+        cp "$API_GATEWAY_DIR/.env.example" "$API_GATEWAY_DIR/.env"
+        echo "✅ Configurado api-gateway"
     fi
+else
+    echo "⚠️ No se encontró .env.example en api-gateway"
 fi
 
-# Generar Prisma client
-echo "📦 Generando Prisma client..."
-if [[ -d "prisma" ]]; then
-    npx prisma generate
-    echo "✅ Prisma client generado"
+if [ -f "$FRONTEND_DIR/.env.example" ]; then
+    if [ -f "$FRONTEND_DIR/.env" ]; then
+        echo "⚠️ frontend ya tiene archivo .env (no sobrescrito)"
+    else
+        cp "$FRONTEND_DIR/.env.example" "$FRONTEND_DIR/.env"
+        echo "✅ Configurado frontend"
+    fi
+else
+    echo "⚠️ No se encontró .env.example en frontend"
 fi
 
-# Crear directorios necesarios
-echo "📁 Creando directorios necesarios..."
-mkdir -p logs
-mkdir -p uploads
-mkdir -p temp
-
-# Dar permisos necesarios
-echo "🔐 Configurando permisos..."
-chmod +x scripts/*.sh
-chmod +x scripts/*.ps1
+if [ -f "$FRONTEND_DIR/.env.example" ]; then
+    cp "$FRONTEND_DIR/.env.example" "$FRONTEND_DIR/.env"
+    echo "✅ Configurado frontend"
+fi
 
 echo ""
 echo "🎉 INSTALACIÓN COMPLETADA"
 echo "========================="
+echo "Próximos pasos:"
+echo "1. Si instalaste Docker por primera vez, reinicia la terminal"
+echo "2. Inicia los servicios con:"
+echo "   docker-compose -f docker-compose.test.yml up -d"
+echo "3. Accede a: http://localhost:3000"
 echo ""
-echo "📋 PRÓXIMOS PASOS:"
-echo "1. Edita el archivo .env con tus credenciales reales"
-echo "2. Reinicia tu sesión de WSL si instalaste Docker"
-echo "3. Ejecuta: docker-compose up -d"
-echo "4. Para testing: docker-compose -f docker-compose.test.yml up -d"
-echo "5. Accede a la aplicación: http://localhost:3000"
-echo "6. Accede a Adminer (DB): http://localhost:8080"
+echo "🔧 Para verificar la instalación:"
+echo "   node --version"
+echo "   docker --version"
+echo "   docker-compose --version"
 echo ""
-echo "🔧 COMANDOS ÚTILES:"
-echo "- Iniciar servicios: docker-compose up -d"
-echo "- Ver logs: docker-compose logs -f"
-echo "- Detener servicios: docker-compose down"
-echo "- Ejecutar tests: npm run test:all"
-echo "- Desarrollo: npm run dev"
-echo ""
-echo "⚠️  IMPORTANTE:"
-echo "- Configura todas las variables de entorno en .env"
-echo "- Asegúrate de tener Docker Desktop configurado para WSL2"
-echo "- Para producción, cambia las credenciales por defecto"
+echo "🚀 Despliegue en la nube:"
+echo "- AWS:    docker tag <imagen> <aws_account_id>.dkr.ecr.<region>.amazonaws.com/<repo>:latest && docker push ..."
+echo "- Oracle: docker tag <imagen> <region-key>.ocir.io/<tenancy>/<repo>:latest && docker push ..."
+echo "- GCP:    docker tag <imagen> gcr.io/<project-id>/<repo>:latest && docker push ..."
+echo "- Heroku: heroku container:push web -a <app-name> && heroku container:release web -a <app-name>"

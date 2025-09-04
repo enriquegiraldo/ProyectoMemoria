@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # Base de datos
+  postgres:
+    image: postgres:15
+    container_name: memoria_eterna_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: memoria_eterna
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5555:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:Z
+    networks:
+      - memoria_eterna_network
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    container_name: memoria_eterna_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data:Z
+    networks:
+      - memoria_eterna_network
+
+  # Adminer para gestionar la base de datos
+  adminer:
+    image: adminer:latest
+    container_name: memoria_eterna_adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - memoria_eterna_network
+
+  # Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: memoria_eterna_frontend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/memoria_eterna
+      - REDIS_URL=redis://redis:6379
+      - NEXTAUTH_URL=http://localhost:3000
+      - NEXTAUTH_SECRET=KJwplKs3JmRSjb1RTCi00x62CRRVwTXTUq+NAq4js/0=
+      - NEXT_PUBLIC_APP_NAME=Memoria Eterna
+      - NEXT_PUBLIC_APP_URL=http://localhost:3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - memoria_eterna_network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  memoria_eterna_network:
+    driver: bridge

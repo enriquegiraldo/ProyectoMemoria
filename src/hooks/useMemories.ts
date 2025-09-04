@@ -1,3 +1,4 @@
+// src/hooks/useMemories.ts
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
 import {
@@ -12,6 +13,7 @@ import {
   clearFilters,
   clearError,
 } from '../store/slices/memoriesSlice';
+import { Memory, Comment, Reaction, CreateMemoryData } from '../types';
 
 export const useMemories = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -25,15 +27,17 @@ export const useMemories = () => {
     filters,
   } = useSelector((state: RootState) => state.memories);
 
-  const loadMemories = async (pageId: string) => {
-    return await dispatch(fetchMemories(pageId));
+  const loadMemories = async (params: { pageId?: string; page: number; limit: number; search?: string; mediaType?: string; tags?: string[]; sortBy?: string }) => {
+    return await dispatch(fetchMemories(params));
   };
+  
 
-  const createNewMemory = async (memoryData: FormData) => {
+  // Corregido: createMemory espera CreateMemoryData, no FormData
+  const createNewMemory = async (memoryData: CreateMemoryData) => {
     return await dispatch(createMemory(memoryData));
   };
 
-  const updateExistingMemory = async (id: string, memoryData: any) => {
+  const updateExistingMemory = async (id: string, memoryData: Partial<Memory>) => {  //aqii antes CreateMemoryData
     return await dispatch(updateMemory({ id, memoryData }));
   };
 
@@ -49,11 +53,11 @@ export const useMemories = () => {
     return await dispatch(addReaction(reactionData));
   };
 
-  const setMemory = (memory: any) => {
+  const setMemory = (memory: Memory | null) => {
     dispatch(setCurrentMemory(memory));
   };
 
-  const updateFilters = (newFilters: any) => {
+  const updateFilters = (newFilters: Partial<RootState['memories']['filters']>) => {
     dispatch(setFilters(newFilters));
   };
 
@@ -66,20 +70,20 @@ export const useMemories = () => {
   };
 
   // Helper functions
-  const getMemoryById = (id: string) => {
-    return memories.find(memory => memory.id === id);
+  const getMemoryById = (id: string): Memory | undefined => {
+    return memories.find((memory: Memory) => memory.id === id);
   };
 
-  const getCommentsByMemoryId = (memoryId: string) => {
-    return comments.filter(comment => comment.memoryId === memoryId);
+  const getCommentsByMemoryId = (memoryId: string): Comment[] => {
+    return comments.filter((comment: Comment) => comment.memoryId === memoryId);
   };
 
-  const getReactionsByReferenceId = (referenceId: string) => {
-    return reactions.filter(reaction => reaction.referenceId === referenceId);
+  const getReactionsByReferenceId = (referenceId: string): Reaction[] => {
+    return reactions.filter((reaction: Reaction) => reaction.referenceId === referenceId);
   };
 
-  const getFilteredMemories = () => {
-    let filtered = [...memories];
+  const getFilteredMemories = (): Memory[] => {
+    let filtered: Memory[] = [...memories];
 
     // Search filter
     if (filters.search) {
@@ -92,23 +96,21 @@ export const useMemories = () => {
     }
 
     // Tags filter
-    if (filters.tags.length > 0) {
+    if (filters.tags && filters.tags.length > 0) {
       filtered = filtered.filter(memory =>
         filters.tags.some(tag => memory.tags.includes(tag))
       );
     }
 
     // Media type filter
-    if (filters.mediaType.length > 0) {
-      filtered = filtered.filter(memory =>
-        filters.mediaType.includes(memory.mediaType)
-      );
+    if (filters.mediaType) {
+      filtered = filtered.filter(memory => memory.mediaType === filters.mediaType);//otra posible correccion
     }
 
     // Date range filter
     if (filters.dateRange) {
       filtered = filtered.filter(memory => {
-        const memoryDate = new Date(memory.date);
+        const memoryDate = new Date(memory.createdAt); // Corregido: usar createdAt en lugar de date
         const startDate = new Date(filters.dateRange!.start);
         const endDate = new Date(filters.dateRange!.end);
         return memoryDate >= startDate && memoryDate <= endDate;
@@ -118,13 +120,13 @@ export const useMemories = () => {
     return filtered;
   };
 
-  const getMemoriesByType = (type: 'IMAGE' | 'VIDEO' | 'AUDIO') => {
-    return memories.filter(memory => memory.mediaType === type);
+  const getMemoriesByType = (type: 'IMAGE' | 'VIDEO' | 'AUDIO'): Memory[] => {
+    return memories.filter((memory: Memory) => memory.mediaType === type);
   };
 
-  const getRecentMemories = (limit: number = 10) => {
+  const getRecentMemories = (limit: number = 10): Memory[] => {
     return memories
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .sort((a: Memory, b: Memory) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .slice(0, limit);
   };
 
@@ -137,7 +139,7 @@ export const useMemories = () => {
     isLoading,
     error,
     filters,
-    
+
     // Actions
     loadMemories,
     createNewMemory,
@@ -149,7 +151,7 @@ export const useMemories = () => {
     updateFilters,
     resetFilters,
     clearMemoriesError,
-    
+
     // Helpers
     getMemoryById,
     getCommentsByMemoryId,

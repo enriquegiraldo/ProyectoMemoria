@@ -6,7 +6,7 @@ import { useAuth } from '../../../hooks/useAuth';
 import { useAnalytics } from '../../../hooks/useAnalytics';
 import { AnalyticsDashboard } from '../../../components/analytics/AnalyticsDashboard';
 import { Card } from '../../../components/ui/Card';
-import { Button } from '../../../components/ui/Button';
+import Button  from '../../../components/ui/Button';
 import { 
   BarChart3, 
   Users, 

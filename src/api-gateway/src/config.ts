@@ -1,4 +1,5 @@
 import { z } from 'zod';
+// @ts-ignore
 import dotenv from 'dotenv';
 
 dotenv.config();

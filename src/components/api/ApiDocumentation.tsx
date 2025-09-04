@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card } from '../ui/Card';
-import { Button } from '../ui/Button';
+import  Button  from '../ui/Button';
 import { BookOpen, Code, Copy, Check } from 'lucide-react';
 
 interface CodeExample {

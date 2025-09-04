@@ -1,3 +1,4 @@
+// src/hooks/useGamification.ts
 import { useState, useEffect, useCallback } from 'react';
 import { GamificationService, type UserPoints, type Badge, type UserBadge, type Mission, type UserMission } from '../services/gamificationService';
 import { useAuth } from './useAuth';
@@ -224,3 +225,6 @@ export function useGamification(): UseGamificationReturn {
     formatPoints,
   };
 }
+
+
+//

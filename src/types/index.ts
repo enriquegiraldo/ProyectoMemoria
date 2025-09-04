@@ -1,3 +1,4 @@
+// src/types/index.ts
 // Tipos de usuario
 export interface User {
   id: string;
@@ -6,6 +7,8 @@ export interface User {
   role: UserRole;
   profile?: UserProfile;
   pageId?: string;
+  canEdit?: boolean;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -251,3 +254,55 @@ export interface BackupData {
   reactions: Reaction[];
   users: User[];
 }
+export interface UpdateMemoryData {
+  title?: string;
+  description?: string;
+  mediaUrl?: string;
+  mediaType?: MediaType;
+  tags?: string[];
+}
+
+export interface CreateCommentData {
+  content: string;
+  authorId: string;
+  memoryId: string;
+  parentCommentId?: string;
+}
+export interface MemoriesState {
+  memories: Memory[];
+  comments: Comment[];
+  reactions: Reaction[];
+  currentMemory: Memory | null;
+  isLoading: boolean;
+  error: string | null;
+  filters: {
+    search: string;
+    tags: string[];
+    mediaType: string | undefined;
+    dateRange: { start: string; end: string } | null;
+    sortBy?: 'string' | 'date' | 'popularity' | 'relevance' | 'author' | 'title';
+    sortOrder?: 'asc' | 'desc';
+  };
+};
+
+// Interfaz para las memorias en el estado del cliente
+export interface ClientMemory {
+  id: number;
+  type: 'photo' | 'message';
+  author: string;
+  content: string;
+  imageUrl?: string;
+  date: string;
+  relationship: string;
+};
+
+// Tipos para creación de memorias
+export interface CreateMemoryData {
+  title: string;
+  description: string;
+  mediaUrl: string;
+  mediaType: MediaType;
+  authorId: string;
+  pageId: string;
+  tags: string[];
+};

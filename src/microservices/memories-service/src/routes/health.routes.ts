@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { config } from '../config';
-import { logger } from '../utils/logger';
+import { config } from '@/config';
+import { logger } from '@/utils/logger';
 
 const router = Router();
 
