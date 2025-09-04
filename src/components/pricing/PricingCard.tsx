@@ -1,7 +1,8 @@
+// src/components/pricing/PricingCard.tsx
 import React from 'react';
 import { Check, X } from 'lucide-react';
 import { SUBSCRIPTION_PLANS, type SubscriptionPlanId } from '../../lib/stripe';
-import  Button  from '../ui/Button';
+import Button from '../ui/Button';
 
 interface PricingCardProps {
   planId: SubscriptionPlanId;
@@ -41,12 +42,12 @@ export function PricingCard({
     return 'Seleccionar Plan';
   };
 
-  const getButtonVariant = () => {
+  const getButtonVariant = (): 'outline' | 'primary' | 'secondary' | 'ghost' | 'danger' | undefined => {
     if (isCurrentPlan && isPlanActive) {
       return 'secondary';
     }
     if (isPopular) {
-      return 'default';
+      return 'primary'; // Cambiado de 'default' a 'primary'
     }
     return 'outline';
   };
@@ -54,11 +55,11 @@ export function PricingCard({
   const isButtonDisabled = isLoading || (isCurrentPlan && isPlanActive);
 
   return (
-    <div className={`relative rounded-lg border p-6 shadow-sm transition-all hover:shadow-md ${
-      isPopular 
-        ? 'border-primary bg-primary/5' 
-        : 'border-border bg-card'
-    }`}>
+    <div
+      className={`relative rounded-lg border p-6 shadow-sm transition-all hover:shadow-md ${
+        isPopular ? 'border-primary bg-primary/5' : 'border-border bg-card'
+      }`}
+    >
       {isPopular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
           <span className="rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
@@ -70,12 +71,8 @@ export function PricingCard({
       <div className="mb-4">
         <h3 className="text-lg font-semibold">{plan.name}</h3>
         <div className="mt-2">
-          <span className="text-3xl font-bold">
-            ${plan.price}
-          </span>
-          {plan.price > 0 && (
-            <span className="text-muted-foreground">/mes</span>
-          )}
+          <span className="text-3xl font-bold">${plan.price}</span>
+          {plan.price > 0 && <span className="text-muted-foreground">/mes</span>}
         </div>
         {plan.price === 0 && (
           <p className="text-sm text-muted-foreground">Para siempre</p>

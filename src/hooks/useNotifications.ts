@@ -1,3 +1,4 @@
+// src/hooks/useNotifications.ts
 import { useState, useEffect, useCallback } from 'react';
 import { NotificationService, type Notification } from '../services/notificationService';
 import { useAuth } from './useAuth';
@@ -8,13 +9,14 @@ export interface UseNotificationsReturn {
   unreadCount: number;
   isLoading: boolean;
   error: string | null;
-  
+
   // Acciones
   markAsRead: (notificationId: string) => Promise<void>;
   markAllAsRead: () => Promise<void>;
   refreshNotifications: () => Promise<void>;
   subscribeToPush: () => Promise<boolean>;
-  
+  removeNotification: (notificationId: string) => Promise<void>;
+
   // Utilidades
   formatTime: (date: string) => string;
   getNotificationIcon: (type: Notification['type']) => string;
@@ -56,14 +58,14 @@ export function useNotifications(): UseNotificationsReturn {
     try {
       const success = await NotificationService.markAsRead(notificationId);
       if (success) {
-        setNotifications(prev => 
-          prev.map(notification => 
-            notification.id === notificationId 
+        setNotifications((prev) =>
+          prev.map((notification) =>
+            notification.id === notificationId
               ? { ...notification, is_read: true, read_at: new Date().toISOString() }
               : notification
           )
         );
-        setUnreadCount(prev => Math.max(0, prev - 1));
+        setUnreadCount((prev) => Math.max(0, prev - 1));
       }
     } catch (err) {
       console.error('Error marking notification as read:', err);
@@ -77,8 +79,8 @@ export function useNotifications(): UseNotificationsReturn {
     try {
       const success = await NotificationService.markAllAsRead(user.id);
       if (success) {
-        setNotifications(prev => 
-          prev.map(notification => ({
+        setNotifications((prev) =>
+          prev.map((notification) => ({
             ...notification,
             is_read: true,
             read_at: new Date().toISOString(),
@@ -90,6 +92,21 @@ export function useNotifications(): UseNotificationsReturn {
       console.error('Error marking all notifications as read:', err);
     }
   }, [user?.id]);
+
+  // Eliminar una notificación
+  const removeNotification = useCallback(async (notificationId: string) => {
+    try {
+      const success = await NotificationService.deleteNotification(notificationId);
+      if (success) {
+        setNotifications((prev) => prev.filter((notification) => notification.id !== notificationId));
+        setUnreadCount((prev) =>
+          Math.max(0, prev - (notifications.find((n) => n.id === notificationId && !n.is_read) ? 1 : 0))
+        );
+      }
+    } catch (err) {
+      console.error('Error removing notification:', err);
+    }
+  }, [notifications]);
 
   // Refrescar notificaciones
   const refreshNotifications = useCallback(async () => {
@@ -120,13 +137,13 @@ export function useNotifications(): UseNotificationsReturn {
 
     if (diffInMinutes < 1) return 'Ahora mismo';
     if (diffInMinutes < 60) return `Hace ${diffInMinutes} min`;
-    
+
     const diffInHours = Math.floor(diffInMinutes / 60);
     if (diffInHours < 24) return `Hace ${diffInHours}h`;
-    
+
     const diffInDays = Math.floor(diffInHours / 24);
     if (diffInDays < 7) return `Hace ${diffInDays}d`;
-    
+
     return notificationDate.toLocaleDateString('es-ES', {
       day: 'numeric',
       month: 'short',
@@ -173,8 +190,8 @@ export function useNotifications(): UseNotificationsReturn {
     if (!user?.id) return;
 
     const channel = NotificationService.subscribeToNotifications(user.id, (newNotification) => {
-      setNotifications(prev => [newNotification, ...prev]);
-      setUnreadCount(prev => prev + 1);
+      setNotifications((prev) => [newNotification, ...prev]);
+      setUnreadCount((prev) => prev + 1);
     });
 
     return () => {
@@ -188,13 +205,14 @@ export function useNotifications(): UseNotificationsReturn {
     unreadCount,
     isLoading,
     error,
-    
+
     // Acciones
     markAsRead,
     markAllAsRead,
+    removeNotification,
     refreshNotifications,
     subscribeToPush,
-    
+
     // Utilidades
     formatTime,
     getNotificationIcon,
@@ -214,7 +232,7 @@ function subscribeToNotifications(userId: string, callback: (notification: Notif
         const now = new Date();
         const notificationDate = new Date(latest.created_at);
         const diffInMinutes = (now.getTime() - notificationDate.getTime()) / (1000 * 60);
-        
+
         // Solo notificar si es muy reciente (últimos 30 segundos)
         if (diffInMinutes < 0.5) {
           callback(latest);

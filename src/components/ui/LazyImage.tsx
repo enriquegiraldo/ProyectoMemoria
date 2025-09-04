@@ -1,3 +1,4 @@
+// src/components/ui/LazyImage.tsx
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
@@ -28,12 +29,12 @@ const LazyImage: React.FC<LazyImageProps> = ({
   quality = 80,
   priority = false,
   onLoad,
-  onError
+  onError,
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [currentSrc, setCurrentSrc] = useState(priority ? src : placeholder);
-  const imgRef = useRef<HTMLImageElement>(null);
+  const imgRef = useRef<HTMLImageElement | null>(null); // Cambiado a MutableRefObject
 
   // Intersection observer para lazy loading
   const { ref: inViewRef, inView } = useInView({
@@ -44,7 +45,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
 
   // Combinar refs
   const combinedRef = (node: HTMLImageElement | null) => {
-    imgRef.current = node;
+    imgRef.current = node; // Ahora permitido porque imgRef es mutable
     inViewRef(node);
   };
 
@@ -77,12 +78,12 @@ const LazyImage: React.FC<LazyImageProps> = ({
     if (imageSrc.includes('cloudinary.com')) {
       const baseUrl = imageSrc.split('/upload/')[0];
       const imagePath = imageSrc.split('/upload/')[1];
-      
+
       let transformations = 'f_auto,q_auto';
       if (width) transformations += `,w_${width}`;
       if (height) transformations += `,h_${height}`;
       if (quality) transformations += `,q_${quality}`;
-      
+
       return `${baseUrl}/upload/${transformations}/${imagePath}`;
     }
     return imageSrc;
@@ -131,13 +132,13 @@ const LazyImage: React.FC<LazyImageProps> = ({
             onLoad={handleLoad}
             onError={handleError}
             initial={{ opacity: 0, scale: 1.05 }}
-            animate={{ 
+            animate={{
               opacity: isLoaded ? 1 : 0,
-              scale: isLoaded ? 1 : 1.05
+              scale: isLoaded ? 1 : 1.05,
             }}
-            transition={{ 
+            transition={{
               duration: 0.5,
-              ease: 'easeOut'
+              ease: 'easeOut',
             }}
             className="w-full h-full object-cover"
             loading={priority ? 'eager' : 'lazy'}
@@ -187,13 +188,13 @@ export const AvatarImage: React.FC<{
   const sizeClasses = {
     sm: 'w-8 h-8',
     md: 'w-12 h-12',
-    lg: 'w-16 h-16'
+    lg: 'w-16 h-16',
   };
 
   const dimensions = {
     sm: 32,
     md: 48,
-    lg: 64
+    lg: 64,
   };
 
   return (
@@ -216,10 +217,7 @@ export const GalleryImage: React.FC<{
   className?: string;
   onClick?: () => void;
 }> = ({ src, alt, className = '', onClick }) => (
-  <div 
-    className={`cursor-pointer group ${className}`}
-    onClick={onClick}
-  >
+  <div className={`cursor-pointer group ${className}`} onClick={onClick}>
     <LazyImage
       src={src}
       alt={alt}

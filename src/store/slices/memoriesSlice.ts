@@ -1,6 +1,6 @@
 // src/store/slices/memoriesSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { Memory, Comment, Reaction, MemoriesState, CreateMemoryData, UpdateMemoryData, CreateCommentData } from '../../types';
+import { Memory, Comment, Reaction, CreateMemoryData } from '../../types';
 import { MemoriesService, MemoriesFilter } from '../../services/memoriesService';
 
 export interface MemoriesState {
@@ -13,8 +13,9 @@ export interface MemoriesState {
   filters: {
     search: string;
     tags: string[];
-    mediaType: string[];
+    mediaType: string | undefined; // Cambiado de string[] a string | undefined
     dateRange: { start: string; end: string } | null;
+    sortBy?: string; // Agregado para soportar ordenamiento
   };
 }
 
@@ -28,8 +29,9 @@ const initialState: MemoriesState = {
   filters: {
     search: '',
     tags: [],
-    mediaType: [],
+    mediaType: undefined, // Cambiado de [] a undefined
     dateRange: null,
+    sortBy: undefined, // Agregado
   },
 };
 
@@ -188,9 +190,7 @@ const memoriesSlice = createSlice({
       })
       .addCase(fetchMemories.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.memories = action.payload.memories;
-        state.comments = action.payload.comments;
-        state.reactions = action.payload.reactions;
+        state.memories = action.payload; // Corregido: asignar solo el arreglo de memorias
       })
       .addCase(fetchMemories.rejected, (state, action) => {
         state.isLoading = false;

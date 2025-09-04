@@ -1,3 +1,4 @@
+// src/services/notificationService.ts
 import { supabase } from '../lib/supabase';
 
 export interface Notification {
@@ -53,7 +54,7 @@ export class NotificationService {
         .from('notifications')
         .insert({
           ...notification,
-          created_at: new Date().toISOString()
+          created_at: new Date().toISOString(),
         })
         .select('id')
         .single();
@@ -72,7 +73,7 @@ export class NotificationService {
         .from('notifications')
         .update({
           is_read: true,
-          read_at: new Date().toISOString()
+          read_at: new Date().toISOString(),
         })
         .eq('id', notificationId);
 
@@ -90,7 +91,7 @@ export class NotificationService {
         .from('notifications')
         .update({
           is_read: true,
-          read_at: new Date().toISOString()
+          read_at: new Date().toISOString(),
         })
         .eq('user_id', userId)
         .eq('is_read', false);
@@ -99,6 +100,21 @@ export class NotificationService {
       return true;
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
+      return false;
+    }
+  }
+
+  static async deleteNotification(notificationId: string): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('id', notificationId);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error deleting notification:', error);
       return false;
     }
   }
@@ -114,4 +130,10 @@ export class NotificationService {
       return false;
     }
   }
+
+  // Placeholder para la suscripción en tiempo real
+  static subscribeToNotifications: (
+    userId: string,
+    callback: (notification: Notification) => void
+  ) => { unsubscribe: () => void };
 }

@@ -278,8 +278,10 @@ export interface MemoriesState {
   filters: {
     search: string;
     tags: string[];
-    mediaType: string[];
+    mediaType: string | undefined;
     dateRange: { start: string; end: string } | null;
+    sortBy?: 'string' | 'date' | 'popularity' | 'relevance' | 'author' | 'title';
+    sortOrder?: 'asc' | 'desc';
   };
 };
 

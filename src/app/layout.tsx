@@ -1,3 +1,4 @@
+// layout.tsx
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
@@ -6,7 +7,7 @@ import PWAInstallPrompt from '@/components/ui/PWAInstallPrompt'
 import OfflineIndicator from '@/components/ui/OfflineIndicator'
 import { initializePWA } from '@/lib/registerSW'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({ subsets: ['latin'], weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'] })
 
 export const metadata: Metadata = {
   title: 'Memoria Eterna',
