@@ -1,8 +1,8 @@
 // Logger
-export { logger } from './logger';
+export { default as logger } from './logger';
 
 // Metrics
-export { metrics } from './metrics';
+export { default as metrics } from './metrics';
 
 // Errors
 export {
@@ -35,12 +35,16 @@ export {
   amountSchema,
   currencySchema,
   paymentMethodSchema,
-  providerSchema,
-  refundReasonSchema,
+  paymentProviderSchema,
   subscriptionStatusSchema,
+  createPaymentIntentSchema,
+  createSubscriptionSchema,
+  createRefundSchema,
+  paymentQuerySchema,
+  subscriptionQuerySchema,
   validateCardNumber,
-  validateCVV,
-  validateExpirationDate
+  validateCvv,
+  validateExpiryDate
 } from './validation';
 
 // Authentication utilities
@@ -48,14 +52,14 @@ export {
   UserRole,
   Permission,
   rolePermissions,
-  generateJWT,
-  verifyJWT,
+  generateToken,
+  verifyToken,
   hashPassword,
   verifyPassword,
   hasPermission,
   hasRole,
-  isResourceOwner,
-  getRateLimitForRole,
+  canAccessResource,
+  getRateLimits,
   generateApiKey,
   validateApiKey,
   extractUserFromToken

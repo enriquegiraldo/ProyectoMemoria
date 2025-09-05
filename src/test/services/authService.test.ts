@@ -55,7 +55,7 @@ describe('AuthService', () => {
         error: null,
       });
 
-      const result = await AuthService.loginUser('test@example.com', 'password');
+      const result = await AuthService.login({ email: 'test@example.com', password: 'password' });
 
       expect(result.success).toBe(true);
       expect(result.user).toEqual(mockUser);
@@ -73,7 +73,7 @@ describe('AuthService', () => {
         error: mockError,
       });
 
-      const result = await AuthService.loginUser('test@example.com', 'password');
+      const result = await AuthService.login({ email: 'test@example.com', password: 'password' });
 
       expect(result.success).toBe(false);
       expect(result.error).toBe('Invalid credentials');
@@ -93,7 +93,7 @@ describe('AuthService', () => {
         error: null,
       });
 
-      const result = await AuthService.registerUser({
+      const result = await AuthService.register({
         email: 'test@example.com',
         password: 'password',
         name: 'Test User',
@@ -118,7 +118,7 @@ describe('AuthService', () => {
         error: mockError,
       });
 
-      const result = await AuthService.registerUser({
+      const result = await AuthService.register({
         email: 'test@example.com',
         password: 'password',
         name: 'Test User',
@@ -135,7 +135,7 @@ describe('AuthService', () => {
         error: null,
       });
 
-      const result = await AuthService.logoutUser();
+      const result = await AuthService.logout();
 
       expect(result.success).toBe(true);
       expect(supabase.auth.signOut).toHaveBeenCalled();
@@ -148,7 +148,7 @@ describe('AuthService', () => {
         error: mockError,
       });
 
-      const result = await AuthService.logoutUser();
+      const result = await AuthService.logout();
 
       expect(result.success).toBe(false);
       expect(result.error).toBe('Logout failed');
@@ -217,7 +217,7 @@ describe('AuthService', () => {
         }),
       });
 
-      const result = await AuthService.updateUserProfile('1', {
+      const result = await AuthService.updateProfile('1', {
         name: 'Updated Name',
         bio: 'Updated bio',
       });

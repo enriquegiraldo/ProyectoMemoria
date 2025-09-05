@@ -22,22 +22,22 @@ export class MediaService {
   // Validar tipo de archivo
   static validateFileType(file: File): ValidationResult {
     const fileType = file.type.toLowerCase();
-    
+
     if (ALLOWED_IMAGE_TYPES.includes(fileType)) {
-      return { isValid: true, mediaType: 'IMAGE' as MediaType };
+      return { isValid: true, errors: [], mediaType: 'IMAGE' as MediaType };
     }
-    
+
     if (ALLOWED_VIDEO_TYPES.includes(fileType)) {
-      return { isValid: true, mediaType: 'VIDEO' as MediaType };
+      return { isValid: true, errors: [], mediaType: 'VIDEO' as MediaType };
     }
-    
+
     if (ALLOWED_AUDIO_TYPES.includes(fileType)) {
-      return { isValid: true, mediaType: 'AUDIO' as MediaType };
+      return { isValid: true, errors: [], mediaType: 'AUDIO' as MediaType };
     }
-    
+
     return {
       isValid: false,
-      error: `Tipo de archivo no soportado. Tipos permitidos: ${[...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES, ...ALLOWED_AUDIO_TYPES].join(', ')}`
+      errors: [`Tipo de archivo no soportado. Tipos permitidos: ${[...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES, ...ALLOWED_AUDIO_TYPES].join(', ')}`]
     };
   }
 
@@ -46,11 +46,11 @@ export class MediaService {
     if (file.size > MAX_FILE_SIZE) {
       return {
         isValid: false,
-        error: `El archivo es demasiado grande. Tamaño máximo: ${MAX_FILE_SIZE / (1024 * 1024)}MB`
+        errors: [`El archivo es demasiado grande. Tamaño máximo: ${MAX_FILE_SIZE / (1024 * 1024)}MB`]
       };
     }
-    
-    return { isValid: true };
+
+    return { isValid: true, errors: [] };
   }
 
   // Validar archivo completo
@@ -60,19 +60,19 @@ export class MediaService {
     if (!sizeValidation.isValid) {
       return sizeValidation;
     }
-    
+
     // Validar tipo
     const typeValidation = this.validateFileType(file);
     if (!typeValidation.isValid) {
       return typeValidation;
     }
-    
+
     return typeValidation;
   }
 
   // Subir archivo a Cloudinary
   static async uploadToCloudinary(
-    file: File, 
+    file: File,
     options: MediaUploadOptions = {}
   ): Promise<UploadResponse> {
     try {
@@ -80,7 +80,7 @@ export class MediaService {
       if (!validation.isValid) {
         return {
           success: false,
-          error: validation.error || 'Error de validación'
+          error: validation.errors?.[0] || 'Error de validación'
         };
       }
 
@@ -95,19 +95,19 @@ export class MediaService {
       formData.append('file', file);
       formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
       formData.append('cloud_name', CLOUDINARY_CLOUD_NAME);
-      
+
       if (options.folder) {
         formData.append('folder', options.folder);
       }
-      
+
       if (options.transformation) {
         formData.append('transformation', options.transformation);
       }
-      
+
       if (options.public_id) {
         formData.append('public_id', options.public_id);
       }
-      
+
       if (options.tags) {
         formData.append('tags', options.tags.join(','));
       }
@@ -125,12 +125,12 @@ export class MediaService {
       }
 
       const data = await response.json();
-      
+
       return {
         success: true,
         url: data.secure_url,
         publicId: data.public_id,
-        mediaType: validation.mediaType!,
+        mediaType: validation.mediaType || 'IMAGE',
         metadata: {
           width: data.width,
           height: data.height,
@@ -159,12 +159,12 @@ export class MediaService {
       if (!validation.isValid) {
         return {
           success: false,
-          error: validation.error || 'Error de validación'
+          error: validation.errors?.[0] || 'Error de validación'
         };
       }
 
       const fileName = path || `${Date.now()}-${file.name}`;
-      
+
       const { data, error } = await supabase.storage
         .from(bucket)
         .upload(fileName, file, {
@@ -187,7 +187,7 @@ export class MediaService {
         success: true,
         url: urlData.publicUrl,
         publicId: fileName,
-        mediaType: validation.mediaType!,
+        mediaType: validation.mediaType || 'IMAGE',
         metadata: {
           size: file.size,
           lastModified: file.lastModified,

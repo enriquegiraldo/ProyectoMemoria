@@ -306,3 +306,68 @@ export interface CreateMemoryData {
   pageId: string;
   tags: string[];
 };
+
+// Tipos de autenticación faltantes
+export interface AuthResponse {
+  success: boolean;
+  user?: User | null;
+  token?: string;
+  error?: string | { message: string; code?: string };
+  data?: any;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  role?: UserRole;
+  profile?: UserProfile;
+  pageId?: string;
+}
+
+// Tipos de páginas faltantes
+export interface CreatePageData {
+  title: string;
+  subtitle: string;
+  personName: string;
+  template: PageTemplate;
+  backgroundImage?: string;
+  backgroundVideo?: string;
+  birthDate?: string;
+  passingDate?: string;
+  ownerId: string;
+}
+
+export interface UpdatePageData {
+  title?: string;
+  subtitle?: string;
+  personName?: string;
+  template?: PageTemplate;
+  backgroundImage?: string;
+  backgroundVideo?: string;
+  birthDate?: string;
+  passingDate?: string;
+  qrCodeUrl?: string;
+  subscriptionStatus?: SubscriptionStatus;
+}
+
+// Tipos de media faltantes
+export interface UploadResponse {
+  success: boolean;
+  url?: string;
+  error?: string;
+  publicId?: string;
+  mediaType?: MediaType;
+}
+
+export interface ValidationResult {
+  isValid: boolean;
+  errors: string[];
+  mediaType?: MediaType;
+  error?: string;
+}
