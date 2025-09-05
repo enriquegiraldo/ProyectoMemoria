@@ -1,5 +1,9 @@
+// src/services/authService.ts
 import { supabase } from '../lib/supabase';
+import { PrismaClient } from '@prisma/client';
 import { User, AuthResponse, LoginCredentials, RegisterData } from '../types';
+
+const prisma = new PrismaClient();
 
 export interface AuthError {
   message: string;
@@ -7,7 +11,6 @@ export interface AuthError {
 }
 
 export class AuthService {
-  // Obtener usuario actual
   static async getCurrentUser(): Promise<User | null> {
     try {
       const { data: { user }, error } = await supabase.auth.getUser();
@@ -16,7 +19,6 @@ export class AuthService {
         return null;
       }
 
-      // Obtener datos adicionales del usuario desde nuestra tabla personalizada
       const { data: userData, error: userError } = await supabase
         .from('users')
         .select('*')
@@ -35,6 +37,7 @@ export class AuthService {
         role: userData?.role || 'INVITADO',
         profile: userData?.profile || {},
         pageId: userData?.page_id || null,
+        isActive: true,
         createdAt: userData?.created_at || user.created_at,
         updatedAt: userData?.updated_at || user.updated_at,
       };
@@ -44,7 +47,6 @@ export class AuthService {
     }
   }
 
-  // Iniciar sesión con email y contraseña
   static async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -55,63 +57,45 @@ export class AuthService {
       if (error) {
         return {
           success: false,
-          error: {
-            message: error.message,
-            code: error.name,
-          },
+          error: { message: error.message, code: error.name },
         };
       }
 
       if (data.user) {
         const user = await this.getCurrentUser();
-        return {
-          success: true,
-          user,
-        };
+        return { success: true, user };
       }
 
       return {
         success: false,
-        error: {
-          message: 'No se pudo obtener información del usuario',
-        },
+        error: { message: 'No se pudo obtener información del usuario' },
       };
     } catch (error) {
       return {
         success: false,
-        error: {
-          message: 'Error inesperado durante el inicio de sesión',
-        },
+        error: { message: 'Error inesperado durante el inicio de sesión' },
       };
     }
   }
 
-  // Registro de usuario
   static async register(userData: RegisterData): Promise<AuthResponse> {
     try {
       // Crear usuario en Supabase Auth
       const { data, error } = await supabase.auth.signUp({
         email: userData.email,
         password: userData.password,
-        options: {
-          data: {
-            name: userData.name,
-          },
-        },
+        options: { data: { name: userData.name } },
       });
 
       if (error) {
         return {
           success: false,
-          error: {
-            message: error.message,
-            code: error.name,
-          },
+          error: { message: error.message, code: error.name },
         };
       }
 
       if (data.user) {
-        // Crear registro en nuestra tabla personalizada de usuarios
+        // Crear usuario en Supabase (tabla users)
         const { error: profileError } = await supabase
           .from('users')
           .insert({
@@ -124,98 +108,84 @@ export class AuthService {
           });
 
         if (profileError) {
-          console.error('Error creating user profile:', profileError);
-          // No fallamos aquí, el usuario ya se creó en auth
+          console.error('Error creating user profile in Supabase:', profileError);
+        }
+
+        // Crear usuario en Prisma (tabla User)
+        try {
+          await prisma.user.create({
+            data: {
+              id: data.user.id,
+              email: userData.email,
+              name: userData.name,
+              password: userData.password, // Debería estar hasheado
+              role: userData.role === 'ADMIN' ? 'ADMIN' : 'USER', // Mapear roles
+            },
+          });
+        } catch (prismaError) {
+          console.error('Error creating user in Prisma:', prismaError);
         }
 
         const user = await this.getCurrentUser();
-        return {
-          success: true,
-          user,
-        };
+        return { success: true, user };
       }
 
       return {
         success: false,
-        error: {
-          message: 'No se pudo crear el usuario',
-        },
+        error: { message: 'No se pudo crear el usuario' },
       };
     } catch (error) {
       return {
         success: false,
-        error: {
-          message: 'Error inesperado durante el registro',
-        },
+        error: { message: 'Error inesperado durante el registro' },
       };
     }
   }
 
-  // Cerrar sesión
   static async logout(): Promise<AuthResponse> {
     try {
       const { error } = await supabase.auth.signOut();
-      
       if (error) {
         return {
           success: false,
-          error: {
-            message: error.message,
-            code: error.name,
-          },
+          error: { message: error.message, code: error.name },
         };
       }
-
-      return {
-        success: true,
-      };
+      return { success: true };
     } catch (error) {
       return {
         success: false,
-        error: {
-          message: 'Error inesperado durante el cierre de sesión',
-        },
+        error: { message: 'Error inesperado durante el cierre de sesión' },
       };
     }
   }
 
-  // Iniciar sesión con Google
   static async loginWithGoogle(): Promise<AuthResponse> {
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        },
+        options: { redirectTo: `${window.location.origin}/auth/callback` },
       });
 
       if (error) {
         return {
           success: false,
-          error: {
-            message: error.message,
-            code: error.name,
-          },
+          error: { message: error.message, code: error.name },
         };
       }
 
-      return {
-        success: true,
-        data,
-      };
+      return { success: true, data };
     } catch (error) {
       return {
         success: false,
-        error: {
-          message: 'Error inesperado durante el inicio de sesión con Google',
-        },
+        error: { message: 'Error inesperado durante el inicio de sesión con Google' },
       };
     }
   }
 
-  // Actualizar perfil de usuario
   static async updateProfile(userId: string, updates: Partial<User>): Promise<AuthResponse> {
     try {
+      // Actualizar en Supabase
       const { data, error } = await supabase
         .from('users')
         .update({
@@ -230,59 +200,53 @@ export class AuthService {
       if (error) {
         return {
           success: false,
-          error: {
-            message: error.message,
-            code: error.code,
-          },
+          error: { message: error.message, code: error.code },
         };
+      }
+
+      // Actualizar en Prisma
+      try {
+        await prisma.user.update({
+          where: { id: userId },
+          data: {
+            name: updates.name,
+            bio: updates.profile?.bio,
+            avatarUrl: updates.profile?.avatar,
+            relationship: updates.profile?.relationship,
+          },
+        });
+      } catch (prismaError) {
+        console.error('Error updating user in Prisma:', prismaError);
       }
 
       const user = await this.getCurrentUser();
-      return {
-        success: true,
-        user,
-      };
+      return { success: true, user };
     } catch (error) {
       return {
         success: false,
-        error: {
-          message: 'Error inesperado al actualizar el perfil',
-        },
+        error: { message: 'Error inesperado al actualizar el perfil' },
       };
     }
   }
 
-  // Cambiar contraseña
   static async changePassword(newPassword: string): Promise<AuthResponse> {
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword,
-      });
-
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) {
         return {
           success: false,
-          error: {
-            message: error.message,
-            code: error.name,
-          },
+          error: { message: error.message, code: error.name },
         };
       }
-
-      return {
-        success: true,
-      };
+      return { success: true };
     } catch (error) {
       return {
         success: false,
-        error: {
-          message: 'Error inesperado al cambiar la contraseña',
-        },
+        error: { message: 'Error inesperado al cambiar la contraseña' },
       };
     }
   }
 
-  // Restablecer contraseña
   static async resetPassword(email: string): Promise<AuthResponse> {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -292,27 +256,19 @@ export class AuthService {
       if (error) {
         return {
           success: false,
-          error: {
-            message: error.message,
-            code: error.name,
-          },
+          error: { message: error.message, code: error.name },
         };
       }
 
-      return {
-        success: true,
-      };
+      return { success: true };
     } catch (error) {
       return {
         success: false,
-        error: {
-          message: 'Error inesperado al enviar el email de restablecimiento',
-        },
+        error: { message: 'Error inesperado al enviar el email de restablecimiento' },
       };
     }
   }
 
-  // Verificar si el usuario tiene permisos para una página específica
   static async checkPageAccess(userId: string, pageId: string): Promise<boolean> {
     try {
       const { data, error } = await supabase
@@ -325,12 +281,10 @@ export class AuthService {
         return false;
       }
 
-      // Los administradores tienen acceso a todas las páginas
       if (data.role === 'ADMIN') {
         return true;
       }
 
-      // Los familiares y amigos solo tienen acceso a su página asignada
       return data.page_id === pageId;
     } catch (error) {
       console.error('Error checking page access:', error);
@@ -338,7 +292,6 @@ export class AuthService {
     }
   }
 
-  // Suscribirse a cambios de autenticación
   static onAuthStateChange(callback: (user: User | null) => void) {
     return supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {

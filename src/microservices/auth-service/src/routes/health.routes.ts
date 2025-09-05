@@ -1,3 +1,4 @@
+// src/microservices/auth-service/src/routes/health.routes.ts
 import { Router } from 'express';
 import { createClient } from '@supabase/supabase-js';
 import { config } from '@/config';

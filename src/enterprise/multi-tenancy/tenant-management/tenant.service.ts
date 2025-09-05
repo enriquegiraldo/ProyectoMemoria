@@ -1,3 +1,4 @@
+// src/enterprise/multi-tenancy/tenant-management/tenant.service.ts
 import crypto from 'crypto';
 
 export interface Tenant {
@@ -154,7 +155,7 @@ export class TenantService {
   }
 
   async getTenantByDomain(domain: string): Promise<Tenant | null> {
-    for (const tenant of this.tenants.values()) {
+    for (const tenant of Array.from(this.tenants.values())) {
       if (tenant.domain === domain || tenant.subdomain === domain) {
         return tenant;
       }
@@ -332,7 +333,7 @@ export class TenantService {
   async inviteUser(
     tenantId: string,
     email: string,
-    role: TenantUser['role'],
+    role: TenantInvitation['role'],
     invitedBy: string
   ): Promise<string> {
     const invitation: TenantInvitation = {

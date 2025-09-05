@@ -25,14 +25,22 @@ export const useAuth = () => {
     dispatch(clearError());
   };
 
-  const hasRole = (role: string) => {
-    return user?.role === role;
+  // Mapear roles de Supabase a Prisma para compatibilidad
+  const mapRoleToPrisma = (role: string): string => {
+    if (role === 'ADMIN') return 'ADMIN';
+    if (role === 'MODERATOR') return 'MODERATOR';
+    return 'USER';
   };
 
-  const isAdmin = () => hasRole('ADMIN');
-  const isFamiliar = () => hasRole('FAMILIAR');
-  const isAmigo = () => hasRole('AMIGO');
-  const isInvitado = () => hasRole('INVITADO');
+  const hasRole = (role: string) => {
+    if (!user?.role) return false;
+    return mapRoleToPrisma(user.role) === role || user.role === role;
+  };
+
+  const isAdmin = () => user?.role === 'ADMIN';
+  const isFamiliar = () => user?.role === 'FAMILIAR';
+  const isAmigo = () => user?.role === 'AMIGO';
+  const isInvitado = () => user?.role === 'INVITADO';
 
   const canEdit = () => isAdmin() || isFamiliar();
   const canComment = () => isAuthenticated && !isInvitado();
