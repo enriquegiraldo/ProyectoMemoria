@@ -1,0 +1,2687 @@
+<testsuites id="" name="" tests="140" failures="135" skipped="0" errors="0" time="311.353039">
+<testsuite name="auth.spec.ts" timestamp="2025-09-04T19:28:11.198Z" hostname="chromium" tests="10" failures="9" skipped="0" time="288.886" errors="0">
+<testcase name="Authentication › should navigate to login page" classname="auth.spec.ts" time="32.022">
+<failure message="auth.spec.ts:8:7 should navigate to login page" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:8:7 › Authentication › should navigate to login page ───────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="login-link"]')
+
+
+       7 |
+       8 |   test('should navigate to login page', async ({ page }) => {
+    >  9 |     await page.click('[data-testid="login-link"]');
+         |                ^
+      10 |     
+      11 |     await expect(page).toHaveURL(/.*login/);
+      12 |     await expect(page.locator('h1')).toContainText('Iniciar Sesión');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:9:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should navigate to register page" classname="auth.spec.ts" time="32.045">
+<failure message="auth.spec.ts:15:7 should navigate to register page" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:15:7 › Authentication › should navigate to register page ───────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="register-link"]')
+
+
+      14 |
+      15 |   test('should navigate to register page', async ({ page }) => {
+    > 16 |     await page.click('[data-testid="register-link"]');
+         |                ^
+      17 |     
+      18 |     await expect(page).toHaveURL(/.*register/);
+      19 |     await expect(page.locator('h1')).toContainText('Registrarse');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should show validation errors for invalid login" classname="auth.spec.ts" time="32.078">
+<failure message="auth.spec.ts:22:7 should show validation errors for invalid login" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:22:7 › Authentication › should show validation errors for invalid login 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="login-button"]')
+
+
+      24 |     
+      25 |     // Intentar login sin datos
+    > 26 |     await page.click('[data-testid="login-button"]');
+         |                ^
+      27 |     
+      28 |     await expect(page.locator('[data-testid="email-error"]')).toBeVisible();
+      29 |     await expect(page.locator('[data-testid="password-error"]')).toBeVisible();
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:26:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should show validation errors for invalid registration" classname="auth.spec.ts" time="31.995">
+<failure message="auth.spec.ts:32:7 should show validation errors for invalid registration" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:32:7 › Authentication › should show validation errors for invalid registration 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="name-input"]')
+
+
+      34 |     
+      35 |     // Intentar registro con datos inválidos
+    > 36 |     await page.fill('[data-testid="name-input"]', '');
+         |                ^
+      37 |     await page.fill('[data-testid="email-input"]', 'invalid-email');
+      38 |     await page.fill('[data-testid="password-input"]', 'weak');
+      39 |     
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:36:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should successfully register new user" classname="auth.spec.ts" time="32.107">
+<failure message="auth.spec.ts:47:7 should successfully register new user" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:47:7 › Authentication › should successfully register new user ──────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="name-input"]')
+
+
+      50 |     const testEmail = `test-${Date.now()}@example.com`;
+      51 |     
+    > 52 |     await page.fill('[data-testid="name-input"]', 'Test User');
+         |                ^
+      53 |     await page.fill('[data-testid="email-input"]', testEmail);
+      54 |     await page.fill('[data-testid="password-input"]', 'TestPass123!');
+      55 |     await page.fill('[data-testid="confirm-password-input"]', 'TestPass123!');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:52:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should successfully login existing user" classname="auth.spec.ts" time="32.158">
+<failure message="auth.spec.ts:64:7 should successfully login existing user" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:64:7 › Authentication › should successfully login existing user ────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="email-input"]')
+
+
+      65 |     await page.goto('/login');
+      66 |     
+    > 67 |     await page.fill('[data-testid="email-input"]', 'test@example.com');
+         |                ^
+      68 |     await page.fill('[data-testid="password-input"]', 'TestPass123!');
+      69 |     
+      70 |     await page.click('[data-testid="login-button"]');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:67:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should logout successfully" classname="auth.spec.ts" time="31.246">
+<failure message="auth.spec.ts:77:7 should logout successfully" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:77:7 › Authentication › should logout successfully ─────────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="user-menu"]')
+
+
+      88 |     
+      89 |     await page.goto('/dashboard');
+    > 90 |     await page.click('[data-testid="user-menu"]');
+         |                ^
+      91 |     await page.click('[data-testid="logout-button"]');
+      92 |     
+      93 |     await expect(page).toHaveURL('/');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:90:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-logout-successfully-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-logout-successfully-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-logout-successfully-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should redirect to login when accessing protected route" classname="auth.spec.ts" time="2.629">
+</testcase>
+<testcase name="Authentication › should show password strength indicator" classname="auth.spec.ts" time="31.319">
+<failure message="auth.spec.ts:103:7 should show password strength indicator" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:103:7 › Authentication › should show password strength indicator ───────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="password-input"]')
+
+
+      107 |     
+      108 |     // Contraseña débil
+    > 109 |     await passwordInput.fill('weak');
+          |                         ^
+      110 |     await expect(page.locator('[data-testid="password-strength"]')).toHaveClass(/weak/);
+      111 |     
+      112 |     // Contraseña fuerte
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:109:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should toggle password visibility" classname="auth.spec.ts" time="31.287">
+<failure message="auth.spec.ts:117:7 should toggle password visibility" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.ts:117:7 › Authentication › should toggle password visibility ─────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="password-input"]')
+
+
+      121 |     const toggleButton = page.locator('[data-testid="password-toggle"]');
+      122 |     
+    > 123 |     await passwordInput.fill('testpassword');
+          |                         ^
+      124 |     
+      125 |     // Inicialmente oculto
+      126 |     await expect(passwordInput).toHaveAttribute('type', 'password');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:123:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-chromium\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-chromium\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="memories.spec.ts" timestamp="2025-09-04T19:28:11.198Z" hostname="chromium" tests="18" failures="18" skipped="0" time="0.135" errors="0">
+<testcase name="Memories › should display memories gallery" classname="memories.spec.ts" time="0.009">
+<failure message="memories.spec.ts:10:7 should display memories gallery" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:10:7 › Memories › should display memories gallery ──────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should open upload modal when add memory button is clicked" classname="memories.spec.ts" time="0.011">
+<failure message="memories.spec.ts:15:7 should open upload modal when add memory button is clicked" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:15:7 › Memories › should open upload modal when add memory button is clicked 
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should upload image memory successfully" classname="memories.spec.ts" time="0.009">
+<failure message="memories.spec.ts:22:7 should upload image memory successfully" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:22:7 › Memories › should upload image memory successfully ──────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should show validation errors for invalid upload" classname="memories.spec.ts" time="0.01">
+<failure message="memories.spec.ts:40:7 should show validation errors for invalid upload" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:40:7 › Memories › should show validation errors for invalid upload ─
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should search memories" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:50:7 should search memories" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:50:7 › Memories › should search memories ───────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should filter memories by media type" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:59:7 should filter memories by media type" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:59:7 › Memories › should filter memories by media type ─────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should like a memory" classname="memories.spec.ts" time="0.002">
+<failure message="memories.spec.ts:68:7 should like a memory" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:68:7 › Memories › should like a memory ─────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should add comment to memory" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:79:7 should add comment to memory" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:79:7 › Memories › should add comment to memory ─────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should edit memory" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:89:7 should edit memory" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:89:7 › Memories › should edit memory ───────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should delete memory" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:102:7 should delete memory" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:102:7 › Memories › should delete memory ────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should share memory" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:113:7 should share memory" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:113:7 › Memories › should share memory ─────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should generate QR code for memory" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:122:7 should generate QR code for memory" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:122:7 › Memories › should generate QR code for memory ──────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should view memory details" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:131:7 should view memory details" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:131:7 › Memories › should view memory details ──────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should navigate through memory gallery" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:140:7 should navigate through memory gallery" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:140:7 › Memories › should navigate through memory gallery ──────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle infinite scroll" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:155:7 should handle infinite scroll" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:155:7 › Memories › should handle infinite scroll ───────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle offline mode" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:165:7 should handle offline mode" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:165:7 › Memories › should handle offline mode ──────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle upload progress" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:174:7 should handle upload progress" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:174:7 › Memories › should handle upload progress ───────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle upload errors" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:189:7 should handle upload errors" type="FAILURE">
+<![CDATA[  [chromium] › memories.spec.ts:189:7 › Memories › should handle upload errors ─────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.ts" timestamp="2025-09-04T19:28:11.198Z" hostname="firefox" tests="10" failures="9" skipped="0" time="274.528" errors="0">
+<testcase name="Authentication › should navigate to login page" classname="auth.spec.ts" time="30.102">
+<failure message="auth.spec.ts:8:7 should navigate to login page" type="FAILURE">
+<![CDATA[  [firefox] › auth.spec.ts:8:7 › Authentication › should navigate to login page ────────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="login-link"]')
+
+
+       7 |
+       8 |   test('should navigate to login page', async ({ page }) => {
+    >  9 |     await page.click('[data-testid="login-link"]');
+         |                ^
+      10 |     
+      11 |     await expect(page).toHaveURL(/.*login/);
+      12 |     await expect(page.locator('h1')).toContainText('Iniciar Sesión');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:9:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-firefox\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-firefox\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should navigate to register page" classname="auth.spec.ts" time="30.104">
+<failure message="auth.spec.ts:15:7 should navigate to register page" type="FAILURE">
+<![CDATA[  [firefox] › auth.spec.ts:15:7 › Authentication › should navigate to register page ────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="register-link"]')
+
+
+      14 |
+      15 |   test('should navigate to register page', async ({ page }) => {
+    > 16 |     await page.click('[data-testid="register-link"]');
+         |                ^
+      17 |     
+      18 |     await expect(page).toHaveURL(/.*register/);
+      19 |     await expect(page.locator('h1')).toContainText('Registrarse');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-firefox\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-firefox\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should show validation errors for invalid login" classname="auth.spec.ts" time="30.094">
+<failure message="auth.spec.ts:22:7 should show validation errors for invalid login" type="FAILURE">
+<![CDATA[  [firefox] › auth.spec.ts:22:7 › Authentication › should show validation errors for invalid login ─
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="login-button"]')
+
+
+      24 |     
+      25 |     // Intentar login sin datos
+    > 26 |     await page.click('[data-testid="login-button"]');
+         |                ^
+      27 |     
+      28 |     await expect(page.locator('[data-testid="email-error"]')).toBeVisible();
+      29 |     await expect(page.locator('[data-testid="password-error"]')).toBeVisible();
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:26:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-firefox\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-firefox\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should show validation errors for invalid registration" classname="auth.spec.ts" time="30.082">
+<failure message="auth.spec.ts:32:7 should show validation errors for invalid registration" type="FAILURE">
+<![CDATA[  [firefox] › auth.spec.ts:32:7 › Authentication › should show validation errors for invalid registration 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="name-input"]')
+
+
+      34 |     
+      35 |     // Intentar registro con datos inválidos
+    > 36 |     await page.fill('[data-testid="name-input"]', '');
+         |                ^
+      37 |     await page.fill('[data-testid="email-input"]', 'invalid-email');
+      38 |     await page.fill('[data-testid="password-input"]', 'weak');
+      39 |     
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:36:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-firefox\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-firefox\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should successfully register new user" classname="auth.spec.ts" time="30.095">
+<failure message="auth.spec.ts:47:7 should successfully register new user" type="FAILURE">
+<![CDATA[  [firefox] › auth.spec.ts:47:7 › Authentication › should successfully register new user ───────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="name-input"]')
+
+
+      50 |     const testEmail = `test-${Date.now()}@example.com`;
+      51 |     
+    > 52 |     await page.fill('[data-testid="name-input"]', 'Test User');
+         |                ^
+      53 |     await page.fill('[data-testid="email-input"]', testEmail);
+      54 |     await page.fill('[data-testid="password-input"]', 'TestPass123!');
+      55 |     await page.fill('[data-testid="confirm-password-input"]', 'TestPass123!');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:52:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-firefox\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-firefox\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should successfully login existing user" classname="auth.spec.ts" time="30.093">
+<failure message="auth.spec.ts:64:7 should successfully login existing user" type="FAILURE">
+<![CDATA[  [firefox] › auth.spec.ts:64:7 › Authentication › should successfully login existing user ─────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="email-input"]')
+
+
+      65 |     await page.goto('/login');
+      66 |     
+    > 67 |     await page.fill('[data-testid="email-input"]', 'test@example.com');
+         |                ^
+      68 |     await page.fill('[data-testid="password-input"]', 'TestPass123!');
+      69 |     
+      70 |     await page.click('[data-testid="login-button"]');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:67:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-firefox\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-firefox\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should logout successfully" classname="auth.spec.ts" time="30.145">
+<failure message="auth.spec.ts:77:7 should logout successfully" type="FAILURE">
+<![CDATA[  [firefox] › auth.spec.ts:77:7 › Authentication › should logout successfully ──────────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="user-menu"]')
+
+
+      88 |     
+      89 |     await page.goto('/dashboard');
+    > 90 |     await page.click('[data-testid="user-menu"]');
+         |                ^
+      91 |     await page.click('[data-testid="logout-button"]');
+      92 |     
+      93 |     await expect(page).toHaveURL('/');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:90:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-logout-successfully-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-logout-successfully-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-logout-successfully-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-firefox\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-firefox\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should redirect to login when accessing protected route" classname="auth.spec.ts" time="3.593">
+</testcase>
+<testcase name="Authentication › should show password strength indicator" classname="auth.spec.ts" time="30.121">
+<failure message="auth.spec.ts:103:7 should show password strength indicator" type="FAILURE">
+<![CDATA[  [firefox] › auth.spec.ts:103:7 › Authentication › should show password strength indicator ────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="password-input"]')
+
+
+      107 |     
+      108 |     // Contraseña débil
+    > 109 |     await passwordInput.fill('weak');
+          |                         ^
+      110 |     await expect(page.locator('[data-testid="password-strength"]')).toHaveClass(/weak/);
+      111 |     
+      112 |     // Contraseña fuerte
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:109:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-firefox\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-firefox\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should toggle password visibility" classname="auth.spec.ts" time="30.099">
+<failure message="auth.spec.ts:117:7 should toggle password visibility" type="FAILURE">
+<![CDATA[  [firefox] › auth.spec.ts:117:7 › Authentication › should toggle password visibility ──────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="password-input"]')
+
+
+      121 |     const toggleButton = page.locator('[data-testid="password-toggle"]');
+      122 |     
+    > 123 |     await passwordInput.fill('testpassword');
+          |                         ^
+      124 |     
+      125 |     // Inicialmente oculto
+      126 |     await expect(passwordInput).toHaveAttribute('type', 'password');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:123:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-firefox\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-firefox\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-firefox\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-firefox\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-firefox\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-firefox\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="memories.spec.ts" timestamp="2025-09-04T19:28:11.198Z" hostname="firefox" tests="18" failures="18" skipped="0" time="0.16" errors="0">
+<testcase name="Memories › should display memories gallery" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:10:7 should display memories gallery" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:10:7 › Memories › should display memories gallery ───────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should open upload modal when add memory button is clicked" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:15:7 should open upload modal when add memory button is clicked" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:15:7 › Memories › should open upload modal when add memory button is clicked 
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should upload image memory successfully" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:22:7 should upload image memory successfully" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:22:7 › Memories › should upload image memory successfully ───────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should show validation errors for invalid upload" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:40:7 should show validation errors for invalid upload" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:40:7 › Memories › should show validation errors for invalid upload ──
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should search memories" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:50:7 should search memories" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:50:7 › Memories › should search memories ────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should filter memories by media type" classname="memories.spec.ts" time="0.009">
+<failure message="memories.spec.ts:59:7 should filter memories by media type" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:59:7 › Memories › should filter memories by media type ──────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should like a memory" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:68:7 should like a memory" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:68:7 › Memories › should like a memory ──────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should add comment to memory" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:79:7 should add comment to memory" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:79:7 › Memories › should add comment to memory ──────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should edit memory" classname="memories.spec.ts" time="0.011">
+<failure message="memories.spec.ts:89:7 should edit memory" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:89:7 › Memories › should edit memory ────────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should delete memory" classname="memories.spec.ts" time="0.012">
+<failure message="memories.spec.ts:102:7 should delete memory" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:102:7 › Memories › should delete memory ─────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should share memory" classname="memories.spec.ts" time="0.01">
+<failure message="memories.spec.ts:113:7 should share memory" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:113:7 › Memories › should share memory ──────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should generate QR code for memory" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:122:7 should generate QR code for memory" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:122:7 › Memories › should generate QR code for memory ───────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should view memory details" classname="memories.spec.ts" time="0.009">
+<failure message="memories.spec.ts:131:7 should view memory details" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:131:7 › Memories › should view memory details ───────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should navigate through memory gallery" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:140:7 should navigate through memory gallery" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:140:7 › Memories › should navigate through memory gallery ───────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle infinite scroll" classname="memories.spec.ts" time="0.009">
+<failure message="memories.spec.ts:155:7 should handle infinite scroll" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:155:7 › Memories › should handle infinite scroll ────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle offline mode" classname="memories.spec.ts" time="0.01">
+<failure message="memories.spec.ts:165:7 should handle offline mode" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:165:7 › Memories › should handle offline mode ───────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle upload progress" classname="memories.spec.ts" time="0.009">
+<failure message="memories.spec.ts:174:7 should handle upload progress" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:174:7 › Memories › should handle upload progress ────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle upload errors" classname="memories.spec.ts" time="0.013">
+<failure message="memories.spec.ts:189:7 should handle upload errors" type="FAILURE">
+<![CDATA[  [firefox] › memories.spec.ts:189:7 › Memories › should handle upload errors ──────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.ts" timestamp="2025-09-04T19:28:11.198Z" hostname="webkit" tests="10" failures="9" skipped="0" time="274.619" errors="0">
+<testcase name="Authentication › should navigate to login page" classname="auth.spec.ts" time="30.207">
+<failure message="auth.spec.ts:8:7 should navigate to login page" type="FAILURE">
+<![CDATA[  [webkit] › auth.spec.ts:8:7 › Authentication › should navigate to login page ─────────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="login-link"]')
+
+
+       7 |
+       8 |   test('should navigate to login page', async ({ page }) => {
+    >  9 |     await page.click('[data-testid="login-link"]');
+         |                ^
+      10 |     
+      11 |     await expect(page).toHaveURL(/.*login/);
+      12 |     await expect(page.locator('h1')).toContainText('Iniciar Sesión');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:9:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-webkit\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-webkit\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-webkit\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should navigate to register page" classname="auth.spec.ts" time="30.222">
+<failure message="auth.spec.ts:15:7 should navigate to register page" type="FAILURE">
+<![CDATA[  [webkit] › auth.spec.ts:15:7 › Authentication › should navigate to register page ─────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="register-link"]')
+
+
+      14 |
+      15 |   test('should navigate to register page', async ({ page }) => {
+    > 16 |     await page.click('[data-testid="register-link"]');
+         |                ^
+      17 |     
+      18 |     await expect(page).toHaveURL(/.*register/);
+      19 |     await expect(page.locator('h1')).toContainText('Registrarse');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-webkit\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-webkit\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-webkit\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should show validation errors for invalid login" classname="auth.spec.ts" time="30.231">
+<failure message="auth.spec.ts:22:7 should show validation errors for invalid login" type="FAILURE">
+<![CDATA[  [webkit] › auth.spec.ts:22:7 › Authentication › should show validation errors for invalid login ──
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="login-button"]')
+
+
+      24 |     
+      25 |     // Intentar login sin datos
+    > 26 |     await page.click('[data-testid="login-button"]');
+         |                ^
+      27 |     
+      28 |     await expect(page.locator('[data-testid="email-error"]')).toBeVisible();
+      29 |     await expect(page.locator('[data-testid="password-error"]')).toBeVisible();
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:26:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-webkit\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-webkit\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-webkit\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should show validation errors for invalid registration" classname="auth.spec.ts" time="30.316">
+<failure message="auth.spec.ts:32:7 should show validation errors for invalid registration" type="FAILURE">
+<![CDATA[  [webkit] › auth.spec.ts:32:7 › Authentication › should show validation errors for invalid registration 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="name-input"]')
+
+
+      34 |     
+      35 |     // Intentar registro con datos inválidos
+    > 36 |     await page.fill('[data-testid="name-input"]', '');
+         |                ^
+      37 |     await page.fill('[data-testid="email-input"]', 'invalid-email');
+      38 |     await page.fill('[data-testid="password-input"]', 'weak');
+      39 |     
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:36:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-webkit\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-webkit\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-webkit\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should successfully register new user" classname="auth.spec.ts" time="30.321">
+<failure message="auth.spec.ts:47:7 should successfully register new user" type="FAILURE">
+<![CDATA[  [webkit] › auth.spec.ts:47:7 › Authentication › should successfully register new user ────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="name-input"]')
+
+
+      50 |     const testEmail = `test-${Date.now()}@example.com`;
+      51 |     
+    > 52 |     await page.fill('[data-testid="name-input"]', 'Test User');
+         |                ^
+      53 |     await page.fill('[data-testid="email-input"]', testEmail);
+      54 |     await page.fill('[data-testid="password-input"]', 'TestPass123!');
+      55 |     await page.fill('[data-testid="confirm-password-input"]', 'TestPass123!');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:52:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-webkit\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-webkit\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-webkit\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should successfully login existing user" classname="auth.spec.ts" time="30.311">
+<failure message="auth.spec.ts:64:7 should successfully login existing user" type="FAILURE">
+<![CDATA[  [webkit] › auth.spec.ts:64:7 › Authentication › should successfully login existing user ──────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="email-input"]')
+
+
+      65 |     await page.goto('/login');
+      66 |     
+    > 67 |     await page.fill('[data-testid="email-input"]', 'test@example.com');
+         |                ^
+      68 |     await page.fill('[data-testid="password-input"]', 'TestPass123!');
+      69 |     
+      70 |     await page.click('[data-testid="login-button"]');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:67:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-webkit\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-webkit\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-webkit\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should logout successfully" classname="auth.spec.ts" time="30.188">
+<failure message="auth.spec.ts:77:7 should logout successfully" type="FAILURE">
+<![CDATA[  [webkit] › auth.spec.ts:77:7 › Authentication › should logout successfully ───────────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="user-menu"]')
+
+
+      88 |     
+      89 |     await page.goto('/dashboard');
+    > 90 |     await page.click('[data-testid="user-menu"]');
+         |                ^
+      91 |     await page.click('[data-testid="logout-button"]');
+      92 |     
+      93 |     await expect(page).toHaveURL('/');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:90:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-logout-successfully-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-logout-successfully-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-logout-successfully-webkit\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-webkit\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-webkit\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should redirect to login when accessing protected route" classname="auth.spec.ts" time="2.375">
+</testcase>
+<testcase name="Authentication › should show password strength indicator" classname="auth.spec.ts" time="30.221">
+<failure message="auth.spec.ts:103:7 should show password strength indicator" type="FAILURE">
+<![CDATA[  [webkit] › auth.spec.ts:103:7 › Authentication › should show password strength indicator ─────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="password-input"]')
+
+
+      107 |     
+      108 |     // Contraseña débil
+    > 109 |     await passwordInput.fill('weak');
+          |                         ^
+      110 |     await expect(page.locator('[data-testid="password-strength"]')).toHaveClass(/weak/);
+      111 |     
+      112 |     // Contraseña fuerte
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:109:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-webkit\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-webkit\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-webkit\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should toggle password visibility" classname="auth.spec.ts" time="30.227">
+<failure message="auth.spec.ts:117:7 should toggle password visibility" type="FAILURE">
+<![CDATA[  [webkit] › auth.spec.ts:117:7 › Authentication › should toggle password visibility ───────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="password-input"]')
+
+
+      121 |     const toggleButton = page.locator('[data-testid="password-toggle"]');
+      122 |     
+    > 123 |     await passwordInput.fill('testpassword');
+          |                         ^
+      124 |     
+      125 |     // Inicialmente oculto
+      126 |     await expect(passwordInput).toHaveAttribute('type', 'password');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:123:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-webkit\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-webkit\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-webkit\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-webkit\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-webkit\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-webkit\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="memories.spec.ts" timestamp="2025-09-04T19:28:11.198Z" hostname="webkit" tests="18" failures="18" skipped="0" time="0.099" errors="0">
+<testcase name="Memories › should display memories gallery" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:10:7 should display memories gallery" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:10:7 › Memories › should display memories gallery ────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should open upload modal when add memory button is clicked" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:15:7 should open upload modal when add memory button is clicked" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:15:7 › Memories › should open upload modal when add memory button is clicked 
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should upload image memory successfully" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:22:7 should upload image memory successfully" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:22:7 › Memories › should upload image memory successfully ────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should show validation errors for invalid upload" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:40:7 should show validation errors for invalid upload" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:40:7 › Memories › should show validation errors for invalid upload ───
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should search memories" classname="memories.spec.ts" time="0.003">
+<failure message="memories.spec.ts:50:7 should search memories" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:50:7 › Memories › should search memories ─────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should filter memories by media type" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:59:7 should filter memories by media type" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:59:7 › Memories › should filter memories by media type ───────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should like a memory" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:68:7 should like a memory" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:68:7 › Memories › should like a memory ───────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should add comment to memory" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:79:7 should add comment to memory" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:79:7 › Memories › should add comment to memory ───────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should edit memory" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:89:7 should edit memory" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:89:7 › Memories › should edit memory ─────────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should delete memory" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:102:7 should delete memory" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:102:7 › Memories › should delete memory ──────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should share memory" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:113:7 should share memory" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:113:7 › Memories › should share memory ───────────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should generate QR code for memory" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:122:7 should generate QR code for memory" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:122:7 › Memories › should generate QR code for memory ────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should view memory details" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:131:7 should view memory details" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:131:7 › Memories › should view memory details ────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should navigate through memory gallery" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:140:7 should navigate through memory gallery" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:140:7 › Memories › should navigate through memory gallery ────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle infinite scroll" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:155:7 should handle infinite scroll" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:155:7 › Memories › should handle infinite scroll ─────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle offline mode" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:165:7 should handle offline mode" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:165:7 › Memories › should handle offline mode ────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle upload progress" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:174:7 should handle upload progress" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:174:7 › Memories › should handle upload progress ─────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle upload errors" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:189:7 should handle upload errors" type="FAILURE">
+<![CDATA[  [webkit] › memories.spec.ts:189:7 › Memories › should handle upload errors ───────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.ts" timestamp="2025-09-04T19:28:11.198Z" hostname="Mobile Chrome" tests="10" failures="9" skipped="0" time="280.582" errors="0">
+<testcase name="Authentication › should navigate to login page" classname="auth.spec.ts" time="30.96">
+<failure message="auth.spec.ts:8:7 should navigate to login page" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth.spec.ts:8:7 › Authentication › should navigate to login page ──────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="login-link"]')
+
+
+       7 |
+       8 |   test('should navigate to login page', async ({ page }) => {
+    >  9 |     await page.click('[data-testid="login-link"]');
+         |                ^
+      10 |     
+      11 |     await expect(page).toHaveURL(/.*login/);
+      12 |     await expect(page.locator('h1')).toContainText('Iniciar Sesión');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:9:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-Mobile-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-Mobile-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-Mobile-Chrome\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-Mobile-Chrome\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-Mobile-Chrome\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-Mobile-Chrome\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should navigate to register page" classname="auth.spec.ts" time="31.052">
+<failure message="auth.spec.ts:15:7 should navigate to register page" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth.spec.ts:15:7 › Authentication › should navigate to register page ──────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="register-link"]')
+
+
+      14 |
+      15 |   test('should navigate to register page', async ({ page }) => {
+    > 16 |     await page.click('[data-testid="register-link"]');
+         |                ^
+      17 |     
+      18 |     await expect(page).toHaveURL(/.*register/);
+      19 |     await expect(page.locator('h1')).toContainText('Registrarse');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-Mobile-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-Mobile-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-Mobile-Chrome\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-Mobile-Chrome\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-Mobile-Chrome\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-Mobile-Chrome\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should show validation errors for invalid login" classname="auth.spec.ts" time="30.991">
+<failure message="auth.spec.ts:22:7 should show validation errors for invalid login" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth.spec.ts:22:7 › Authentication › should show validation errors for invalid login 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="login-button"]')
+
+
+      24 |     
+      25 |     // Intentar login sin datos
+    > 26 |     await page.click('[data-testid="login-button"]');
+         |                ^
+      27 |     
+      28 |     await expect(page.locator('[data-testid="email-error"]')).toBeVisible();
+      29 |     await expect(page.locator('[data-testid="password-error"]')).toBeVisible();
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:26:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-Mobile-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-Mobile-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-Mobile-Chrome\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-Mobile-Chrome\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-Mobile-Chrome\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-Mobile-Chrome\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should show validation errors for invalid registration" classname="auth.spec.ts" time="30.823">
+<failure message="auth.spec.ts:32:7 should show validation errors for invalid registration" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth.spec.ts:32:7 › Authentication › should show validation errors for invalid registration 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="name-input"]')
+
+
+      34 |     
+      35 |     // Intentar registro con datos inválidos
+    > 36 |     await page.fill('[data-testid="name-input"]', '');
+         |                ^
+      37 |     await page.fill('[data-testid="email-input"]', 'invalid-email');
+      38 |     await page.fill('[data-testid="password-input"]', 'weak');
+      39 |     
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:36:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-Mobile-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-Mobile-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-Mobile-Chrome\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-Mobile-Chrome\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-Mobile-Chrome\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-Mobile-Chrome\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should successfully register new user" classname="auth.spec.ts" time="30.888">
+<failure message="auth.spec.ts:47:7 should successfully register new user" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth.spec.ts:47:7 › Authentication › should successfully register new user ─────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="name-input"]')
+
+
+      50 |     const testEmail = `test-${Date.now()}@example.com`;
+      51 |     
+    > 52 |     await page.fill('[data-testid="name-input"]', 'Test User');
+         |                ^
+      53 |     await page.fill('[data-testid="email-input"]', testEmail);
+      54 |     await page.fill('[data-testid="password-input"]', 'TestPass123!');
+      55 |     await page.fill('[data-testid="confirm-password-input"]', 'TestPass123!');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:52:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-Mobile-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-Mobile-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-Mobile-Chrome\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-Mobile-Chrome\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-Mobile-Chrome\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-Mobile-Chrome\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should successfully login existing user" classname="auth.spec.ts" time="31.098">
+<failure message="auth.spec.ts:64:7 should successfully login existing user" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth.spec.ts:64:7 › Authentication › should successfully login existing user ───
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="email-input"]')
+
+
+      65 |     await page.goto('/login');
+      66 |     
+    > 67 |     await page.fill('[data-testid="email-input"]', 'test@example.com');
+         |                ^
+      68 |     await page.fill('[data-testid="password-input"]', 'TestPass123!');
+      69 |     
+      70 |     await page.click('[data-testid="login-button"]');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:67:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-Mobile-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-Mobile-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-Mobile-Chrome\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-Mobile-Chrome\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-Mobile-Chrome\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-Mobile-Chrome\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should logout successfully" classname="auth.spec.ts" time="31.277">
+<failure message="auth.spec.ts:77:7 should logout successfully" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth.spec.ts:77:7 › Authentication › should logout successfully ────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="user-menu"]')
+
+
+      88 |     
+      89 |     await page.goto('/dashboard');
+    > 90 |     await page.click('[data-testid="user-menu"]');
+         |                ^
+      91 |     await page.click('[data-testid="logout-button"]');
+      92 |     
+      93 |     await expect(page).toHaveURL('/');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:90:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-logout-successfully-Mobile-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-logout-successfully-Mobile-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-logout-successfully-Mobile-Chrome\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-Mobile-Chrome\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-Mobile-Chrome\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-Mobile-Chrome\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should redirect to login when accessing protected route" classname="auth.spec.ts" time="1.334">
+</testcase>
+<testcase name="Authentication › should show password strength indicator" classname="auth.spec.ts" time="31.125">
+<failure message="auth.spec.ts:103:7 should show password strength indicator" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth.spec.ts:103:7 › Authentication › should show password strength indicator ──
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="password-input"]')
+
+
+      107 |     
+      108 |     // Contraseña débil
+    > 109 |     await passwordInput.fill('weak');
+          |                         ^
+      110 |     await expect(page.locator('[data-testid="password-strength"]')).toHaveClass(/weak/);
+      111 |     
+      112 |     // Contraseña fuerte
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:109:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-Mobile-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-Mobile-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-Mobile-Chrome\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-Mobile-Chrome\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-Mobile-Chrome\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-Mobile-Chrome\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should toggle password visibility" classname="auth.spec.ts" time="31.034">
+<failure message="auth.spec.ts:117:7 should toggle password visibility" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › auth.spec.ts:117:7 › Authentication › should toggle password visibility ────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="password-input"]')
+
+
+      121 |     const toggleButton = page.locator('[data-testid="password-toggle"]');
+      122 |     
+    > 123 |     await passwordInput.fill('testpassword');
+          |                         ^
+      124 |     
+      125 |     // Inicialmente oculto
+      126 |     await expect(passwordInput).toHaveAttribute('type', 'password');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:123:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-Mobile-Chrome\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-Mobile-Chrome\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-Mobile-Chrome\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-Mobile-Chrome\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-Mobile-Chrome\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-Mobile-Chrome\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="memories.spec.ts" timestamp="2025-09-04T19:28:11.198Z" hostname="Mobile Chrome" tests="18" failures="18" skipped="0" time="0.131" errors="0">
+<testcase name="Memories › should display memories gallery" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:10:7 should display memories gallery" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:10:7 › Memories › should display memories gallery ─────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should open upload modal when add memory button is clicked" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:15:7 should open upload modal when add memory button is clicked" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:15:7 › Memories › should open upload modal when add memory button is clicked 
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should upload image memory successfully" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:22:7 should upload image memory successfully" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:22:7 › Memories › should upload image memory successfully ─────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should show validation errors for invalid upload" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:40:7 should show validation errors for invalid upload" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:40:7 › Memories › should show validation errors for invalid upload 
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should search memories" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:50:7 should search memories" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:50:7 › Memories › should search memories ──────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should filter memories by media type" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:59:7 should filter memories by media type" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:59:7 › Memories › should filter memories by media type ────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should like a memory" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:68:7 should like a memory" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:68:7 › Memories › should like a memory ────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should add comment to memory" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:79:7 should add comment to memory" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:79:7 › Memories › should add comment to memory ────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should edit memory" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:89:7 should edit memory" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:89:7 › Memories › should edit memory ──────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should delete memory" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:102:7 should delete memory" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:102:7 › Memories › should delete memory ───────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should share memory" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:113:7 should share memory" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:113:7 › Memories › should share memory ────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should generate QR code for memory" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:122:7 should generate QR code for memory" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:122:7 › Memories › should generate QR code for memory ─────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should view memory details" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:131:7 should view memory details" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:131:7 › Memories › should view memory details ─────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should navigate through memory gallery" classname="memories.spec.ts" time="0.009">
+<failure message="memories.spec.ts:140:7 should navigate through memory gallery" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:140:7 › Memories › should navigate through memory gallery ─────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle infinite scroll" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:155:7 should handle infinite scroll" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:155:7 › Memories › should handle infinite scroll ──────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle offline mode" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:165:7 should handle offline mode" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:165:7 › Memories › should handle offline mode ─────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle upload progress" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:174:7 should handle upload progress" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:174:7 › Memories › should handle upload progress ──────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle upload errors" classname="memories.spec.ts" time="0.008">
+<failure message="memories.spec.ts:189:7 should handle upload errors" type="FAILURE">
+<![CDATA[  [Mobile Chrome] › memories.spec.ts:189:7 › Memories › should handle upload errors ────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.ts" timestamp="2025-09-04T19:28:11.198Z" hostname="Mobile Safari" tests="10" failures="9" skipped="0" time="273.685" errors="0">
+<testcase name="Authentication › should navigate to login page" classname="auth.spec.ts" time="30.131">
+<failure message="auth.spec.ts:8:7 should navigate to login page" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth.spec.ts:8:7 › Authentication › should navigate to login page ──────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="login-link"]')
+
+
+       7 |
+       8 |   test('should navigate to login page', async ({ page }) => {
+    >  9 |     await page.click('[data-testid="login-link"]');
+         |                ^
+      10 |     
+      11 |     await expect(page).toHaveURL(/.*login/);
+      12 |     await expect(page.locator('h1')).toContainText('Iniciar Sesión');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:9:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-Mobile-Safari\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-Mobile-Safari\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-navigate-to-login-page-Mobile-Safari\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-Mobile-Safari\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-Mobile-Safari\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-login-page-Mobile-Safari\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should navigate to register page" classname="auth.spec.ts" time="30.14">
+<failure message="auth.spec.ts:15:7 should navigate to register page" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth.spec.ts:15:7 › Authentication › should navigate to register page ──────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="register-link"]')
+
+
+      14 |
+      15 |   test('should navigate to register page', async ({ page }) => {
+    > 16 |     await page.click('[data-testid="register-link"]');
+         |                ^
+      17 |     
+      18 |     await expect(page).toHaveURL(/.*register/);
+      19 |     await expect(page.locator('h1')).toContainText('Registrarse');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:16:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-Mobile-Safari\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-Mobile-Safari\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-navigate-to-register-page-Mobile-Safari\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-Mobile-Safari\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-Mobile-Safari\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-navigate-to-register-page-Mobile-Safari\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should show validation errors for invalid login" classname="auth.spec.ts" time="30.2">
+<failure message="auth.spec.ts:22:7 should show validation errors for invalid login" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth.spec.ts:22:7 › Authentication › should show validation errors for invalid login 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="login-button"]')
+
+
+      24 |     
+      25 |     // Intentar login sin datos
+    > 26 |     await page.click('[data-testid="login-button"]');
+         |                ^
+      27 |     
+      28 |     await expect(page.locator('[data-testid="email-error"]')).toBeVisible();
+      29 |     await expect(page.locator('[data-testid="password-error"]')).toBeVisible();
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:26:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-Mobile-Safari\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-Mobile-Safari\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-bd987-on-errors-for-invalid-login-Mobile-Safari\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-Mobile-Safari\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-Mobile-Safari\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-bd987-on-errors-for-invalid-login-Mobile-Safari\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should show validation errors for invalid registration" classname="auth.spec.ts" time="30.217">
+<failure message="auth.spec.ts:32:7 should show validation errors for invalid registration" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth.spec.ts:32:7 › Authentication › should show validation errors for invalid registration 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="name-input"]')
+
+
+      34 |     
+      35 |     // Intentar registro con datos inválidos
+    > 36 |     await page.fill('[data-testid="name-input"]', '');
+         |                ^
+      37 |     await page.fill('[data-testid="email-input"]', 'invalid-email');
+      38 |     await page.fill('[data-testid="password-input"]', 'weak');
+      39 |     
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:36:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-Mobile-Safari\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-Mobile-Safari\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-d8205-rs-for-invalid-registration-Mobile-Safari\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-Mobile-Safari\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-Mobile-Safari\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-d8205-rs-for-invalid-registration-Mobile-Safari\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should successfully register new user" classname="auth.spec.ts" time="30.193">
+<failure message="auth.spec.ts:47:7 should successfully register new user" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth.spec.ts:47:7 › Authentication › should successfully register new user ─────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="name-input"]')
+
+
+      50 |     const testEmail = `test-${Date.now()}@example.com`;
+      51 |     
+    > 52 |     await page.fill('[data-testid="name-input"]', 'Test User');
+         |                ^
+      53 |     await page.fill('[data-testid="email-input"]', testEmail);
+      54 |     await page.fill('[data-testid="password-input"]', 'TestPass123!');
+      55 |     await page.fill('[data-testid="confirm-password-input"]', 'TestPass123!');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:52:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-Mobile-Safari\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-Mobile-Safari\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-successfully-register-new-user-Mobile-Safari\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-Mobile-Safari\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-Mobile-Safari\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-register-new-user-Mobile-Safari\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should successfully login existing user" classname="auth.spec.ts" time="30.233">
+<failure message="auth.spec.ts:64:7 should successfully login existing user" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth.spec.ts:64:7 › Authentication › should successfully login existing user ───
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="email-input"]')
+
+
+      65 |     await page.goto('/login');
+      66 |     
+    > 67 |     await page.fill('[data-testid="email-input"]', 'test@example.com');
+         |                ^
+      68 |     await page.fill('[data-testid="password-input"]', 'TestPass123!');
+      69 |     
+      70 |     await page.click('[data-testid="login-button"]');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:67:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-Mobile-Safari\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-Mobile-Safari\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-successfully-login-existing-user-Mobile-Safari\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-Mobile-Safari\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-Mobile-Safari\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-successfully-login-existing-user-Mobile-Safari\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should logout successfully" classname="auth.spec.ts" time="30.183">
+<failure message="auth.spec.ts:77:7 should logout successfully" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth.spec.ts:77:7 › Authentication › should logout successfully ────────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="user-menu"]')
+
+
+      88 |     
+      89 |     await page.goto('/dashboard');
+    > 90 |     await page.click('[data-testid="user-menu"]');
+         |                ^
+      91 |     await page.click('[data-testid="logout-button"]');
+      92 |     
+      93 |     await expect(page).toHaveURL('/');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:90:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-logout-successfully-Mobile-Safari\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-logout-successfully-Mobile-Safari\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-logout-successfully-Mobile-Safari\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-Mobile-Safari\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-Mobile-Safari\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-logout-successfully-Mobile-Safari\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should redirect to login when accessing protected route" classname="auth.spec.ts" time="2.045">
+</testcase>
+<testcase name="Authentication › should show password strength indicator" classname="auth.spec.ts" time="30.18">
+<failure message="auth.spec.ts:103:7 should show password strength indicator" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth.spec.ts:103:7 › Authentication › should show password strength indicator ──
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="password-input"]')
+
+
+      107 |     
+      108 |     // Contraseña débil
+    > 109 |     await passwordInput.fill('weak');
+          |                         ^
+      110 |     await expect(page.locator('[data-testid="password-strength"]')).toHaveClass(/weak/);
+      111 |     
+      112 |     // Contraseña fuerte
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:109:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-Mobile-Safari\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-Mobile-Safari\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-show-password-strength-indicator-Mobile-Safari\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-Mobile-Safari\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-Mobile-Safari\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-show-password-strength-indicator-Mobile-Safari\error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication › should toggle password visibility" classname="auth.spec.ts" time="30.163">
+<failure message="auth.spec.ts:117:7 should toggle password visibility" type="FAILURE">
+<![CDATA[  [Mobile Safari] › auth.spec.ts:117:7 › Authentication › should toggle password visibility ────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-testid="password-input"]')
+
+
+      121 |     const toggleButton = page.locator('[data-testid="password-toggle"]');
+      122 |     
+    > 123 |     await passwordInput.fill('testpassword');
+          |                         ^
+      124 |     
+      125 |     // Inicialmente oculto
+      126 |     await expect(passwordInput).toHaveAttribute('type', 'password');
+        at C:\ProyectoMemoria\src\test\e2e\auth.spec.ts:123:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-Mobile-Safari\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-Mobile-Safari\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-should-toggle-password-visibility-Mobile-Safari\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-Mobile-Safari\test-failed-1.png]]
+
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-Mobile-Safari\video.webm]]
+
+[[ATTACHMENT|auth-Authentication-should-toggle-password-visibility-Mobile-Safari\error-context.md]]
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="memories.spec.ts" timestamp="2025-09-04T19:28:11.198Z" hostname="Mobile Safari" tests="18" failures="18" skipped="0" time="0.104" errors="0">
+<testcase name="Memories › should display memories gallery" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:10:7 should display memories gallery" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:10:7 › Memories › should display memories gallery ─────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should open upload modal when add memory button is clicked" classname="memories.spec.ts" time="0.002">
+<failure message="memories.spec.ts:15:7 should open upload modal when add memory button is clicked" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:15:7 › Memories › should open upload modal when add memory button is clicked 
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should upload image memory successfully" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:22:7 should upload image memory successfully" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:22:7 › Memories › should upload image memory successfully ─────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should show validation errors for invalid upload" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:40:7 should show validation errors for invalid upload" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:40:7 › Memories › should show validation errors for invalid upload 
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should search memories" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:50:7 should search memories" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:50:7 › Memories › should search memories ──────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should filter memories by media type" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:59:7 should filter memories by media type" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:59:7 › Memories › should filter memories by media type ────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should like a memory" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:68:7 should like a memory" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:68:7 › Memories › should like a memory ────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should add comment to memory" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:79:7 should add comment to memory" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:79:7 › Memories › should add comment to memory ────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should edit memory" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:89:7 should edit memory" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:89:7 › Memories › should edit memory ──────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should delete memory" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:102:7 should delete memory" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:102:7 › Memories › should delete memory ───────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should share memory" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:113:7 should share memory" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:113:7 › Memories › should share memory ────────────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should generate QR code for memory" classname="memories.spec.ts" time="0.007">
+<failure message="memories.spec.ts:122:7 should generate QR code for memory" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:122:7 › Memories › should generate QR code for memory ─────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should view memory details" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:131:7 should view memory details" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:131:7 › Memories › should view memory details ─────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should navigate through memory gallery" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:140:7 should navigate through memory gallery" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:140:7 › Memories › should navigate through memory gallery ─────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle infinite scroll" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:155:7 should handle infinite scroll" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:155:7 › Memories › should handle infinite scroll ──────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle offline mode" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:165:7 should handle offline mode" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:165:7 › Memories › should handle offline mode ─────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle upload progress" classname="memories.spec.ts" time="0.005">
+<failure message="memories.spec.ts:174:7 should handle upload progress" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:174:7 › Memories › should handle upload progress ──────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+<testcase name="Memories › should handle upload errors" classname="memories.spec.ts" time="0.006">
+<failure message="memories.spec.ts:189:7 should handle upload errors" type="FAILURE">
+<![CDATA[  [Mobile Safari] › memories.spec.ts:189:7 › Memories › should handle upload errors ────────────────
+
+    Error: Error reading storage state from playwright/.auth/user.json:
+    ENOENT: no such file or directory, open 'C:\ProyectoMemoria\playwright\.auth\user.json'
+]]>
+</failure>
+</testcase>
+</testsuite>
+</testsuites>

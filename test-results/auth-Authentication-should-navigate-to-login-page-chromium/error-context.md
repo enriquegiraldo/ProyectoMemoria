@@ -1,0 +1,60 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e6]:
+        - heading "Memoria Eterna" [level=1] [ref=e8]
+        - generic [ref=e9]:
+          - link "Iniciar Sesión" [ref=e10] [cursor=pointer]:
+            - /url: /login
+            - button "Iniciar Sesión" [ref=e11] [cursor=pointer]
+          - link "Registrarse" [ref=e12] [cursor=pointer]:
+            - /url: /register
+            - button "Registrarse" [ref=e13] [cursor=pointer]
+    - main [ref=e14]:
+      - generic [ref=e15]:
+        - heading "Preserva tus recuerdos más preciados" [level=2] [ref=e16]:
+          - text: Preserva tus
+          - generic [ref=e17]: recuerdos más preciados
+        - paragraph [ref=e18]: Memoria Eterna te permite guardar, organizar y compartir los momentos más importantes de tu vida. Crea un legado digital que perdurará para las futuras generaciones.
+        - generic [ref=e19]:
+          - link "Comenzar Gratis" [ref=e20] [cursor=pointer]:
+            - /url: /register
+            - button "Comenzar Gratis" [ref=e21] [cursor=pointer]
+          - link "Conoce Más" [ref=e22] [cursor=pointer]:
+            - /url: /about
+            - button "Conoce Más" [ref=e23] [cursor=pointer]
+      - generic [ref=e25]:
+        - generic [ref=e26]:
+          - img [ref=e28]
+          - heading "Escribe tus Historias" [level=3] [ref=e30]
+          - paragraph [ref=e31]: Captura tus recuerdos con texto rico, imágenes y organiza por categorías.
+        - generic [ref=e32]:
+          - img [ref=e34]
+          - heading "Comparte con Familia" [level=3] [ref=e36]
+          - paragraph [ref=e37]: Comparte tus memorias con familiares y amigos de forma segura y privada.
+        - generic [ref=e38]:
+          - img [ref=e40]
+          - heading "Legado Eterno" [level=3] [ref=e42]
+          - paragraph [ref=e43]: Crea un legado digital que perdurará para las futuras generaciones.
+      - generic [ref=e45]:
+        - heading "¿Listo para comenzar tu viaje?" [level=3] [ref=e46]
+        - paragraph [ref=e47]: Únete a miles de personas que ya están preservando sus recuerdos más preciados.
+        - link "Crear Mi Primera Memoria" [ref=e49] [cursor=pointer]:
+          - /url: /register
+          - button "Crear Mi Primera Memoria" [ref=e50] [cursor=pointer]
+    - contentinfo [ref=e51]:
+      - generic [ref=e53]:
+        - heading "Memoria Eterna" [level=3] [ref=e54]
+        - paragraph [ref=e55]: Preservando recuerdos, conectando generaciones
+        - generic [ref=e56]:
+          - link "Privacidad" [ref=e57] [cursor=pointer]:
+            - /url: /privacy
+          - link "Términos" [ref=e58] [cursor=pointer]:
+            - /url: /terms
+          - link "Contacto" [ref=e59] [cursor=pointer]:
+            - /url: /contact
+  - alert [ref=e60]
+```
