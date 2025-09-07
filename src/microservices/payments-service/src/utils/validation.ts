@@ -1,12 +1,12 @@
 import { z } from 'zod';
-import { 
-  PaymentMethod, 
-  PaymentProvider, 
-  Currency, 
+import {
+  PaymentMethod,
+  PaymentProvider,
+  Currency,
   RefundReason,
   SubscriptionStatus,
   InvoiceStatus,
-  BillingCycle 
+  BillingCycle
 } from '../types';
 
 // Common validation schemas
@@ -16,6 +16,7 @@ export const amountSchema = z.number().positive('Amount must be positive');
 export const currencySchema = z.nativeEnum(Currency);
 export const paymentMethodSchema = z.nativeEnum(PaymentMethod);
 export const paymentProviderSchema = z.nativeEnum(PaymentProvider);
+export const subscriptionStatusSchema = z.nativeEnum(SubscriptionStatus);
 
 // Payment intent validation
 export const createPaymentIntentSchema = z.object({

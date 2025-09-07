@@ -408,12 +408,32 @@ export interface CreateSubscriptionRequest {
   paymentMethodId?: string;
   trialDays?: number;
   metadata?: Record<string, any>;
+  // Additional properties used by the service
+  userId: string;
+  amount: number;
+  currency?: Currency;
+  interval?: string;
+  intervalCount?: number;
+  quantity?: number;
+  isTest?: boolean;
+  planName?: string;
 }
 
 export interface UpdateSubscriptionRequest {
+  subscriptionId: string;
   planId?: string;
   paymentMethodId?: string;
   trialDays?: number;
+  metadata?: Record<string, any>;
+  // Additional properties used by the service
+  quantity?: number;
+  amount?: number;
+}
+
+export interface CancelSubscriptionRequest {
+  subscriptionId: string;
+  reason?: string;
+  cancelAtPeriodEnd?: boolean;
   metadata?: Record<string, any>;
 }
 

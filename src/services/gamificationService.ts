@@ -79,6 +79,8 @@ export interface UserStats {
   completedMissions: number;
   currentLevel: number;
   levelProgress: number;
+  badgesCount: number;
+  missionsCompleted: number;
 }
 
 export class GamificationService {
@@ -400,7 +402,7 @@ export class GamificationService {
           type: mission.mission.type,
           target: mission.mission.target,
           points_reward: mission.mission.points_reward,
-          badge_reward: mission.mission.badge_reward,
+          badge_reward: mission.mission.badge_reward || undefined,
           is_active: mission.mission.is_active,
           created_at: mission.mission.created_at.toISOString(),
         } : undefined,
@@ -423,7 +425,7 @@ export class GamificationService {
         type: mission.type,
         target: mission.target,
         points_reward: mission.points_reward,
-        badge_reward: mission.badge_reward,
+        badge_reward: mission.badge_reward || undefined,
         is_active: mission.is_active,
         created_at: mission.created_at.toISOString(),
       }));
@@ -533,7 +535,6 @@ export class GamificationService {
           progress: newProgress,
           completed,
           completed_at: completed ? new Date() : userMission.completed_at,
-          updated_at: new Date(),
         },
       });
 

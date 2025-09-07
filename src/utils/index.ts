@@ -16,7 +16,7 @@ export const formatDate = (date: string | Date, options?: Intl.DateTimeFormatOpt
     month: 'long',
     day: 'numeric',
   };
-  
+
   return new Date(date).toLocaleDateString('es-ES', options || defaultOptions);
 };
 
@@ -30,7 +30,7 @@ export const formatDate = (date: string | Date, options?: Intl.DateTimeFormatOpt
 //   if (diffInSeconds < 86400) return `hace ${Math.floor(diffInSeconds / 3600)} horas`;
 //   if (diffInSeconds < 2592000) return `hace ${Math.floor(diffInSeconds / 86400)} días`;
 //   if (diffInSeconds < 31536000) return `hace ${Math.floor(diffInSeconds / 2592000)} meses`;
-  
+
 //   return `hace ${Math.floor(diffInSeconds / 31536000)} años`;
 // };
 
@@ -42,23 +42,23 @@ export const validateEmail = (email: string): boolean => {
 
 export const validatePassword = (password: string): { isValid: boolean; errors: string[] } => {
   const errors: string[] = [];
-  
+
   if (password.length < 8) {
     errors.push('La contraseña debe tener al menos 8 caracteres');
   }
-  
+
   if (!/[A-Z]/.test(password)) {
     errors.push('La contraseña debe contener al menos una mayúscula');
   }
-  
+
   if (!/[a-z]/.test(password)) {
     errors.push('La contraseña debe contener al menos una minúscula');
   }
-  
+
   if (!/\d/.test(password)) {
     errors.push('La contraseña debe contener al menos un número');
   }
-  
+
   return {
     isValid: errors.length === 0,
     errors,
@@ -71,22 +71,22 @@ export const validateFile = (file: File, options: {
 } = {}): { isValid: boolean; errors: string[] } => {
   const errors: string[] = [];
   const { maxSize = 10 * 1024 * 1024, allowedTypes = ['image/*', 'video/*', 'audio/*'] } = options;
-  
+
   if (file.size > maxSize) {
     errors.push(`El archivo es demasiado grande. Máximo ${Math.round(maxSize / 1024 / 1024)}MB`);
   }
-  
+
   const isValidType = allowedTypes.some(type => {
     if (type.endsWith('/*')) {
       return file.type.startsWith(type.slice(0, -2));
     }
     return file.type === type;
   });
-  
+
   if (!isValidType) {
     errors.push('Tipo de archivo no permitido');
   }
-  
+
   return {
     isValid: errors.length === 0,
     errors,
@@ -155,7 +155,7 @@ export const deepClone = <T>(obj: T): T => {
   return obj;
 };
 
-export const pick = <T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> => {
+export const pick = <T extends object, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> => {
   const result = {} as Pick<T, K>;
   keys.forEach(key => {
     if (key in obj) {
@@ -202,7 +202,7 @@ export const storage = {
       return defaultValue || null;
     }
   },
-  
+
   set: <T>(key: string, value: T): void => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
@@ -210,11 +210,11 @@ export const storage = {
       console.error('Error saving to localStorage:', error);
     }
   },
-  
+
   remove: (key: string): void => {
     localStorage.removeItem(key);
   },
-  
+
   clear: (): void => {
     localStorage.clear();
   },
@@ -224,17 +224,17 @@ export const storage = {
 export const getQueryParams = (): Record<string, string> => {
   const params = new URLSearchParams(window.location.search);
   const result: Record<string, string> = {};
-  
+
   for (const [key, value] of params.entries()) {
     result[key] = value;
   }
-  
+
   return result;
 };
 
 export const setQueryParams = (params: Record<string, string>): void => {
   const url = new URL(window.location.href);
-  
+
   Object.entries(params).forEach(([key, value]) => {
     if (value) {
       url.searchParams.set(key, value);
@@ -242,7 +242,7 @@ export const setQueryParams = (params: Record<string, string>): void => {
       url.searchParams.delete(key);
     }
   });
-  
+
   window.history.replaceState({}, '', url.toString());
 };
 
@@ -252,7 +252,7 @@ export const debounce = <T extends (...args: any[]) => any>(
   wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: NodeJS.Timeout;
-  
+
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -264,7 +264,7 @@ export const throttle = <T extends (...args: any[]) => any>(
   limit: number
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle: boolean;
-  
+
   return (...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
@@ -280,7 +280,7 @@ export const generateId = (): string => {
 };
 
 export const generateUUID = (): string => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     const r = Math.random() * 16 | 0;
     const v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
@@ -294,11 +294,11 @@ export const formatNumber = (num: number): string => {
 
 export const formatFileSize = (bytes: number): string => {
   if (bytes === 0) return '0 Bytes';
-  
+
   const k = 1024;
   const sizes = ['Bytes', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  
+
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 

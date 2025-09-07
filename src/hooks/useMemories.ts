@@ -13,7 +13,7 @@ import {
   clearFilters,
   clearError,
 } from '../store/slices/memoriesSlice';
-import { Memory, Comment, Reaction, CreateMemoryData } from '../types';
+import { Memory, Comment, Reaction, CreateMemoryData, MediaType } from '../types';
 
 export const useMemories = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -27,10 +27,10 @@ export const useMemories = () => {
     filters,
   } = useSelector((state: RootState) => state.memories);
 
-  const loadMemories = async (params: { pageId?: string; page: number; limit: number; search?: string; mediaType?: string; tags?: string[]; sortBy?: string }) => {
+  const loadMemories = async (params: { pageId?: string; page: number; limit: number; search?: string; mediaType?: MediaType; tags?: string[]; sortBy?: string }) => {
     return await dispatch(fetchMemories(params));
   };
-  
+
 
   // Corregido: createMemory espera CreateMemoryData, no FormData
   const createNewMemory = async (memoryData: CreateMemoryData) => {

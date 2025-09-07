@@ -1,6 +1,6 @@
 // src/store/slices/authSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { User, AuthState, LoginCredentials, RegisterData } from '../../types';
+import { User, LoginCredentials, RegisterData } from '../../types';
 import { AuthService } from '../../services/authService';
 
 export interface AuthState {
@@ -25,9 +25,9 @@ export const loginUser = createAsyncThunk(
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
       const response = await AuthService.login(credentials);
-      
+
       if (!response.success) {
-        return rejectWithValue(response.error?.message || 'Error en el inicio de sesión');
+        return rejectWithValue(typeof response.error === 'string' ? response.error : response.error?.message || 'Error en el inicio de sesión');
       }
 
       return response.user;
@@ -42,9 +42,9 @@ export const registerUser = createAsyncThunk(
   async (userData: RegisterData, { rejectWithValue }) => {
     try {
       const response = await AuthService.register(userData);
-      
+
       if (!response.success) {
-        return rejectWithValue(response.error?.message || 'Error en el registro');
+        return rejectWithValue(typeof response.error === 'string' ? response.error : response.error?.message || 'Error en el registro');
       }
 
       return response.user;
@@ -59,9 +59,9 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await AuthService.logout();
-      
+
       if (!response.success) {
-        return rejectWithValue(response.error?.message || 'Error en el cierre de sesión');
+        return rejectWithValue(typeof response.error === 'string' ? response.error : response.error?.message || 'Error en el cierre de sesión');
       }
 
       return null;
@@ -88,9 +88,9 @@ export const updateUserProfile = createAsyncThunk(
   async ({ userId, updates }: { userId: string; updates: Partial<User> }, { rejectWithValue }) => {
     try {
       const response = await AuthService.updateProfile(userId, updates);
-      
+
       if (!response.success) {
-        return rejectWithValue(response.error?.message || 'Error al actualizar perfil');
+        return rejectWithValue(typeof response.error === 'string' ? response.error : response.error?.message || 'Error al actualizar perfil');
       }
 
       return response.user;
@@ -127,7 +127,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload;
+        state.user = action.payload || null;
         state.isAuthenticated = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -141,7 +141,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload;
+        state.user = action.payload || null;
         state.isAuthenticated = true;
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -161,7 +161,7 @@ const authSlice = createSlice({
       })
       .addCase(getCurrentUser.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload;
+        state.user = action.payload || null;
         state.isAuthenticated = !!action.payload;
       })
       .addCase(getCurrentUser.rejected, (state, action) => {
@@ -175,7 +175,7 @@ const authSlice = createSlice({
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.user = action.payload;
+        state.user = action.payload || null;
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.isLoading = false;

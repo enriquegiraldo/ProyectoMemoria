@@ -8,7 +8,7 @@ import { openModal } from '../store/slices/uiSlice';
 import Header from '../components/memorial/Header';
 import Hero from '../components/memorial/Hero';
 import MemoriesGallery from '../components/memorial/MemoriesGallery';
-import { Memory } from '../store/slices/memoriesSlice';
+import { Memory } from '../types';
 
 const MemorialPage: React.FC = () => {
   const { pageId } = useParams<{ pageId: string }>();
@@ -31,7 +31,7 @@ const MemorialPage: React.FC = () => {
     if (pageId) {
       // Cargar datos de la página
       loadPageData(pageId);
-      loadMemories(pageId);
+      loadMemories({ pageId, page: 1, limit: 20 });
     }
   }, [pageId, loadMemories]);
 
@@ -41,7 +41,7 @@ const MemorialPage: React.FC = () => {
       // const response = await fetch(`/api/pages/${id}`);
       // const data = await response.json();
       // setPageData(data);
-      
+
       // Por ahora, simulamos datos
       setPageData({
         title: 'Memoria Eterna',
@@ -59,7 +59,7 @@ const MemorialPage: React.FC = () => {
 
   const handleNavigate = (section: string) => {
     setCurrentSection(section);
-    
+
     // Scroll suave a la sección
     const element = document.getElementById(section);
     if (element) {
@@ -193,7 +193,7 @@ const MemorialPage: React.FC = () => {
         pageData={pageData}
         onNavigate={handleNavigate}
       />
-      
+
       <AnimatePresence mode="wait">
         <motion.div
           key={currentSection}
@@ -213,11 +213,11 @@ const MemorialPage: React.FC = () => {
             <div>
               <h3 className="text-lg font-semibold mb-4">Memoria Eterna</h3>
               <p className="text-gray-300">
-                Preservando recuerdos, conectando generaciones. Un espacio digital 
+                Preservando recuerdos, conectando generaciones. Un espacio digital
                 para honrar a nuestros seres queridos.
               </p>
             </div>
-            
+
             <div>
               <h4 className="text-md font-semibold mb-4">Enlaces</h4>
               <ul className="space-y-2 text-gray-300">
@@ -247,7 +247,7 @@ const MemorialPage: React.FC = () => {
                 </li>
               </ul>
             </div>
-            
+
             <div>
               <h4 className="text-md font-semibold mb-4">Contacto</h4>
               <p className="text-gray-300">
@@ -258,7 +258,7 @@ const MemorialPage: React.FC = () => {
               </button>
             </div>
           </div>
-          
+
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
             <p>&copy; 2024 Memoria Eterna. Todos los derechos reservados.</p>
           </div>
