@@ -1,5 +1,7 @@
+// src/enterprise/security/2fa/2fa.service.ts
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import { encode as encodeBase32 } from 'hi-base32';
 
 export interface TwoFactorConfig {
   method: 'totp' | 'sms' | 'email';
@@ -33,7 +35,8 @@ export class TwoFactorService {
 
   // TOTP (Time-based One-Time Password)
   async setupTOTP(userId: string): Promise<{ secret: string; qrCode: string }> {
-    const secret = crypto.randomBytes(20).toString('base32');
+    const buffer = crypto.randomBytes(20);
+    const secret = encodeBase32(buffer);
     const qrCode = this.generateTOTPQRCode(userId, secret);
 
     const config: TwoFactorConfig = {
@@ -139,7 +142,6 @@ export class TwoFactorService {
 
   private async sendSMS(phoneNumber: string, code: string): Promise<boolean> {
     // In a real implementation, you would integrate with an SMS service
-    // like Twilio, AWS SNS, etc.
     console.log(`SMS sent to ${phoneNumber}: Your verification code is ${code}`);
     return true;
   }

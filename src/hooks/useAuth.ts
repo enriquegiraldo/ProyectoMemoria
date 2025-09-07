@@ -2,6 +2,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
 import { loginUser, registerUser, logoutUser, clearError } from '../store/slices/authSlice';
+import { UserRole } from '../types';
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -13,7 +14,7 @@ export const useAuth = () => {
     return await dispatch(loginUser(credentials));
   };
 
-  const register = async (userData: { name: string; email: string; password: string; role?: string }) => {
+  const register = async (userData: { name: string; email: string; password: string; role?: UserRole }) => {
     return await dispatch(registerUser(userData));
   };
 
@@ -25,14 +26,22 @@ export const useAuth = () => {
     dispatch(clearError());
   };
 
-  const hasRole = (role: string) => {
-    return user?.role === role;
+  // Mapear roles de Supabase a Prisma para compatibilidad
+  const mapRoleToPrisma = (role: string): string => {
+    if (role === 'ADMIN') return 'ADMIN';
+    if (role === 'MODERATOR') return 'MODERATOR';
+    return 'USER';
   };
 
-  const isAdmin = () => hasRole('ADMIN');
-  const isFamiliar = () => hasRole('FAMILIAR');
-  const isAmigo = () => hasRole('AMIGO');
-  const isInvitado = () => hasRole('INVITADO');
+  const hasRole = (role: string) => {
+    if (!user?.role) return false;
+    return mapRoleToPrisma(user.role) === role || user.role === role;
+  };
+
+  const isAdmin = () => user?.role === 'ADMIN';
+  const isFamiliar = () => user?.role === 'FAMILIAR';
+  const isAmigo = () => user?.role === 'AMIGO';
+  const isInvitado = () => user?.role === 'INVITADO';
 
   const canEdit = () => isAdmin() || isFamiliar();
   const canComment = () => isAuthenticated && !isInvitado();

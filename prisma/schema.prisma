@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,53 +7,46 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-
 model Memory {
-  id          String     @id @default(cuid())
-  title       String
-  content     String
-  type        MemoryType @default(MESSAGE) // MESSAGE, PHOTO, VIDEO, etc.
-  imageUrl    String?
-  videoUrl    String?
-  file_size   Int? // Tamaño del archivo en bytes
-  isPublic    Boolean    @default(true)
-  isFeatured  Boolean    @default(false)
-  publishedAt DateTime?  @default(now())
-  eventDate   DateTime? // Fecha del evento o recuerdo
-  location    String? // Ubicación opcional
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  eventId     String?
-
-  // Relaciones
-  event        Event?        @relation("EventMemory", fields: [eventId], references: [id], onDelete: Cascade)
+  id           String        @id @default(cuid())
+  title        String
+  content      String
+  type         MemoryType    @default(MESSAGE)
+  imageUrl     String?
+  videoUrl     String?
+  isPublic     Boolean       @default(true)
+  isFeatured   Boolean       @default(false)
+  publishedAt  DateTime?     @default(now())
+  eventDate    DateTime?
+  location     String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  eventId      String?
   authorId     String
-  author       User          @relation("MemoryCreatedBy", fields: [authorId], references: [id], onDelete: Cascade)
   categoryId   String?
-  category     Category?     @relation("MemoryCategory", fields: [categoryId], references: [id])
+  file_size    Int?
   comments     Comment[]     @relation("CommentMemory")
   likes        Like[]        @relation("LikeMemory")
-  tags         Tag[]         @relation("MemoryTag")
+  author       User          @relation("MemoryCreatedBy", fields: [authorId], references: [id], onDelete: Cascade)
+  category     Category?     @relation("MemoryCategory", fields: [categoryId], references: [id])
+  event        Event?        @relation("EventMemory", fields: [eventId], references: [id], onDelete: Cascade)
   testimonials Testimonial[] @relation("TestimonialMemory")
+  tags         Tag[]         @relation("MemoryTag")
 
   @@map("memories")
 }
 
-// Nuevo modelo para testimonios
 model Testimonial {
   id           String   @id @default(cuid())
   content      String
   isApproved   Boolean  @default(false)
-  relationship String // Relación con el homenajeado
+  relationship String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
-  // Relaciones
-  authorId String
-  author   User    @relation("TestimonialCreatedBy", fields: [authorId], references: [id], onDelete: Cascade)
-  memoryId String?
-  memory   Memory? @relation("TestimonialMemory", fields: [memoryId], references: [id], onDelete: Cascade)
+  authorId     String
+  memoryId     String?
+  author       User     @relation("TestimonialCreatedBy", fields: [authorId], references: [id], onDelete: Cascade)
+  memory       Memory?  @relation("TestimonialMemory", fields: [memoryId], references: [id], onDelete: Cascade)
 
   @@map("testimonials")
 }
@@ -68,46 +58,40 @@ model Category {
   color       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  // Relaciones
-  memories Memory[] @relation("MemoryCategory")
+  memories    Memory[] @relation("MemoryCategory")
 
   @@map("categories")
 }
 
 model User {
-  id           String   @id @default(cuid())
-  email        String   @unique
-  name         String
-  password     String
-  role         Role     @default(USER)
-  bio          String?
-  avatarUrl    String?
-  relationship String? // Relación con el homenajeado (ej: "Hijo", "Amigo", etc.)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  // Stripe fields
-  stripe_customer_id      String?
-  stripe_subscription_id  String?
-  subscription_plan       SubscriptionPlan @default(FREE)
-  subscription_status     SubscriptionStatus @default(ACTIVE)
-  subscription_end_date   DateTime?
-  last_payment_date       DateTime?
-  last_payment_failed     DateTime?
-
-  // Relaciones
-  events       Event[]       @relation("EventCreatedBy")
-  memories     Memory[]      @relation("MemoryCreatedBy")
-  testimonials Testimonial[] @relation("TestimonialCreatedBy")
-  comments     Comment[]     @relation("CommentCreatedBy")
-  likes        Like[]        @relation("LikeUser")
-  notifications Notification[]
-  pushSubscriptions PushSubscription[]
-  userPoints   UserPoints[]
-  userBadges   UserBadge[]
-  userMissions UserMission[]
-  apiKeys      ApiKey[]
+  id                     String             @id @default(cuid())
+  email                  String             @unique
+  name                   String
+  password               String
+  role                   Role               @default(USER)
+  bio                    String?
+  avatarUrl              String?
+  relationship           String?
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+  last_payment_date      DateTime?
+  last_payment_failed    DateTime?
+  stripe_customer_id     String?
+  stripe_subscription_id String?
+  subscription_end_date  DateTime?
+  subscription_plan      SubscriptionPlan   @default(FREE)
+  subscription_status    SubscriptionStatus @default(ACTIVE)
+  apiKeys                ApiKey[]
+  comments               Comment[]          @relation("CommentCreatedBy")
+  events                 Event[]            @relation("EventCreatedBy")
+  likes                  Like[]             @relation("LikeUser")
+  memories               Memory[]           @relation("MemoryCreatedBy")
+  notifications          Notification[]
+  pushSubscriptions      PushSubscription[]
+  testimonials           Testimonial[]      @relation("TestimonialCreatedBy")
+  userBadges             UserBadge[]
+  userMissions           UserMission[]
+  userPoints             UserPoints?
 
   @@map("users")
 }
@@ -116,9 +100,7 @@ model Tag {
   id        String   @id @default(cuid())
   name      String   @unique
   createdAt DateTime @default(now())
-
-  // Relaciones
-  memories Memory[] @relation("MemoryTag")
+  memories  Memory[] @relation("MemoryTag")
 
   @@map("tags")
 }
@@ -128,12 +110,10 @@ model Comment {
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  // Relaciones
-  authorId String
-  author   User   @relation("CommentCreatedBy", fields: [authorId], references: [id], onDelete: Cascade)
-  memoryId String
-  memory   Memory @relation("CommentMemory", fields: [memoryId], references: [id], onDelete: Cascade)
+  authorId  String
+  memoryId  String
+  author    User     @relation("CommentCreatedBy", fields: [authorId], references: [id], onDelete: Cascade)
+  memory    Memory   @relation("CommentMemory", fields: [memoryId], references: [id], onDelete: Cascade)
 
   @@map("comments")
 }
@@ -141,15 +121,189 @@ model Comment {
 model Like {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-
-  // Relaciones
-  userId   String
-  user     User   @relation("LikeUser", fields: [userId], references: [id], onDelete: Cascade)
-  memoryId String
-  memory   Memory @relation("LikeMemory", fields: [memoryId], references: [id], onDelete: Cascade)
+  userId    String
+  memoryId  String
+  memory    Memory   @relation("LikeMemory", fields: [memoryId], references: [id], onDelete: Cascade)
+  user      User     @relation("LikeUser", fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, memoryId])
   @@map("likes")
+}
+
+model Event {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime?
+  location    String?
+  isPublic    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  createdById String
+  createdBy   User      @relation("EventCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
+  memories    Memory[]  @relation("EventMemory")
+
+  @@map("events")
+}
+
+model AnalyticsEvent {
+  id         String   @id @default(cuid())
+  event      String
+  properties Json?
+  user_id    String?
+  timestamp  DateTime @default(now())
+  session_id String?
+  user_agent String?
+  page_url   String?
+  ip_address String?
+
+  @@map("analytics_events")
+}
+
+model Notification {
+  id         String    @id @default(cuid())
+  user_id    String
+  title      String
+  message    String
+  type       String
+  category   String
+  data       Json?
+  is_read    Boolean   @default(false)
+  read_at    DateTime?
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  user       User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+model PushSubscription {
+  id         String   @id @default(cuid())
+  user_id    String
+  endpoint   String
+  p256dh     String
+  auth       String
+  created_at DateTime @default(now())
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, endpoint])
+  @@map("push_subscriptions")
+}
+
+model UserPoints {
+  id                  String   @id @default(cuid())
+  user_id             String   @unique
+  points              Int      @default(0)
+  level               Int      @default(1)
+  experience          Int      @default(0)
+  total_points_earned Int      @default(0)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  user                User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("user_points")
+}
+
+model Badge {
+  id              String      @id @default(cuid())
+  name            String      @unique
+  description     String
+  icon            String
+  color           String
+  points_required Int
+  category        String
+  is_hidden       Boolean     @default(false)
+  created_at      DateTime    @default(now())
+  missions        Mission[]   @relation("BadgeReward")
+  userBadges      UserBadge[]
+
+  @@map("badges")
+}
+
+model UserBadge {
+  id          String   @id @default(cuid())
+  user_id     String
+  badge_id    String
+  earned_at   DateTime @default(now())
+  is_featured Boolean  @default(false)
+  badge       Badge    @relation(fields: [badge_id], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, badge_id])
+  @@map("user_badges")
+}
+
+model Mission {
+  id            String        @id @default(cuid())
+  name          String
+  description   String
+  type          String
+  target        Int
+  points_reward Int
+  badge_reward  String?
+  is_active     Boolean       @default(true)
+  created_at    DateTime      @default(now())
+  badge         Badge?        @relation("BadgeReward", fields: [badge_reward], references: [id])
+  userMissions  UserMission[]
+
+  @@map("missions")
+}
+
+model UserMission {
+  id           String    @id @default(cuid())
+  user_id      String
+  mission_id   String
+  progress     Int       @default(0)
+  completed    Boolean   @default(false)
+  completed_at DateTime?
+  started_at   DateTime  @default(now())
+  mission      Mission   @relation(fields: [mission_id], references: [id], onDelete: Cascade)
+  user         User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, mission_id])
+  @@map("user_missions")
+}
+
+model PointTransaction {
+  id          String   @id @default(cuid())
+  user_id     String
+  points      Int
+  type        String
+  activity    String
+  description String
+  created_at  DateTime @default(now())
+
+  @@map("point_transactions")
+}
+
+model ApiKey {
+  id          String    @id @default(cuid())
+  user_id     String
+  name        String
+  key_hash    String    @unique
+  permissions Json
+  rate_limit  Int       @default(1000)
+  is_active   Boolean   @default(true)
+  last_used   DateTime?
+  expires_at  DateTime?
+  created_at  DateTime  @default(now())
+  user        User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("api_keys")
+}
+
+model Webhook {
+  id             String    @id @default(cuid())
+  user_id        String
+  url            String
+  events         Json
+  secret         String
+  is_active      Boolean   @default(true)
+  last_triggered DateTime?
+  created_at     DateTime  @default(now())
+
+  @@map("webhooks")
 }
 
 enum Role {
@@ -169,199 +323,6 @@ enum MemoryType {
   MILESTONE
 }
 
-// Para agrupar memorias por eventos específicos
-model Event {
-  id          String    @id @default(cuid())
-  name        String
-  description String?
-  startDate   DateTime
-  endDate     DateTime?
-  location    String?
-  isPublic    Boolean   @default(true)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  // Relaciones
-  memories    Memory[] @relation("EventMemory")
-  createdById String
-  createdBy   User     @relation("EventCreatedBy", fields: [createdById], references: [id], onDelete: Cascade)
-
-  @@map("events")
-}
-
-// Analytics events table
-model AnalyticsEvent {
-  id         String   @id @default(cuid())
-  event      String
-  properties Json?
-  user_id    String?
-  timestamp  DateTime @default(now())
-  session_id String?
-  user_agent String?
-  page_url   String?
-  ip_address String?
-
-  @@map("analytics_events")
-}
-
-// Notifications table
-model Notification {
-  id         String   @id @default(cuid())
-  user_id    String
-  title      String
-  message    String
-  type       String   // info, success, warning, error
-  category   String   // memory, subscription, system, social
-  data       Json?
-  is_read    Boolean  @default(false)
-  read_at    DateTime?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@map("notifications")
-}
-
-// Push subscriptions table
-model PushSubscription {
-  id         String   @id @default(cuid())
-  user_id    String
-  endpoint   String
-  p256dh     String
-  auth       String
-  created_at DateTime @default(now())
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@unique([user_id, endpoint])
-  @@map("push_subscriptions")
-}
-
-// Gamification tables
-model UserPoints {
-  id         String   @id @default(cuid())
-  user_id    String
-  points     Int      @default(0)
-  level      Int      @default(1)
-  experience Int      @default(0)
-  total_points_earned Int @default(0)
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@unique([user_id])
-  @@map("user_points")
-}
-
-model Badge {
-  id          String   @id @default(cuid())
-  name        String   @unique
-  description String
-  icon        String
-  color       String
-  points_required Int
-  category    String   // memory, social, achievement, special
-  is_hidden   Boolean  @default(false)
-  created_at  DateTime @default(now())
-
-  userBadges UserBadge[]
-
-  @@map("badges")
-}
-
-model UserBadge {
-  id         String   @id @default(cuid())
-  user_id    String
-  badge_id   String
-  earned_at  DateTime @default(now())
-  is_featured Boolean @default(false)
-
-  user   User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  badge  Badge @relation(fields: [badge_id], references: [id], onDelete: Cascade)
-
-  @@unique([user_id, badge_id])
-  @@map("user_badges")
-}
-
-model Mission {
-  id          String   @id @default(cuid())
-  name        String
-  description String
-  type        String   // daily, weekly, monthly, special
-  target      Int      // objetivo a alcanzar
-  points_reward Int
-  badge_reward String? // ID del badge que otorga
-  is_active   Boolean  @default(true)
-  created_at  DateTime @default(now())
-
-  userMissions UserMission[]
-
-  @@map("missions")
-}
-
-model UserMission {
-  id         String   @id @default(cuid())
-  user_id    String
-  mission_id String
-  progress   Int      @default(0)
-  completed  Boolean  @default(false)
-  completed_at DateTime?
-  started_at DateTime @default(now())
-
-  user    User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  mission Mission @relation(fields: [mission_id], references: [id], onDelete: Cascade)
-
-  @@unique([user_id, mission_id])
-  @@map("user_missions")
-}
-
-model PointTransaction {
-  id         String   @id @default(cuid())
-  user_id    String
-  points     Int
-  type       String   // earned, spent, bonus, penalty
-  activity   String   // create_memory, comment, share, etc.
-  description String
-  created_at DateTime @default(now())
-
-  @@map("point_transactions")
-}
-
-// API Keys for public API
-model ApiKey {
-  id          String   @id @default(cuid())
-  user_id     String
-  name        String
-  key_hash    String   @unique
-  permissions Json     // Array of allowed endpoints
-  rate_limit  Int      @default(1000) // requests per hour
-  is_active   Boolean  @default(true)
-  last_used   DateTime?
-  expires_at  DateTime?
-  created_at  DateTime @default(now())
-
-  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@map("api_keys")
-}
-
-// Webhooks for external integrations
-model Webhook {
-  id          String   @id @default(cuid())
-  user_id     String
-  url         String
-  events      Json     // Array of event types to listen for
-  secret      String
-  is_active   Boolean  @default(true)
-  last_triggered DateTime?
-  created_at  DateTime @default(now())
-
-  @@map("webhooks")
-}
-
-// Subscription plans enum
 enum SubscriptionPlan {
   FREE
   BASIC
@@ -369,7 +330,6 @@ enum SubscriptionPlan {
   ENTERPRISE
 }
 
-// Subscription status enum
 enum SubscriptionStatus {
   ACTIVE
   CANCELED

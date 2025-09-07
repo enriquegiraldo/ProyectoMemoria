@@ -151,7 +151,7 @@ describe('useAuth', () => {
       });
 
       await act(async () => {
-        await result.current.login('test@example.com', 'password');
+        await result.current.login({ email: 'test@example.com', password: 'password' });
       });
 
       // Verificar que se disparó la acción de login

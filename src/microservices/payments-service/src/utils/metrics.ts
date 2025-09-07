@@ -356,4 +356,10 @@ export default {
   setMonthlyRevenue,
   getMetrics,
   getMetricsJson,
+  // Additional metrics for service usage
+  refundsProcessed: refundTotal,
+  paymentErrors: errorTotal,
+  subscriptionsCreated: subscriptionTotal,
+  subscriptionErrors: errorTotal,
+  subscriptionsCanceled: subscriptionTotal,
 };

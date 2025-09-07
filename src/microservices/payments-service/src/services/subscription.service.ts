@@ -17,10 +17,10 @@ export class SubscriptionService {
 
   async createSubscription(request: CreateSubscriptionRequest): Promise<Subscription> {
     try {
-      logger.info('Creating subscription', { 
-        userId: request.userId, 
-        planId: request.planId, 
-        provider: request.provider 
+      logger.info('Creating subscription', {
+        userId: request.userId,
+        planId: request.planId,
+        provider: request.provider
       });
 
       // Validate request
@@ -30,9 +30,9 @@ export class SubscriptionService {
 
       // Check if user already has an active subscription
       const existingSubscription = await this.subscriptionRepository.findOne({
-        where: { 
-          userId: request.userId, 
-          status: SubscriptionStatus.ACTIVE 
+        where: {
+          userId: request.userId,
+          status: SubscriptionStatus.ACTIVE
         }
       });
 
@@ -57,12 +57,12 @@ export class SubscriptionService {
 
       // Calculate period dates
       const now = new Date();
-      const currentPeriodStart = request.trialDays ? 
-        new Date(now.getTime() + request.trialDays * 24 * 60 * 60 * 1000) : 
+      const currentPeriodStart = request.trialDays ?
+        new Date(now.getTime() + request.trialDays * 24 * 60 * 60 * 1000) :
         now;
-      
-      const currentPeriodEnd = new Date(currentPeriodStart.getTime() + 
-        request.intervalCount * this.getIntervalMilliseconds(request.interval));
+
+      const currentPeriodEnd = new Date(currentPeriodStart.getTime() +
+        (request.intervalCount || 1) * this.getIntervalMilliseconds(request.interval || 'month'));
 
       // Create subscription record
       const subscription = this.subscriptionRepository.create({
@@ -104,9 +104,9 @@ export class SubscriptionService {
       // Record metrics
       metrics.subscriptionsCreated.inc({ provider: request.provider });
 
-      logger.info('Subscription created successfully', { 
-        subscriptionId: subscription.id, 
-        providerSubscriptionId: providerSubscription.id 
+      logger.info('Subscription created successfully', {
+        subscriptionId: subscription.id,
+        providerSubscriptionId: providerSubscription.id
       });
 
       return subscription;
@@ -147,9 +147,9 @@ export class SubscriptionService {
 
   async updateSubscription(request: UpdateSubscriptionRequest): Promise<Subscription> {
     try {
-      logger.info('Updating subscription', { 
-        subscriptionId: request.subscriptionId, 
-        quantity: request.quantity 
+      logger.info('Updating subscription', {
+        subscriptionId: request.subscriptionId,
+        quantity: request.quantity
       });
 
       const subscription = await this.getSubscription(request.subscriptionId);
@@ -168,14 +168,14 @@ export class SubscriptionService {
       );
 
       // Update local record
-      subscription.quantity = request.quantity;
+      subscription.quantity = request.quantity || 1;
       subscription.amount = request.amount || subscription.amount;
       subscription.metadata = { ...subscription.metadata, ...request.metadata };
 
       await this.subscriptionRepository.save(subscription);
 
-      logger.info('Subscription updated successfully', { 
-        subscriptionId: subscription.id 
+      logger.info('Subscription updated successfully', {
+        subscriptionId: subscription.id
       });
 
       return subscription;
@@ -188,9 +188,9 @@ export class SubscriptionService {
 
   async cancelSubscription(request: CancelSubscriptionRequest): Promise<Subscription> {
     try {
-      logger.info('Canceling subscription', { 
-        subscriptionId: request.subscriptionId, 
-        cancelAtPeriodEnd: request.cancelAtPeriodEnd 
+      logger.info('Canceling subscription', {
+        subscriptionId: request.subscriptionId,
+        cancelAtPeriodEnd: request.cancelAtPeriodEnd
       });
 
       const subscription = await this.getSubscription(request.subscriptionId);
@@ -235,8 +235,8 @@ export class SubscriptionService {
       // Record metrics
       metrics.subscriptionsCanceled.inc({ provider: subscription.provider });
 
-      logger.info('Subscription canceled successfully', { 
-        subscriptionId: subscription.id 
+      logger.info('Subscription canceled successfully', {
+        subscriptionId: subscription.id
       });
 
       return subscription;
@@ -271,7 +271,7 @@ export class SubscriptionService {
       ] = await Promise.all([
         queryBuilder.getCount(),
         queryBuilder.where('subscription.status = :status', { status: SubscriptionStatus.ACTIVE }).getCount(),
-        queryBuilder.where('subscription.status = :status', { status: SubscriptionStatus.CANCELED }).getCount(),
+        queryBuilder.where('subscription.status = :status', { status: SubscriptionStatus.CANCELLED }).getCount(),
         queryBuilder.select('SUM(subscription.amount)', 'total').getRawOne(),
       ]);
 

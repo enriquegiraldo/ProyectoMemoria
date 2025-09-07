@@ -1,3 +1,4 @@
+-- prisma/migrations/add_gamification_tables.sql
 -- Migration: Add Gamification Tables
 -- Date: December 2024
 -- Description: Add gamification system tables for points, badges, missions, and API keys

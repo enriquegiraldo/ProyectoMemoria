@@ -1,26 +1,21 @@
 // src/hooks/useGamification.ts
 import { useState, useEffect, useCallback } from 'react';
-import { GamificationService, type UserPoints, type Badge, type UserBadge, type Mission, type UserMission } from '../services/gamificationService';
+import { GamificationService, type UserPoints, type Badge, type UserBadge, type Mission, type UserMission, type UserStats } from '../services/gamificationService';
 import { useAuth } from './useAuth';
 
 export interface UseGamificationReturn {
-  // Estado
   userPoints: UserPoints | null;
   userBadges: UserBadge[];
   userMissions: UserMission[];
   activeMissions: Mission[];
   leaderboard: UserPoints[];
-  userStats: any;
+  userStats: UserStats | null;
   isLoading: boolean;
   error: string | null;
-  
-  // Acciones
-  addPoints: (activity: string, description?: string) => Promise<boolean>;
+  addPoints: (activity: keyof typeof GamificationService['POINTS_MAP'], description?: string) => Promise<boolean>;
   startMission: (missionId: string) => Promise<boolean>;
   updateMissionProgress: (missionId: string, progress: number) => Promise<boolean>;
   refreshData: () => Promise<void>;
-  
-  // Utilidades
   getLevelName: (level: number) => string;
   getLevelProgress: (experience: number) => number;
   getBadgeIcon: (badge: Badge) => string;
@@ -35,11 +30,10 @@ export function useGamification(): UseGamificationReturn {
   const [userMissions, setUserMissions] = useState<UserMission[]>([]);
   const [activeMissions, setActiveMissions] = useState<Mission[]>([]);
   const [leaderboard, setLeaderboard] = useState<UserPoints[]>([]);
-  const [userStats, setUserStats] = useState<any>(null);
+  const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Cargar datos iniciales
   const loadData = useCallback(async () => {
     if (!user?.id) return;
 
@@ -77,24 +71,17 @@ export function useGamification(): UseGamificationReturn {
     }
   }, [user?.id]);
 
-  // Efecto para cargar datos cuando el usuario cambie
   useEffect(() => {
     loadData();
   }, [loadData]);
 
-  // Agregar puntos
-  const addPoints = useCallback(async (activity: string, description?: string): Promise<boolean> => {
+  const addPoints = useCallback(async (activity: keyof typeof GamificationService['POINTS_MAP'], description?: string): Promise<boolean> => {
     if (!user?.id) return false;
 
     try {
-      const success = await GamificationService.addPoints(
-        user.id,
-        activity as any,
-        description
-      );
+      const success = await GamificationService.addPoints(user.id, activity, description || `Puntos por ${activity}`);
 
       if (success) {
-        // Recargar datos para mostrar cambios
         await loadData();
       }
 
@@ -105,13 +92,12 @@ export function useGamification(): UseGamificationReturn {
     }
   }, [user?.id, loadData]);
 
-  // Iniciar misión
   const startMission = useCallback(async (missionId: string): Promise<boolean> => {
     if (!user?.id) return false;
 
     try {
       const success = await GamificationService.startMission(user.id, missionId);
-      
+
       if (success) {
         await loadData();
       }
@@ -123,13 +109,12 @@ export function useGamification(): UseGamificationReturn {
     }
   }, [user?.id, loadData]);
 
-  // Actualizar progreso de misión
   const updateMissionProgress = useCallback(async (missionId: string, progress: number): Promise<boolean> => {
     if (!user?.id) return false;
 
     try {
       const success = await GamificationService.updateMissionProgress(user.id, missionId, progress);
-      
+
       if (success) {
         await loadData();
       }
@@ -141,12 +126,10 @@ export function useGamification(): UseGamificationReturn {
     }
   }, [user?.id, loadData]);
 
-  // Refrescar datos
   const refreshData = useCallback(async () => {
     await loadData();
   }, [loadData]);
 
-  // Utilidades
   const getLevelName = useCallback((level: number): string => {
     const levelNames: Record<number, string> = {
       1: 'Novato',
@@ -161,18 +144,16 @@ export function useGamification(): UseGamificationReturn {
   }, []);
 
   const getLevelProgress = useCallback((experience: number): number => {
-    // Calcular progreso del nivel actual
     const currentLevel = Math.floor(experience / 100) + 1;
     const levelStartExp = (currentLevel - 1) * 100;
     const levelEndExp = currentLevel * 100;
     const progressInLevel = experience - levelStartExp;
     const levelRange = levelEndExp - levelStartExp;
-    
+
     return Math.min(100, Math.max(0, (progressInLevel / levelRange) * 100));
   }, []);
 
   const getBadgeIcon = useCallback((badge: Badge): string => {
-    // Mapear iconos según el nombre del badge
     const iconMap: Record<string, string> = {
       'Primera Memoria': '🎯',
       'Compartidor Activo': '📤',
@@ -183,7 +164,7 @@ export function useGamification(): UseGamificationReturn {
       'Memorioso': '🏆',
       'default': '🏅',
     };
-    
+
     return iconMap[badge.name] || iconMap.default;
   }, []);
 
@@ -201,7 +182,6 @@ export function useGamification(): UseGamificationReturn {
   }, []);
 
   return {
-    // Estado
     userPoints,
     userBadges,
     userMissions,
@@ -210,14 +190,10 @@ export function useGamification(): UseGamificationReturn {
     userStats,
     isLoading,
     error,
-    
-    // Acciones
     addPoints,
     startMission,
     updateMissionProgress,
     refreshData,
-    
-    // Utilidades
     getLevelName,
     getLevelProgress,
     getBadgeIcon,
@@ -225,6 +201,3 @@ export function useGamification(): UseGamificationReturn {
     formatPoints,
   };
 }
-
-
-//

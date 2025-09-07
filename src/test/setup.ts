@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { vi } from 'vitest';
+import { vi, beforeAll, afterAll, beforeEach } from 'vitest';
 
 // Mock de IntersectionObserver
 global.IntersectionObserver = vi.fn().mockImplementation(() => ({
@@ -68,8 +68,10 @@ const localStorageMock = {
   setItem: vi.fn(),
   removeItem: vi.fn(),
   clear: vi.fn(),
+  length: 0,
+  key: vi.fn(),
 };
-global.localStorage = localStorageMock;
+global.localStorage = localStorageMock as any;
 
 // Mock de sessionStorage
 const sessionStorageMock = {
@@ -77,8 +79,10 @@ const sessionStorageMock = {
   setItem: vi.fn(),
   removeItem: vi.fn(),
   clear: vi.fn(),
+  length: 0,
+  key: vi.fn(),
 };
-global.sessionStorage = sessionStorageMock;
+global.sessionStorage = sessionStorageMock as any;
 
 // Mock de fetch
 global.fetch = vi.fn();
@@ -117,11 +121,11 @@ afterAll(() => {
 beforeEach(() => {
   // Limpiar todos los mocks antes de cada test
   vi.clearAllMocks();
-  
+
   // Resetear localStorage y sessionStorage
   localStorageMock.getItem.mockReturnValue(null);
   sessionStorageMock.getItem.mockReturnValue(null);
-  
+
   // Resetear fetch
   (global.fetch as any).mockReset();
 });
@@ -146,7 +150,7 @@ beforeAll(() => {
     if (
       typeof args[0] === 'string' &&
       (args[0].includes('Warning: componentWillReceiveProps') ||
-       args[0].includes('Warning: componentWillUpdate'))
+        args[0].includes('Warning: componentWillUpdate'))
     ) {
       return;
     }

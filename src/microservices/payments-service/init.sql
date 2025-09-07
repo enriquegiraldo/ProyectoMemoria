@@ -1,3 +1,4 @@
+--src/microservices/payments-service/init.sql
 -- Payments Service Database Initialization
 
 -- Create enum types

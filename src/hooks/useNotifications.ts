@@ -118,7 +118,7 @@ export function useNotifications(): UseNotificationsReturn {
     if (!user?.id) return false;
 
     try {
-      const success = await NotificationService.subscribeToPushNotifications(user.id);
+      const success = await NotificationService.subscribeToNotifications(user.id);
       if (success) {
         console.log('Push notifications enabled successfully');
       }
