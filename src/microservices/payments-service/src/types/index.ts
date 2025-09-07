@@ -402,12 +402,16 @@ export interface ConfirmPaymentRequest {
 }
 
 export interface CreateSubscriptionRequest {
+  userId: string;
   customerId: string;
   planId: string;
+  amount: number;
+  currency: Currency;
   provider: PaymentProvider;
   paymentMethodId?: string;
   trialDays?: number;
   metadata?: Record<string, any>;
+  
 }
 
 export interface UpdateSubscriptionRequest {

@@ -12,7 +12,7 @@ RUN apk add --no-cache \
     pango-dev \
     musl-dev \
     jpeg-dev \
-    png-dev \
+    libpng-dev \
     giflib-dev \
     librsvg-dev \
     libwebp-dev \
@@ -20,7 +20,7 @@ RUN apk add --no-cache \
     fftw-dev \
     libexif-dev \
     libheif-dev \
-    libvips-dev
+    vips-dev
 
 # Set working directory
 WORKDIR /app
@@ -43,11 +43,12 @@ FROM node:18-alpine AS production
 # Install runtime dependencies including FFmpeg
 RUN apk add --no-cache \
     ffmpeg \
-    libvips \
+    vips-dev\
+    #libvips \
     cairo \
     pango \
     jpeg \
-    png \
+    libpng-dev \
     giflib \
     librsvg \
     libwebp \
@@ -55,7 +56,7 @@ RUN apk add --no-cache \
     libheif \
     ttf-dejavu \
     ttf-liberation \
-    ttf-ubuntu-font-family \
+    #ttf-ubuntu-font-family \
     && rm -rf /var/cache/apk/*
 
 # Create non-root user

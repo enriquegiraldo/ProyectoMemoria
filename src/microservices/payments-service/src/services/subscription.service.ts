@@ -215,8 +215,9 @@ export class SubscriptionService {
       if (request.cancelAtPeriodEnd) {
         subscription.cancelAtPeriodEnd = true;
       } else {
-        subscription.status = SubscriptionStatus.CANCELED;
+        subscription.status = SubscriptionStatus.CANCELLED;
         subscription.endedAt = new Date();
+        subscription.cancelAtPeriodEnd = false;
       }
 
       await this.subscriptionRepository.save(subscription);
