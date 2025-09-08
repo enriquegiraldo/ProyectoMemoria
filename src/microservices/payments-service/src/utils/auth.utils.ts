@@ -18,33 +18,33 @@ export enum Permission {
   UPDATE_PAYMENT = 'update_payment',
   DELETE_PAYMENT = 'delete_payment',
   REFUND_PAYMENT = 'refund_payment',
-  
+
   // Subscription permissions
   CREATE_SUBSCRIPTION = 'create_subscription',
   VIEW_SUBSCRIPTION = 'view_subscription',
   UPDATE_SUBSCRIPTION = 'update_subscription',
   CANCEL_SUBSCRIPTION = 'cancel_subscription',
-  
+
   // Customer permissions
   CREATE_CUSTOMER = 'create_customer',
   VIEW_CUSTOMER = 'view_customer',
   UPDATE_CUSTOMER = 'update_customer',
   DELETE_CUSTOMER = 'delete_customer',
-  
+
   // Billing permissions
   CREATE_INVOICE = 'create_invoice',
   VIEW_INVOICE = 'view_invoice',
   UPDATE_INVOICE = 'update_invoice',
   DELETE_INVOICE = 'delete_invoice',
-  
+
   // Webhook permissions
   VIEW_WEBHOOK = 'view_webhook',
   RETRY_WEBHOOK = 'retry_webhook',
-  
+
   // Analytics permissions
   VIEW_ANALYTICS = 'view_analytics',
   EXPORT_DATA = 'export_data',
-  
+
   // System permissions
   MANAGE_USERS = 'manage_users',
   MANAGE_ROLES = 'manage_roles',
@@ -101,7 +101,7 @@ export const rolePermissions: Record<UserRole, Permission[]> = {
 
 // JWT token generation
 export const generateToken = (payload: any, expiresIn: string = config.jwt.expiresIn): string => {
-  return jwt.sign(payload, config.jwt.secret, { expiresIn });
+  return jwt.sign(payload, config.jwt.secret, { expiresIn: expiresIn });
 };
 
 // JWT token verification
@@ -137,7 +137,7 @@ export const hasRole = (userRole: UserRole, requiredRole: UserRole): boolean => 
     [UserRole.SUPPORT]: 3,
     [UserRole.ADMIN]: 4,
   };
-  
+
   return roleHierarchy[userRole] >= roleHierarchy[requiredRole];
 };
 
@@ -153,17 +153,17 @@ export const canAccessResource = (
   if (userRole === UserRole.ADMIN) {
     return true;
   }
-  
+
   // Check if user has the required permission
   if (!hasPermission(userPermissions, requiredPermission)) {
     return false;
   }
-  
+
   // Users can only access their own resources
   if (userRole === UserRole.USER) {
     return resourceOwnerId === userId;
   }
-  
+
   // Merchants and support can access resources they have permission for
   return true;
 };
@@ -176,7 +176,7 @@ export const getRateLimits = (userRole: UserRole): { windowMs: number; max: numb
     [UserRole.SUPPORT]: { windowMs: 15 * 60 * 1000, max: 500 }, // 15 minutes, 500 requests
     [UserRole.ADMIN]: { windowMs: 15 * 60 * 1000, max: 10000 }, // 15 minutes, 10000 requests
   };
-  
+
   return limits[userRole] || limits[UserRole.USER];
 };
 
@@ -225,7 +225,7 @@ export const canPerformPaymentAction = (
     delete: Permission.DELETE_PAYMENT,
     refund: Permission.REFUND_PAYMENT,
   };
-  
+
   return canAccessResource(
     userRole,
     userPermissions,
@@ -248,7 +248,7 @@ export const canPerformSubscriptionAction = (
     update: Permission.UPDATE_SUBSCRIPTION,
     cancel: Permission.CANCEL_SUBSCRIPTION,
   };
-  
+
   return canAccessResource(
     userRole,
     userPermissions,
@@ -271,7 +271,7 @@ export const canPerformCustomerAction = (
     update: Permission.UPDATE_CUSTOMER,
     delete: Permission.DELETE_CUSTOMER,
   };
-  
+
   return canAccessResource(
     userRole,
     userPermissions,
@@ -294,7 +294,7 @@ export const canPerformInvoiceAction = (
     update: Permission.UPDATE_INVOICE,
     delete: Permission.DELETE_INVOICE,
   };
-  
+
   return canAccessResource(
     userRole,
     userPermissions,

@@ -2,6 +2,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../store';
 import { loginUser, registerUser, logoutUser, clearError } from '../store/slices/authSlice';
+import { UserRole } from '../types';
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -13,7 +14,7 @@ export const useAuth = () => {
     return await dispatch(loginUser(credentials));
   };
 
-  const register = async (userData: { name: string; email: string; password: string; role?: string }) => {
+  const register = async (userData: { name: string; email: string; password: string; role?: UserRole }) => {
     return await dispatch(registerUser(userData));
   };
 

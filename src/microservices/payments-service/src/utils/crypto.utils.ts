@@ -13,7 +13,7 @@ export const encrypt = (text: string): string => {
   try {
     // Generate a random salt
     const salt = crypto.randomBytes(SALT_LENGTH);
-    
+
     // Generate a key from the encryption key and salt
     const key = crypto.pbkdf2Sync(
       config.security.encryptionKey,
@@ -22,24 +22,24 @@ export const encrypt = (text: string): string => {
       KEY_LENGTH,
       'sha512'
     );
-    
+
     // Generate a random IV
     const iv = crypto.randomBytes(IV_LENGTH);
-    
+
     // Create cipher
-    const cipher = crypto.createCipher(ALGORITHM, key);
+    const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
     cipher.setAAD(salt);
-    
+
     // Encrypt the text
     let encrypted = cipher.update(text, 'utf8', 'hex');
     encrypted += cipher.final('hex');
-    
+
     // Get the auth tag
     const tag = cipher.getAuthTag();
-    
+
     // Combine salt + iv + tag + encrypted data
     const result = salt.toString('hex') + ':' + iv.toString('hex') + ':' + tag.toString('hex') + ':' + encrypted;
-    
+
     return result;
   } catch (error) {
     throw new Error('Encryption failed');
@@ -54,14 +54,14 @@ export const decrypt = (encryptedData: string): string => {
     if (parts.length !== 4) {
       throw new Error('Invalid encrypted data format');
     }
-    
+
     const [saltHex, ivHex, tagHex, encrypted] = parts;
-    
+
     // Convert hex strings back to buffers
     const salt = Buffer.from(saltHex, 'hex');
     const iv = Buffer.from(ivHex, 'hex');
     const tag = Buffer.from(tagHex, 'hex');
-    
+
     // Generate the same key
     const key = crypto.pbkdf2Sync(
       config.security.encryptionKey,
@@ -70,16 +70,16 @@ export const decrypt = (encryptedData: string): string => {
       KEY_LENGTH,
       'sha512'
     );
-    
+
     // Create decipher
-    const decipher = crypto.createDecipher(ALGORITHM, key);
+    const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
     decipher.setAAD(salt);
     decipher.setAuthTag(tag);
-    
+
     // Decrypt the data
     let decrypted = decipher.update(encrypted, 'hex', 'utf8');
     decrypted += decipher.final('utf8');
-    
+
     return decrypted;
   } catch (error) {
     throw new Error('Decryption failed');
@@ -99,7 +99,7 @@ export const verifyHash = (data: string, hashedData: string): boolean => {
   if (parts.length !== 2) {
     return false;
   }
-  
+
   const [salt, hash] = parts;
   const verifyHash = crypto.pbkdf2Sync(data, salt, 1000, 64, 'sha512').toString('hex');
   return hash === verifyHash;
@@ -122,13 +122,13 @@ export const generateSecureRandomNumber = (min: number, max: number): number => 
 export const hashCardNumber = (cardNumber: string): string => {
   // Remove spaces and dashes
   const cleanNumber = cardNumber.replace(/\s+/g, '').replace(/-/g, '');
-  
+
   // Keep only last 4 digits for display
   const last4 = cleanNumber.slice(-4);
-  
+
   // Hash the full number
   const hashedNumber = hash(cleanNumber);
-  
+
   return `${hashedNumber}:${last4}`;
 };
 
@@ -138,10 +138,10 @@ export const verifyCardNumber = (cardNumber: string, hashedCardNumber: string): 
   if (parts.length !== 2) {
     return false;
   }
-  
+
   const [hash, last4] = parts;
   const cleanNumber = cardNumber.replace(/\s+/g, '').replace(/-/g, '');
-  
+
   // Verify the hash
   return verifyHash(cleanNumber, hash) && cleanNumber.slice(-4) === last4;
 };
@@ -218,12 +218,12 @@ export const secureCompare = (a: string, b: string): boolean => {
   if (a.length !== b.length) {
     return false;
   }
-  
+
   let result = 0;
   for (let i = 0; i < a.length; i++) {
     result |= a.charCodeAt(i) ^ b.charCodeAt(i);
   }
-  
+
   return result === 0;
 };
 
@@ -241,20 +241,20 @@ export const validateNonce = (nonce: string): boolean => {
 // Encrypt sensitive fields in an object
 export const encryptSensitiveFields = (obj: any, fields: string[]): any => {
   const encrypted = { ...obj };
-  
+
   for (const field of fields) {
     if (encrypted[field] && typeof encrypted[field] === 'string') {
       encrypted[field] = encrypt(encrypted[field]);
     }
   }
-  
+
   return encrypted;
 };
 
 // Decrypt sensitive fields in an object
 export const decryptSensitiveFields = (obj: any, fields: string[]): any => {
   const decrypted = { ...obj };
-  
+
   for (const field of fields) {
     if (decrypted[field] && typeof decrypted[field] === 'string') {
       try {
@@ -265,7 +265,7 @@ export const decryptSensitiveFields = (obj: any, fields: string[]): any => {
       }
     }
   }
-  
+
   return decrypted;
 };
 
@@ -273,11 +273,11 @@ export const decryptSensitiveFields = (obj: any, fields: string[]): any => {
 export const generateSecurePassword = (length: number = 16): string => {
   const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
   let password = '';
-  
+
   for (let i = 0; i < length; i++) {
     password += charset.charAt(crypto.randomInt(0, charset.length));
   }
-  
+
   return password;
 };
 
@@ -289,44 +289,44 @@ export const validatePasswordStrength = (password: string): {
 } => {
   const feedback: string[] = [];
   let score = 0;
-  
+
   // Length check
   if (password.length >= 8) {
     score += 1;
   } else {
     feedback.push('Password must be at least 8 characters long');
   }
-  
+
   // Uppercase check
   if (/[A-Z]/.test(password)) {
     score += 1;
   } else {
     feedback.push('Password must contain at least one uppercase letter');
   }
-  
+
   // Lowercase check
   if (/[a-z]/.test(password)) {
     score += 1;
   } else {
     feedback.push('Password must contain at least one lowercase letter');
   }
-  
+
   // Number check
   if (/\d/.test(password)) {
     score += 1;
   } else {
     feedback.push('Password must contain at least one number');
   }
-  
+
   // Special character check
   if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
     score += 1;
   } else {
     feedback.push('Password must contain at least one special character');
   }
-  
+
   const isValid = score >= 4;
-  
+
   return {
     isValid,
     score,
