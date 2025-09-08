@@ -1,3 +1,4 @@
+// src/microservices/notifications-service/src/utils/metrics.ts
 import { register, Counter, Histogram, Gauge } from 'prom-client';
 
 // HTTP Metrics
@@ -183,6 +184,10 @@ export const metrics = {
     httpRequestDuration.labels(method, route, statusCode.toString()).observe(duration);
     httpRequestTotal.labels(method, route, statusCode.toString()).inc();
   },
+  //
+
+  
+  //
 
   recordHttpRequestStart: (method: string, route: string) => {
     httpRequestsInProgress.labels(method, route).inc();
@@ -240,16 +245,16 @@ export const metrics = {
   updateSystemMetrics: () => {
     const memUsage = process.memoryUsage();
     systemMemoryUsage.set(memUsage.heapUsed);
-    
+
     // CPU usage would need additional monitoring library
     // systemCpuUsage.set(cpuUsage);
-    
+
     systemUptime.set(process.uptime());
   },
 
   updateBusinessMetrics: (activeUsersCount: number, deliveryRates: Record<string, number>) => {
     activeUsers.set(activeUsersCount);
-    
+
     Object.entries(deliveryRates).forEach(([key, rate]) => {
       const [type, provider] = key.split(':');
       notificationDeliveryRate.labels(type, provider).set(rate);
@@ -287,3 +292,6 @@ register.registerMetric(rateLimitViolations);
 register.registerMetric(errorTotal);
 
 export { register };
+//
+
+

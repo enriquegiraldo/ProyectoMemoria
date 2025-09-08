@@ -1,9 +1,10 @@
+// src/microservices/auth-service/src/middleware/error.middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '@/utils/logger';
 import { CustomError } from '../utils/errors';
 
 // Error response interface
-interface ErrorResponse {
+interface AuthErrorResponse {
   success: false;
   message: string;
   error?: string;
@@ -85,7 +86,7 @@ export const errorHandler = (
   }
 
   // Create error response
-  const errorResponse: ErrorResponse = {
+  const errorResponse: AuthErrorResponse = {
     success: false,
     message,
     timestamp: new Date().toISOString(),
@@ -140,7 +141,7 @@ export const asyncHandler = (fn: Function) => {
  * 404 handler for unmatched routes
  */
 export const notFoundHandler = (req: Request, res: Response): void => {
-  const errorResponse: ErrorResponse = {
+  const errorResponse: AuthErrorResponse = {
     success: false,
     message: `Route ${req.method} ${req.path} not found`,
     timestamp: new Date().toISOString(),
@@ -166,7 +167,7 @@ export const timeoutHandler = (timeoutMs: number = 30000) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     const timeout = setTimeout(() => {
       if (!res.headersSent) {
-        const errorResponse: ErrorResponse = {
+        const errorResponse: AuthErrorResponse = {
           success: false,
           message: 'Request timeout',
           timestamp: new Date().toISOString(),
@@ -203,7 +204,6 @@ export const securityErrorHandler = (
   res: Response,
   next: NextFunction
 ): void => {
-  // Handle security-specific errors
   if (error.message.includes('CSRF') || error.message.includes('XSS')) {
     logger.warn('Security violation detected', {
       error: error.message,
@@ -237,7 +237,6 @@ export const databaseErrorHandler = (
   res: Response,
   next: NextFunction
 ): void => {
-  // Handle database-specific errors
   if (error.message.includes('connection') || error.message.includes('timeout')) {
     logger.error('Database connection error', {
       error: error.message,

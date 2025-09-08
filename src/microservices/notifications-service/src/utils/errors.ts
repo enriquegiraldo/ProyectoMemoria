@@ -1,3 +1,4 @@
+// src/microservices/notifications-service/src/utils/errors.ts
 export class CustomError extends Error {
   public statusCode: number;
   public isOperational: boolean;
@@ -238,6 +239,18 @@ export class FeatureNotAvailableError extends CustomError {
   }
 }
 
+// Define the ErrorResponse interface
+export interface ErrorResponse {
+  success: boolean;
+  statusCode: number;
+  error: {
+    message: string;
+    code?: string;
+    
+    timestamp: string;
+  };
+}
+
 // Utility functions
 export const handleError = (error: any): CustomError => {
   if (error instanceof CustomError) {
@@ -269,13 +282,13 @@ export const handleError = (error: any): CustomError => {
   return new CustomError(error.message || 'Internal server error', 500, 'INTERNAL_ERROR');
 };
 
-export const formatErrorResponse = (error: CustomError) => {
+export const formatErrorResponse = (error: CustomError): ErrorResponse => {
   return {
     success: false,
+    statusCode: error.statusCode,  // <-- raíz
     error: {
       message: error.message,
       code: error.code,
-      statusCode: error.statusCode,
       timestamp: new Date().toISOString(),
     },
   };

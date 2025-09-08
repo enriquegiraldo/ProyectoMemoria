@@ -1,11 +1,15 @@
 // src/microservices/media-service/src/utils/validation.ts
 import { z } from 'zod';
-import { MediaType, ProcessingStatus } from '../types';
+import { MediaType, ProcessingStatus } from '../types'; // Mantengo el import, pero no lo uso en nativeEnum para evitar errores
+
+// Definiciones de valores para enums (asumiendo que son uniones de strings en ../types)
+const mediaTypeValues = ['image', 'video', 'audio', 'document'] as const;
+const processingStatusValues = ['pending', 'processing', 'completed', 'failed'] as const; // Ajusta si hay más estados como 'cancelled'
 
 // Base schemas
-export const userIdSchema = z.string().uuid('Invalid user ID format');
-export const fileIdSchema = z.string().uuid('Invalid file ID format');
-export const jobIdSchema = z.string().uuid('Invalid job ID format');
+export const userIdSchema = z.string().uuid({ message: 'Invalid user ID format' });
+export const fileIdSchema = z.string().uuid({ message: 'Invalid file ID format' });
+export const jobIdSchema = z.string().uuid({ message: 'Invalid job ID format' });
 
 // Pagination schemas
 export const paginationSchema = z.object({
@@ -94,7 +98,7 @@ export const processingResponseSchema = z.object({
   success: z.boolean(),
   data: z.object({
     jobId: jobIdSchema,
-    status: z.nativeEnum(ProcessingStatus),
+    status: z.enum(processingStatusValues),
     estimatedDuration: z.number().optional(),
     progress: z.number().min(0).max(100).default(0),
   }),
@@ -104,8 +108,8 @@ export const processingResponseSchema = z.object({
 // File management schemas
 export const fileQuerySchema = z.object({
   userId: userIdSchema,
-  fileType: z.nativeEnum(MediaType).optional(),
-  status: z.nativeEnum(ProcessingStatus).optional(),
+  fileType: z.enum(mediaTypeValues).optional(),
+  status: z.enum(processingStatusValues).optional(),
   tags: z.array(z.string()).optional(),
   dateFrom: z.string().datetime().optional(),
   dateTo: z.string().datetime().optional(),
@@ -131,7 +135,7 @@ export const fileDeleteSchema = z.object({
 export const jobQuerySchema = z.object({
   userId: userIdSchema,
   fileId: fileIdSchema.optional(),
-  status: z.nativeEnum(ProcessingStatus).optional(),
+  status: z.enum(processingStatusValues).optional(),
   operation: z.string().optional(),
   dateFrom: z.string().datetime().optional(),
   dateTo: z.string().datetime().optional(),
@@ -207,7 +211,7 @@ export const apiKeySchema = z.object({
 export const searchSchema = z.object({
   userId: userIdSchema,
   query: z.string().min(1).max(500),
-  fileTypes: z.array(z.nativeEnum(MediaType)).optional(),
+  fileTypes: z.array(z.enum(mediaTypeValues)).optional(),
   tags: z.array(z.string()).optional(),
   dateFrom: z.string().datetime().optional(),
   dateTo: z.string().datetime().optional(),
@@ -324,7 +328,7 @@ export const validateCallbackUrl = (url: string): boolean => {
 };
 
 // Export all schemas
-export {
+export const schemas = {
   userIdSchema,
   fileIdSchema,
   jobIdSchema,
@@ -352,3 +356,5 @@ export {
   successResponseSchema,
   apiResponseSchema,
 };
+
+// Fuerza el archivo a ser tratado como módulo para evitar TS2323

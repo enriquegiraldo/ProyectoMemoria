@@ -1,3 +1,4 @@
+// src/microservices/notifications-service/src/controllers/template.controller.ts
 import { Request, Response } from 'express';
 import { Template, TemplateRenderResult } from '../types';
 import { TemplateService } from '../services';
@@ -41,7 +42,7 @@ export class TemplateController {
       await this.templateService.registerTemplate(template);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('POST', '/api/templates', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/templates', 201, duration / 1000);
 
       res.status(201).json({
         success: true,
@@ -61,7 +62,7 @@ export class TemplateController {
         templateType: req.body?.type,
       });
 
-      metrics.recordHttpRequestDuration('POST', '/api/templates', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/templates', errorResponse.statusCode, duration / 1000);
       metrics.recordError('template', 'create_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -90,7 +91,7 @@ export class TemplateController {
       }
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('GET', '/api/templates/:id', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/templates/:id', 200, duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -109,7 +110,7 @@ export class TemplateController {
         templateId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('GET', '/api/templates/:id', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/templates/:id', errorResponse.statusCode, duration / 1000);
       metrics.recordError('template', 'get_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -136,7 +137,7 @@ export class TemplateController {
       const templates = await this.templateService.listTemplates(type as string);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('GET', '/api/templates', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/templates', 200, duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -158,7 +159,7 @@ export class TemplateController {
         type: req.query.type,
       });
 
-      metrics.recordHttpRequestDuration('GET', '/api/templates', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/templates', errorResponse.statusCode, duration / 1000);
       metrics.recordError('template', 'list_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -191,7 +192,7 @@ export class TemplateController {
       const updatedTemplate = await this.templateService.updateTemplate(id, updates);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('PUT', '/api/templates/:id', duration / 1000);
+      metrics.recordHttpRequest('PUT', '/api/templates/:id', 200, duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -210,7 +211,7 @@ export class TemplateController {
         templateId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('PUT', '/api/templates/:id', duration / 1000);
+      metrics.recordHttpRequest('PUT', '/api/templates/:id', errorResponse.statusCode, duration / 1000);
       metrics.recordError('template', 'update_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -235,7 +236,7 @@ export class TemplateController {
       await this.templateService.deleteTemplate(id);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('DELETE', '/api/templates/:id', duration / 1000);
+      metrics.recordHttpRequest('DELETE', '/api/templates/:id', 200, duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -253,7 +254,7 @@ export class TemplateController {
         templateId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('DELETE', '/api/templates/:id', duration / 1000);
+      metrics.recordHttpRequest('DELETE', '/api/templates/:id', errorResponse.statusCode, duration / 1000);
       metrics.recordError('template', 'delete_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -289,7 +290,7 @@ export class TemplateController {
       const result = await this.templateService.renderTemplate(id, data, template.type);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('POST', '/api/templates/:id/render', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/templates/:id/render', 200, duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -308,7 +309,7 @@ export class TemplateController {
         templateId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('POST', '/api/templates/:id/render', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/templates/:id/render', errorResponse.statusCode, duration / 1000);
       metrics.recordError('template', 'render_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -338,7 +339,7 @@ export class TemplateController {
       const preview = await this.templateService.previewTemplate(id, data);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('POST', '/api/templates/:id/preview', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/templates/:id/preview', 200, duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -357,7 +358,7 @@ export class TemplateController {
         templateId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('POST', '/api/templates/:id/preview', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/templates/:id/preview', errorResponse.statusCode, duration / 1000);
       metrics.recordError('template', 'preview_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -386,7 +387,7 @@ export class TemplateController {
       const validation = await this.templateService.validateTemplate(content, variables);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('POST', '/api/templates/validate', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/templates/validate', 200, duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -404,7 +405,7 @@ export class TemplateController {
         duration,
       });
 
-      metrics.recordHttpRequestDuration('POST', '/api/templates/validate', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/templates/validate', errorResponse.statusCode, duration / 1000);
       metrics.recordError('template', 'validate_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -433,7 +434,7 @@ export class TemplateController {
       }
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('GET', '/api/templates/:id/variables', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/templates/:id/variables', 200, duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -456,7 +457,7 @@ export class TemplateController {
         templateId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('GET', '/api/templates/:id/variables', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/templates/:id/variables', errorResponse.statusCode, duration / 1000);
       metrics.recordError('template', 'get_variables_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);

@@ -68,3 +68,4 @@ Thumbs.db
 
 # Custom Ignores
 /public/DOCUMENTACIÓN
+/test-results/

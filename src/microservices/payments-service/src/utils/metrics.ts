@@ -1,3 +1,4 @@
+// src/microservices/payments-service/src/utils/metrics.ts
 import { register, Counter, Histogram, Gauge, collectDefaultMetrics } from 'prom-client';
 import { PaymentStatus, PaymentProvider, PaymentMethod, Currency } from '../types';
 
@@ -363,3 +364,5 @@ export default {
   subscriptionErrors: errorTotal,
   subscriptionsCanceled: subscriptionTotal,
 };
+
+//
