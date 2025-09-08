@@ -46,7 +46,7 @@ export class SubscriptionController {
       const newSubscription = await this.subscriptionService.createSubscription(subscription);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('POST', '/api/subscriptions', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/subscriptions', duration / 1000);
 
       res.status(201).json({
         success: true,
@@ -66,7 +66,7 @@ export class SubscriptionController {
         type: req.body?.type,
       });
 
-      metrics.recordHttpRequestDuration('POST', '/api/subscriptions', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/subscriptions', duration / 1000);
       metrics.recordError('subscription', 'create_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -95,7 +95,7 @@ export class SubscriptionController {
       }
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('GET', '/api/subscriptions/:id', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/subscriptions/:id', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -114,7 +114,7 @@ export class SubscriptionController {
         subscriptionId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('GET', '/api/subscriptions/:id', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/subscriptions/:id', duration / 1000);
       metrics.recordError('subscription', 'get_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -152,7 +152,7 @@ export class SubscriptionController {
       const subscriptions = await this.subscriptionService.getUserSubscriptions(userId as string, query);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('GET', '/api/subscriptions', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/subscriptions', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -175,7 +175,7 @@ export class SubscriptionController {
         userId: req.query.userId,
       });
 
-      metrics.recordHttpRequestDuration('GET', '/api/subscriptions', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/subscriptions', duration / 1000);
       metrics.recordError('subscription', 'list_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -208,7 +208,7 @@ export class SubscriptionController {
       const updatedSubscription = await this.subscriptionService.updateSubscription(id, updates);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('PUT', '/api/subscriptions/:id', duration / 1000);
+      metrics.recordHttpRequest('PUT', '/api/subscriptions/:id', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -227,7 +227,7 @@ export class SubscriptionController {
         subscriptionId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('PUT', '/api/subscriptions/:id', duration / 1000);
+      metrics.recordHttpRequest('PUT', '/api/subscriptions/:id', duration / 1000);
       metrics.recordError('subscription', 'update_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -252,7 +252,7 @@ export class SubscriptionController {
       await this.subscriptionService.deleteSubscription(id);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('DELETE', '/api/subscriptions/:id', duration / 1000);
+      metrics.recordHttpRequest('DELETE', '/api/subscriptions/:id', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -270,7 +270,7 @@ export class SubscriptionController {
         subscriptionId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('DELETE', '/api/subscriptions/:id', duration / 1000);
+      metrics.recordHttpRequest('DELETE', '/api/subscriptions/:id', duration / 1000);
       metrics.recordError('subscription', 'delete_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -307,7 +307,7 @@ export class SubscriptionController {
       );
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('PUT', '/api/subscriptions/preferences', duration / 1000);
+      metrics.recordHttpRequest('PUT', '/api/subscriptions/preferences', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -330,7 +330,7 @@ export class SubscriptionController {
         type: req.body?.type,
       });
 
-      metrics.recordHttpRequestDuration('PUT', '/api/subscriptions/preferences', duration / 1000);
+      metrics.recordHttpRequest('PUT', '/api/subscriptions/preferences', duration / 1000);
       metrics.recordError('subscription', 'update_preferences_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -358,7 +358,7 @@ export class SubscriptionController {
       );
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('GET', '/api/subscriptions/preferences', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/subscriptions/preferences', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -383,7 +383,7 @@ export class SubscriptionController {
         type: req.query.type,
       });
 
-      metrics.recordHttpRequestDuration('GET', '/api/subscriptions/preferences', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/subscriptions/preferences', duration / 1000);
       metrics.recordError('subscription', 'get_preferences_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -408,7 +408,7 @@ export class SubscriptionController {
       const subscription = await this.subscriptionService.enableSubscription(id);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('POST', '/api/subscriptions/:id/enable', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/subscriptions/:id/enable', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -427,7 +427,7 @@ export class SubscriptionController {
         subscriptionId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('POST', '/api/subscriptions/:id/enable', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/subscriptions/:id/enable', duration / 1000);
       metrics.recordError('subscription', 'enable_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -452,7 +452,7 @@ export class SubscriptionController {
       const subscription = await this.subscriptionService.disableSubscription(id);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('POST', '/api/subscriptions/:id/disable', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/subscriptions/:id/disable', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -471,7 +471,7 @@ export class SubscriptionController {
         subscriptionId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('POST', '/api/subscriptions/:id/disable', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/subscriptions/:id/disable', duration / 1000);
       metrics.recordError('subscription', 'disable_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -496,7 +496,7 @@ export class SubscriptionController {
       const status = await this.subscriptionService.getSubscriptionStatus(id);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('GET', '/api/subscriptions/:id/status', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/subscriptions/:id/status', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -515,7 +515,7 @@ export class SubscriptionController {
         subscriptionId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('GET', '/api/subscriptions/:id/status', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/subscriptions/:id/status', duration / 1000);
       metrics.recordError('subscription', 'get_status_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -540,7 +540,7 @@ export class SubscriptionController {
       const stats = await this.subscriptionService.getSubscriptionStats(userId as string);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('GET', '/api/subscriptions/stats', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/subscriptions/stats', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -559,7 +559,7 @@ export class SubscriptionController {
         userId: req.query.userId,
       });
 
-      metrics.recordHttpRequestDuration('GET', '/api/subscriptions/stats', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/subscriptions/stats', duration / 1000);
       metrics.recordError('subscription', 'get_stats_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -584,7 +584,7 @@ export class SubscriptionController {
       const isValid = await this.subscriptionService.validateSubscription(id);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('POST', '/api/subscriptions/:id/validate', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/subscriptions/:id/validate', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -603,7 +603,7 @@ export class SubscriptionController {
         subscriptionId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('POST', '/api/subscriptions/:id/validate', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/subscriptions/:id/validate', duration / 1000);
       metrics.recordError('subscription', 'validate_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);

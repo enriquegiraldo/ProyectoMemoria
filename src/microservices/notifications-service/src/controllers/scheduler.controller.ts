@@ -45,7 +45,7 @@ export class SchedulerController {
       const result = await this.schedulerService.scheduleNotification(notification, schedule, options);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('POST', '/api/scheduler/schedule', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/scheduler/schedule', duration / 1000);
 
       res.status(201).json({
         success: true,
@@ -65,7 +65,7 @@ export class SchedulerController {
         scheduledAt: req.body?.schedule?.scheduledAt,
       });
 
-      metrics.recordHttpRequestDuration('POST', '/api/scheduler/schedule', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/scheduler/schedule', duration / 1000);
       metrics.recordError('scheduler', 'schedule_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -98,7 +98,7 @@ export class SchedulerController {
       );
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('POST', '/api/scheduler/recurring', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/scheduler/recurring', duration / 1000);
 
       res.status(201).json({
         success: true,
@@ -118,7 +118,7 @@ export class SchedulerController {
         cronExpression: req.body?.cronExpression,
       });
 
-      metrics.recordHttpRequestDuration('POST', '/api/scheduler/recurring', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/scheduler/recurring', duration / 1000);
       metrics.recordError('scheduler', 'recurring_schedule_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -151,7 +151,7 @@ export class SchedulerController {
       );
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('POST', '/api/scheduler/delayed', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/scheduler/delayed', duration / 1000);
 
       res.status(201).json({
         success: true,
@@ -171,7 +171,7 @@ export class SchedulerController {
         delayMs: req.body?.delayMs,
       });
 
-      metrics.recordHttpRequestDuration('POST', '/api/scheduler/delayed', duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/scheduler/delayed', duration / 1000);
       metrics.recordError('scheduler', 'delayed_schedule_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -200,7 +200,7 @@ export class SchedulerController {
       }
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('GET', '/api/scheduler/:id', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/scheduler/:id', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -219,7 +219,7 @@ export class SchedulerController {
         scheduleId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('GET', '/api/scheduler/:id', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/scheduler/:id', duration / 1000);
       metrics.recordError('scheduler', 'get_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -254,7 +254,7 @@ export class SchedulerController {
       const schedules = await this.schedulerService.listSchedules(query);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('GET', '/api/scheduler', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/scheduler', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -275,7 +275,7 @@ export class SchedulerController {
         duration,
       });
 
-      metrics.recordHttpRequestDuration('GET', '/api/scheduler', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/scheduler', duration / 1000);
       metrics.recordError('scheduler', 'list_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -305,7 +305,7 @@ export class SchedulerController {
       const updatedSchedule = await this.schedulerService.updateSchedule(id, updates);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('PUT', '/api/scheduler/:id', duration / 1000);
+      metrics.recordHttpRequest('PUT', '/api/scheduler/:id', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -324,7 +324,7 @@ export class SchedulerController {
         scheduleId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('PUT', '/api/scheduler/:id', duration / 1000);
+      metrics.recordHttpRequest('PUT', '/api/scheduler/:id', duration / 1000);
       metrics.recordError('scheduler', 'update_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -349,7 +349,7 @@ export class SchedulerController {
       const cancelled = await this.schedulerService.cancelSchedule(id);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('DELETE', '/api/scheduler/:id', duration / 1000);
+      metrics.recordHttpRequest('DELETE', '/api/scheduler/:id', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -368,7 +368,7 @@ export class SchedulerController {
         scheduleId: req.params.id,
       });
 
-      metrics.recordHttpRequestDuration('DELETE', '/api/scheduler/:id', duration / 1000);
+      metrics.recordHttpRequest('DELETE', '/api/scheduler/:id', duration / 1000);
       metrics.recordError('scheduler', 'cancel_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -393,7 +393,7 @@ export class SchedulerController {
       const scheduledNotifications = await this.schedulerService.getScheduledNotifications(userId);
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('GET', '/api/scheduler/user/:userId', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/scheduler/user/:userId', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -416,7 +416,7 @@ export class SchedulerController {
         userId: req.params.userId,
       });
 
-      metrics.recordHttpRequestDuration('GET', '/api/scheduler/user/:userId', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/scheduler/user/:userId', duration / 1000);
       metrics.recordError('scheduler', 'get_user_scheduled_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
@@ -435,7 +435,7 @@ export class SchedulerController {
       const stats = await this.schedulerService.getScheduleStats();
 
       const duration = Date.now() - startTime;
-      metrics.recordHttpRequestDuration('GET', '/api/scheduler/stats', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/scheduler/stats', duration / 1000);
 
       res.status(200).json({
         success: true,
@@ -453,7 +453,7 @@ export class SchedulerController {
         duration,
       });
 
-      metrics.recordHttpRequestDuration('GET', '/api/scheduler/stats', duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/scheduler/stats', duration / 1000);
       metrics.recordError('scheduler', 'get_stats_failed');
 
       res.status(errorResponse.statusCode).json(errorResponse);
