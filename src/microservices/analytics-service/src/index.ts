@@ -1,16 +1,18 @@
+// src/microservices/analytics-service/src/index.ts
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import { createConnection } from 'typeorm';
-import { logger } from './utils';
+import { logger } from '../../../../src/utils/logger';
 import config from './config';
 import { Event } from './models/Event';
 import { Metric, KPI } from './models/Analytics';
 import { AnalyticsController } from './controllers/analytics.controller';
-import { errorHandler } from './middleware/error.middleware';
-import { requestLogger } from './middleware/logger.middleware';
+import { errorHandler } from '';
+//import { requestLogger } from './middleware/logger.middleware';
+import { requestLogger } from '@/microservices/auth-service/utils/logger';
 
 const app = express();
 const analyticsController = new AnalyticsController();

@@ -1,5 +1,5 @@
 // Media Service Types
-
+//src/microservices/media-service/src/types/index.ts
 export interface MediaFile {
   id: string;
   userId: string;
@@ -440,7 +440,7 @@ export type DeepPartial<T> = {
 
 export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-export type Required<T, K extends keyof T> = T & Required<Pick<T, K>>;
+export type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
 
 export type Nullable<T> = T | null;
 

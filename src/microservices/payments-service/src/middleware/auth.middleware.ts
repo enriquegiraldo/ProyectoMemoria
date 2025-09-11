@@ -1,3 +1,4 @@
+// src/microservices/payments-service/src/middleware/auth.middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import { verifyJWT, validateApiKey, extractUserFromToken } from '../utils';
 import { AuthenticationError } from '../utils/errors';

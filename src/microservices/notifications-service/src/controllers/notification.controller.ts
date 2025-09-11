@@ -1,7 +1,6 @@
 // src/microservices/notifications-service/src/controllers/notification.controller.ts
 import { Request, Response } from 'express';
 import { 
-  Notification,
   EmailNotification,
   PushNotification,
   SMSNotification,

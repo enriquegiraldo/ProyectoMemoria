@@ -1,4 +1,3 @@
-// src/microservices/payments-service/src/utils/metrics.ts
 import { register, Counter, Histogram, Gauge, collectDefaultMetrics } from 'prom-client';
 import { PaymentStatus, PaymentProvider, PaymentMethod, Currency } from '../types';
 
@@ -195,7 +194,7 @@ export const recordPayment = (
   provider: PaymentProvider,
   paymentMethod: PaymentMethod,
   currency: Currency,
-  amount: number
+  amount: number,
 ) => {
   paymentTotal.inc({ status, provider, payment_method: paymentMethod, currency });
   paymentAmount.inc({ status, provider, currency }, amount);
@@ -337,6 +336,34 @@ export const getMetricsJson = async () => {
 };
 
 export default {
+  httpRequestTotal, // Añadir httpRequestTotal al objeto exportado
+  httpRequestDuration,
+  httpRequestErrors,
+  paymentTotal,
+  paymentAmount,
+  paymentDuration,
+  paymentSuccessRate,
+  paymentFailureRate,
+  subscriptionTotal,
+  subscriptionActive,
+  subscriptionChurnRate,
+  refundTotal,
+  refundAmount,
+  webhookTotal,
+  webhookProcessingDuration,
+  webhookRetryTotal,
+  disputeTotal,
+  disputeAmount,
+  revenueTotal,
+  revenueMonthly,
+  errorTotal,
+  databaseConnections,
+  databaseQueryDuration,
+  cacheHits,
+  cacheMisses,
+  cacheSize,
+  customerTotal,
+  customerLifetimeValue,
   recordPayment,
   recordPaymentDuration,
   recordWebhook,
@@ -357,12 +384,9 @@ export default {
   setMonthlyRevenue,
   getMetrics,
   getMetricsJson,
-  // Additional metrics for service usage
   refundsProcessed: refundTotal,
   paymentErrors: errorTotal,
   subscriptionsCreated: subscriptionTotal,
   subscriptionErrors: errorTotal,
   subscriptionsCanceled: subscriptionTotal,
 };
-
-//

@@ -8,7 +8,7 @@ import {
   MediaFile,
   MediaType
 } from '../types';
-import { logger, processing } from '../utils/logger';
+import  logger, {processing } from '../utils/logger';
 import { metrics } from '../utils/metrics';
 import { 
   ProcessingError, 
@@ -18,8 +18,8 @@ import {
 import { config } from '../config';
 
 // Import all processors
-import { ImageProcessor, ImageProcessingOptions, ImageProcessingResult } from './ImageProcessor';
-import { VideoProcessor, VideoProcessingOptions, VideoProcessingResult } from './VideoProcessor';
+import { ImageProcessor, ImageProcessingOptions, ImageProcessingResult } from './image.processor';
+import { VideoProcessor, VideoProcessingOptions, VideoProcessingResult } from './video.processor';
 import { AudioProcessor, AudioProcessingOptions, AudioProcessingResult } from './audio.processor';
 import { DocumentProcessor, DocumentProcessingOptions, DocumentProcessingResult } from './document.processor';
 

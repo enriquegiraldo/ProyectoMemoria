@@ -8,7 +8,8 @@ import {
   VideoMetadata,
   ProcessingStatus 
 } from '../types';
-import { logger, processing } from '../utils/logger';
+import  logger  from '../utils/logger';
+import { processing } from '../utils/logger';
 import { metrics } from '../utils/metrics';
 import { 
   ProcessingError, 
@@ -74,6 +75,7 @@ export interface VideoProcessingOptions {
 }
 
 export interface VideoProcessingResult extends ProcessingResult {
+  success: boolean;
   metadata: VideoMetadata;
   thumbnails?: {
     preview: string;
@@ -87,8 +89,8 @@ export class VideoProcessor {
 
   constructor() {
     // Set FFmpeg path if needed
-    if (process.env.FFMPEG_PATH) {
-      ffmpeg.setFfmpegPath(process.env.FFMPEG_PATH);
+    if (process.env["FFMPEG_PATH"]) {
+      ffmpeg.setFfmpegPath(process.env["FFMPEG_PATH"]);
     }
   }
 

@@ -375,9 +375,11 @@ export const formatErrorResponse = (error: Error): any => {
     timestamp: new Date().toISOString(),
   };
 };
+import { Response } from 'express'; 
 
-export const handleError = (error: Error): BaseError => {
+export const handleError = (error: Error, res: Response): BaseError => {
   if (error instanceof BaseError) {
+     res.status(500).json({ success: false, message: 'Internal Server Error' });
     return error;
   }
 

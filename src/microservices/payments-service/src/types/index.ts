@@ -1,3 +1,4 @@
+// src/microservices/payments-service/src/types/index.ts
 // Payment Types
 export enum PaymentStatus {
   PENDING = 'pending',
@@ -383,11 +384,17 @@ export interface PaginatedResponse<T> {
 
 // Request Types
 export interface CreatePaymentIntentRequest {
+  userId: string;
   amount: number;
   currency: Currency;
   paymentMethod: PaymentMethod;
   provider: PaymentProvider;
   customerId: string;
+  subscriptionId?: string;
+  invoiceId?: string;
+  paymentMethodId?: string;
+  // Additional properties used by the service
+  isTest?: boolean;
   description?: string;
   metadata?: Record<string, any>;
   captureMethod?: 'automatic' | 'manual';
@@ -396,17 +403,15 @@ export interface CreatePaymentIntentRequest {
 
 export interface ConfirmPaymentRequest {
   paymentIntentId: string;
-  paymentMethodId?: string;
+  paymentMethodId: string;
   returnUrl?: string;
+  provider: string
   metadata?: Record<string, any>;
 }
 
 export interface CreateSubscriptionRequest {
-  userId: string;
   customerId: string;
   planId: string;
-  amount: number;
-  currency: Currency;
   provider: PaymentProvider;
   paymentMethodId?: string;
   trialDays?: number;
@@ -440,16 +445,18 @@ export interface CancelSubscriptionRequest {
   metadata?: Record<string, any>;
 }
 
-export interface CreateRefundRequest {
+export interface RefundRequest {
+  paymentIntentId?: string;
   paymentId: string;
   amount?: number;
-  reason: RefundReason;
+  reason?: string;
   description?: string;
   metadata?: Record<string, any>;
 }
 
 // Query Types
 export interface PaymentQuery {
+  userId?: string;
   customerId?: string;
   status?: PaymentStatus;
   provider?: PaymentProvider;
@@ -540,3 +547,15 @@ export interface HealthCheck {
   error?: string;
   details?: any;
 }
+
+
+export const Permissions = {
+  PAYMENTS_READ: 'payments:read',
+  PAYMENTS_CREATE: 'payments:create',
+  PAYMENTS_UPDATE: 'payments:update',
+  PAYMENTS_DELETE: 'payments:delete',
+  PAYMENTS_CONFIRM: 'payments:confirm',
+  PAYMENTS_REFUND: 'payments:refund',
+  PAYMENTS_ANALYTICS: 'payments:analytics',
+  PAYMENTS_MANAGE: 'payments:manage',
+};

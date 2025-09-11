@@ -1,3 +1,4 @@
+// src/microservices/payments-service/src/utils/index.ts
 // Logger
 export { default as logger } from './logger';
 
@@ -25,7 +26,8 @@ export {
   BusinessLogicError,
   SecurityError,
   formatErrorResponse,
-  mapProviderError
+  mapProviderError,
+  handleError
 } from './errors';
 
 // Validation

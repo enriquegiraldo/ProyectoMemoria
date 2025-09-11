@@ -1,30 +1,27 @@
 import { Request, Response } from 'express';
 import { PaymentService } from '../services';
-import { 
+import {
   CreatePaymentIntentRequest,
   ConfirmPaymentRequest,
   RefundRequest,
-  PaymentQuery
+  PaymentQuery,
 } from '../types';
-import { 
-  logger, 
-  metrics, 
-  formatErrorResponse, 
-  handleError,
-  hasPermission,
-  extractUserFromToken,
-  validateApiKey
-} from '../utils';
+import { logger, metrics, formatErrorResponse, handleError, hasPermission } from '../utils';
 
 export class PaymentController {
   private paymentService = new PaymentService();
 
   async createPaymentIntent(req: Request, res: Response): Promise<void> {
     try {
-      // Check permissions
-      const user = extractUserFromToken(req);
-      if (!hasPermission(user, 'payments:create')) {
-        res.status(403).json(formatErrorResponse('Insufficient permissions'));
+      const user = req.user as { id: string; email: string; role: string; permissions: string[] };
+      if (!user) {
+        logger.warn('Authentication required for createPaymentIntent');
+        res.status(401).json(formatErrorResponse(new Error('Authentication required')));
+        return;
+      }
+      if (!hasPermission(user.permissions, 'payments:create')) {
+        logger.warn('Insufficient permissions for createPaymentIntent', { userId: user.id });
+        res.status(403).json(formatErrorResponse(new Error('Insufficient permissions')));
         return;
       }
 
@@ -35,201 +32,216 @@ export class PaymentController {
         invoiceId: req.body.invoiceId,
         amount: req.body.amount,
         currency: req.body.currency,
-        paymentMethod: req.body.paymentMethod,
+        paymentMethod: req.body.paymentMethodId,
         provider: req.body.provider,
         description: req.body.description,
         metadata: req.body.metadata,
         isTest: req.body.isTest || false,
       };
 
+      logger.info('Creating payment intent', { userId: user.id, provider: request.provider });
       const paymentIntent = await this.paymentService.createPaymentIntent(request);
 
-      // Record metrics
-      metrics.httpRequestsTotal.inc({ method: 'POST', endpoint: '/payments/intents', status: '200' });
+      metrics.httpRequestTotal.inc({ method: 'POST', route: '/payments/intents', status_code: '201' });
 
       res.status(201).json({
         success: true,
         data: paymentIntent,
       });
     } catch (error) {
-      handleError(error, res, 'createPaymentIntent');
+      logger.error('Error in createPaymentIntent', { error });
+      handleError(error as Error, res);
     }
   }
 
   async confirmPayment(req: Request, res: Response): Promise<void> {
     try {
-      // Check permissions
-      const user = extractUserFromToken(req);
-      if (!hasPermission(user, 'payments:confirm')) {
-        res.status(403).json(formatErrorResponse('Insufficient permissions'));
+      const user = req.user as { id: string; email: string; role: string; permissions: string[] };
+      if (!user) {
+        logger.warn('Authentication required for confirmPayment');
+        res.status(401).json(formatErrorResponse(new Error('Authentication required')));
+        return;
+      }
+      if (!hasPermission(user.permissions, 'payments:confirm')) {
+        logger.warn('Insufficient permissions for confirmPayment', { userId: user.id });
+        res.status(403).json(formatErrorResponse(new Error('Insufficient permissions')));
+        return;
+      }
+
+      const paymentIntentId = req.params["paymentId"];
+      if (!paymentIntentId) {
+        logger.warn('Missing paymentIntentId for confirmPayment');
+        res.status(400).json(formatErrorResponse(new Error('Missing paymentIntentId')));
         return;
       }
 
       const request: ConfirmPaymentRequest = {
-        paymentId: req.params.paymentId,
+        paymentIntentId,
         provider: req.body.provider,
-        paymentMethodData: req.body.paymentMethodData,
+        paymentMethodId: req.body.paymentMethodId,
       };
 
+      logger.info('Confirming payment', { paymentIntentId, provider: request.provider });
       const payment = await this.paymentService.confirmPayment(request);
 
-      // Record metrics
-      metrics.httpRequestsTotal.inc({ method: 'POST', endpoint: '/payments/:id/confirm', status: '200' });
+      metrics.httpRequestTotal.inc({ method: 'POST', route: '/payments/:id/confirm', status_code: '200' });
 
       res.status(200).json({
         success: true,
         data: payment,
       });
     } catch (error) {
-      handleError(error, res, 'confirmPayment');
+      logger.error('Error in confirmPayment', { error });
+      handleError(error as Error, res);
     }
   }
 
   async getPayment(req: Request, res: Response): Promise<void> {
     try {
-      // Check permissions
-      const user = extractUserFromToken(req);
-      if (!hasPermission(user, 'payments:read')) {
-        res.status(403).json(formatErrorResponse('Insufficient permissions'));
+      const user = req.user as { id: string; email: string; role: string; permissions: string[] };
+      if (!user) {
+        logger.warn('Authentication required for getPayment');
+        res.status(401).json(formatErrorResponse(new Error('Authentication required')));
+        return;
+      }
+      if (!hasPermission(user.permissions, 'payments:read')) {
+        logger.warn('Insufficient permissions for getPayment', { userId: user.id });
+        res.status(403).json(formatErrorResponse(new Error('Insufficient permissions')));
         return;
       }
 
-      const paymentId = req.params.paymentId;
+      const paymentId = req.params["paymentId"];
+      if (!paymentId) {
+        logger.warn('Missing paymentId for getPayment');
+        res.status(400).json(formatErrorResponse(new Error('Missing paymentId')));
+        return;
+      }
+
+      logger.info('Fetching payment', { paymentId, userId: user.id });
       const payment = await this.paymentService.getPayment(paymentId);
 
-      // Check if user can access this payment
-      if (payment.userId !== user.id && !hasPermission(user, 'payments:read:all')) {
-        res.status(403).json(formatErrorResponse('Access denied'));
-        return;
-      }
-
-      // Record metrics
-      metrics.httpRequestsTotal.inc({ method: 'GET', endpoint: '/payments/:id', status: '200' });
+      metrics.httpRequestTotal.inc({ method: 'GET', route: '/payments/:id', status_code: '200' });
 
       res.status(200).json({
         success: true,
         data: payment,
       });
     } catch (error) {
-      handleError(error, res, 'getPayment');
+      logger.error('Error in getPayment', { error });
+      handleError(error as Error, res);
     }
   }
 
   async getPayments(req: Request, res: Response): Promise<void> {
     try {
-      // Check permissions
-      const user = extractUserFromToken(req);
-      if (!hasPermission(user, 'payments:read')) {
-        res.status(403).json(formatErrorResponse('Insufficient permissions'));
+      const user = req.user as { id: string; email: string; role: string; permissions: string[] };
+      if (!user) {
+        logger.warn('Authentication required for getPayments');
+        res.status(401).json(formatErrorResponse(new Error('Authentication required')));
+        return;
+      }
+      if (!hasPermission(user.permissions, 'payments:read')) {
+        logger.warn('Insufficient permissions for getPayments', { userId: user.id });
+        res.status(403).json(formatErrorResponse(new Error('Insufficient permissions')));
         return;
       }
 
       const query: PaymentQuery = {
-        userId: req.query.userId as string || user.id,
-        status: req.query.status as any,
-        provider: req.query.provider as any,
-        paymentMethod: req.query.paymentMethod as any,
-        startDate: req.query.startDate ? new Date(req.query.startDate as string) : undefined,
-        endDate: req.query.endDate ? new Date(req.query.endDate as string) : undefined,
-        limit: parseInt(req.query.limit as string) || 20,
-        offset: parseInt(req.query.offset as string) || 0,
+        userId: user.id,
+        page: parseInt(req.query["page"] as string) || 1,
+        limit: parseInt(req.query["limit"] as string) || 10,
       };
 
-      // Check if user can access other users' payments
-      if (query.userId !== user.id && !hasPermission(user, 'payments:read:all')) {
-        res.status(403).json(formatErrorResponse('Access denied'));
-        return;
-      }
+      logger.info('Fetching payments', { query, userId: user.id });
+      const payments = await this.paymentService.getPayments(query);
 
-      const payments = await this.paymentService.getPaymentsByUser(
-        query.userId,
-        query.limit,
-        query.offset
-      );
-
-      // Record metrics
-      metrics.httpRequestsTotal.inc({ method: 'GET', endpoint: '/payments', status: '200' });
+      metrics.httpRequestTotal.inc({ method: 'GET', route: '/payments', status_code: '200' });
 
       res.status(200).json({
         success: true,
         data: payments,
-        pagination: {
-          limit: query.limit,
-          offset: query.offset,
-          total: payments.length,
-        },
       });
     } catch (error) {
-      handleError(error, res, 'getPayments');
+      logger.error('Error in getPayments', { error });
+      handleError(error as Error, res);
     }
   }
 
   async refundPayment(req: Request, res: Response): Promise<void> {
     try {
-      // Check permissions
-      const user = extractUserFromToken(req);
-      if (!hasPermission(user, 'payments:refund')) {
-        res.status(403).json(formatErrorResponse('Insufficient permissions'));
+      const user = req.user as { id: string; email: string; role: string; permissions: string[] };
+      if (!user) {
+        logger.warn('Authentication required for refundPayment');
+        res.status(401).json(formatErrorResponse(new Error('Authentication required')));
+        return;
+      }
+      if (!hasPermission(user.permissions, 'payments:refund')) {
+        logger.warn('Insufficient permissions for refundPayment', { userId: user.id });
+        res.status(403).json(formatErrorResponse(new Error('Insufficient permissions')));
+        return;
+      }
+
+      const paymentIntentId = req.params["paymentId"];
+      if (!paymentIntentId) {
+        logger.warn('Missing paymentIntentId for refundPayment');
+        res.status(400).json(formatErrorResponse(new Error('Missing paymentIntentId')));
         return;
       }
 
       const request: RefundRequest = {
-        paymentId: req.params.paymentId,
+        paymentId: paymentIntentId,
         amount: req.body.amount,
         reason: req.body.reason,
       };
 
-      const payment = await this.paymentService.refundPayment(request);
+      logger.info('Creating refund', { paymentIntentId, userId: user.id });
+      const refund = await this.paymentService.createRefund(request);
 
-      // Record metrics
-      metrics.httpRequestsTotal.inc({ method: 'POST', endpoint: '/payments/:id/refund', status: '200' });
+      metrics.httpRequestTotal.inc({ method: 'POST', route: '/payments/:id/refund', status_code: '200' });
 
       res.status(200).json({
         success: true,
-        data: payment,
+        data: refund,
       });
     } catch (error) {
-      handleError(error, res, 'refundPayment');
+      logger.error('Error in refundPayment', { error });
+      handleError(error as Error, res);
     }
   }
 
   async getPaymentAnalytics(req: Request, res: Response): Promise<void> {
     try {
-      // Check permissions
-      const user = extractUserFromToken(req);
-      if (!hasPermission(user, 'payments:analytics')) {
-        res.status(403).json(formatErrorResponse('Insufficient permissions'));
+      const user = req.user as { id: string; email: string; role: string; permissions: string[] };
+      if (!user) {
+        logger.warn('Authentication required for getPaymentAnalytics');
+        res.status(401).json(formatErrorResponse(new Error('Authentication required')));
+        return;
+      }
+      if (!hasPermission(user.permissions, 'payments:analytics')) {
+        logger.warn('Insufficient permissions for getPaymentAnalytics', { userId: user.id });
+        res.status(403).json(formatErrorResponse(new Error('Insufficient permissions')));
         return;
       }
 
-      const userId = req.query.userId as string || user.id;
-      const startDate = req.query.startDate ? new Date(req.query.startDate as string) : undefined;
-      const endDate = req.query.endDate ? new Date(req.query.endDate as string) : undefined;
+      logger.info('Fetching payment analytics', { userId: user.id });
+      const analytics = await this.paymentService.getPaymentAnalytics(user.id);
 
-      // Check if user can access other users' analytics
-      if (userId !== user.id && !hasPermission(user, 'payments:analytics:all')) {
-        res.status(403).json(formatErrorResponse('Access denied'));
-        return;
-      }
-
-      const analytics = await this.paymentService.getPaymentAnalytics(userId, startDate, endDate);
-
-      // Record metrics
-      metrics.httpRequestsTotal.inc({ method: 'GET', endpoint: '/payments/analytics', status: '200' });
+      metrics.httpRequestTotal.inc({ method: 'GET', route: '/payments/analytics', status_code: '200' });
 
       res.status(200).json({
         success: true,
         data: analytics,
       });
     } catch (error) {
-      handleError(error, res, 'getPaymentAnalytics');
+      logger.error('Error in getPaymentAnalytics', { error });
+      handleError(error as Error, res);
     }
   }
 
-  async healthCheck(req: Request, res: Response): Promise<void> {
+  async healthCheck(_req: Request, res: Response): Promise<void> {
     try {
-      // Record metrics
-      metrics.httpRequestsTotal.inc({ method: 'GET', endpoint: '/health', status: '200' });
+      logger.info('Health check requested');
+      metrics.httpRequestTotal.inc({ method: 'GET', route: '/health', status_code: '200' });
 
       res.status(200).json({
         success: true,
@@ -238,7 +250,8 @@ export class PaymentController {
         service: 'payments-service',
       });
     } catch (error) {
-      handleError(error, res, 'healthCheck');
+      logger.error('Error in healthCheck', { error });
+      handleError(error as Error, res);
     }
   }
 }

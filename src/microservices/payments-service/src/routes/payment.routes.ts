@@ -1,11 +1,14 @@
+// src/microservices/payments-service/src/routes/payment.routes.ts
 import { Router } from 'express';
-import { PaymentController } from '../controllers';
-import { authenticateToken, validateRequest, rateLimiter } from '../middleware';
+import { PaymentController } from '../controllers/payment.controller';
+import { authenticateToken } from '../middleware/auth.middleware';
+import { validateRequest } from '../middleware/validation.middleware';
+import { rateLimiter } from '../middleware/rate-limit.middleware';
 
 const router = Router();
 const paymentController = new PaymentController();
 
-// Apply rate limiting to all payment routes
+// Rate limiting global para todo el router
 router.use(rateLimiter);
 
 // Health check

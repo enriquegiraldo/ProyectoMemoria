@@ -1,3 +1,4 @@
+// src/microservices/payments-service/src/utils/auth.utils.ts
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import config from '../config';
@@ -125,7 +126,7 @@ export const verifyPassword = async (password: string, hash: string): Promise<bo
 };
 
 // Permission checking
-export const hasPermission = (userPermissions: Permission[], requiredPermission: Permission): boolean => {
+export const hasPermission = (userPermissions: string[], requiredPermission: string): boolean => {
   return userPermissions.includes(requiredPermission);
 };
 

@@ -1,6 +1,7 @@
 import { getRepository } from '../database/connection';
 import { Payment } from '../models';
 import { PaymentProviderFactory } from '../providers';
+import { PaymentQuery } from '../types';
 import { notificationsIntegrationService } from './notifications-integration.service';
 import {
   PaymentIntent,
@@ -14,7 +15,10 @@ import {
 } from '../types';
 import { logger, metrics, ValidationError, PaymentError } from '../utils';
 
+
 export class PaymentService {
+
+  
   private paymentRepository = getRepository(Payment);
 
   async createPaymentIntent(request: CreatePaymentIntentRequest): Promise<PaymentIntent> {
@@ -182,7 +186,7 @@ export class PaymentService {
     }
   }
 
-  async getPayment(paymentId: string): Promise<Payment> {
+  async getPayments(paymentId: string): Promise<Payment> {
     try {
       const payment = await this.paymentRepository.findOne({
         where: { id: paymentId }
@@ -198,6 +202,22 @@ export class PaymentService {
       throw error;
     }
   }
+  async getPayment(paymentId: string): Promise<Payment> {
+    try {
+      const payment = await this.paymentRepository.findOne({
+        where: { id: paymentId }
+      });
+
+      if (!payment) {
+        throw new PaymentError('Payment not found');
+      }
+
+      return payment;
+    } catch (error) {
+      logger.error('Error getting payment:', error);
+      throw error;
+    }
+}
 
   async getPaymentsByUser(userId: string, limit = 20, offset = 0): Promise<Payment[]> {
     try {
