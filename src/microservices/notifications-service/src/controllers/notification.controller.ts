@@ -1,4 +1,3 @@
-// src/microservices/notifications-service/src/controllers/notification.controller.ts
 import { Request, Response } from 'express';
 import { 
   EmailNotification,
@@ -46,10 +45,10 @@ export class NotificationController {
         throw new ValidationError('Invalid request body', validationResult.error.errors);
       }
 
-      const { notification, options } = validationResult.data;
+      const { notification, options }: { notification: BaseNotification; options?: SendNotificationOptions } = validationResult.data;
 
       // Send notification
-      const result = await this.notificationService.sendNotification(notification, options);
+      const result: NotificationResult = await this.notificationService.sendNotification(notification, options);
 
       const duration = Date.now() - startTime;
       metrics.recordHttpRequest('POST', '/api/notifications/send', 200, duration / 1000);
@@ -63,19 +62,19 @@ export class NotificationController {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      const errorResponse = formatErrorResponse(error);
+      const errorResponse = formatErrorResponse(handleError(error)); // ✅ Usar handleError para convertir a CustomError
       
       logger.error('Send notification failed', {
-        error: errorResponse.message,
+        error: errorResponse.error.message, // ✅ Acceder a error.message
         duration,
         userId: req.body?.notification?.userId,
         type: req.body?.notification?.type,
       });
 
-      metrics.recordHttpRequest('POST', '/api/notifications/send', errorResponse.statusCode, duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/notifications/send', errorResponse.error.statusCode, duration / 1000);
       metrics.recordError('notification', 'send_failed');
 
-      res.status(errorResponse.statusCode).json(errorResponse);
+      res.status(errorResponse.error.statusCode).json(errorResponse); // ✅ Acceder a error.statusCode
     }
   }
 
@@ -93,10 +92,10 @@ export class NotificationController {
         throw new ValidationError('Invalid request body', validationResult.error.errors);
       }
 
-      const { notifications, options } = validationResult.data;
+      const { notifications, options }: { notifications: BaseNotification[]; options?: SendBulkNotificationOptions } = validationResult.data;
 
       // Send bulk notifications
-      const results = await this.notificationService.sendBulkNotifications(notifications, options);
+      const results: NotificationResult[] = await this.notificationService.sendBulkNotifications(notifications, options);
 
       const duration = Date.now() - startTime;
       metrics.recordHttpRequest('POST', '/api/notifications/bulk', 200, duration / 1000);
@@ -120,18 +119,18 @@ export class NotificationController {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      const errorResponse = formatErrorResponse(error);
+      const errorResponse = formatErrorResponse(handleError(error)); // ✅ Usar handleError
       
       logger.error('Send bulk notifications failed', {
-        error: errorResponse.message,
+        error: errorResponse.error.message, // ✅ Acceder a error.message
         duration,
         count: req.body?.notifications?.length || 0,
       });
 
-      metrics.recordHttpRequest('POST', '/api/notifications/bulk', errorResponse.statusCode, duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/notifications/bulk', errorResponse.error.statusCode, duration / 1000);
       metrics.recordError('notification', 'bulk_send_failed');
 
-      res.status(errorResponse.statusCode).json(errorResponse);
+      res.status(errorResponse.error.statusCode).json(errorResponse); // ✅ Acceder a error.statusCode
     }
   }
 
@@ -150,7 +149,7 @@ export class NotificationController {
       }
 
       // Get notification status
-      const status = await this.notificationService.getNotificationStatus(id);
+      const status: NotificationStatus = await this.notificationService.getNotificationStatus(id);
 
       const duration = Date.now() - startTime;
       metrics.recordHttpRequest('GET', '/api/notifications/:id/status', 200, duration / 1000);
@@ -164,18 +163,18 @@ export class NotificationController {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      const errorResponse = formatErrorResponse(error);
+      const errorResponse = formatErrorResponse(handleError(error)); // ✅ Usar handleError
       
       logger.error('Get notification status failed', {
-        error: errorResponse.message,
+        error: errorResponse.error.message, // ✅ Acceder a error.message
         duration,
         notificationId: req.params.id,
       });
 
-      metrics.recordHttpRequest('GET', '/api/notifications/:id/status', errorResponse.statusCode, duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/notifications/:id/status', errorResponse.error.statusCode, duration / 1000);
       metrics.recordError('notification', 'get_status_failed');
 
-      res.status(errorResponse.statusCode).json(errorResponse);
+      res.status(errorResponse.error.statusCode).json(errorResponse); // ✅ Acceder a error.statusCode
     }
   }
 
@@ -194,7 +193,7 @@ export class NotificationController {
       }
 
       // Cancel notification
-      const cancelled = await this.notificationService.cancelNotification(id);
+      const cancelled: boolean = await this.notificationService.cancelNotification(id);
 
       const duration = Date.now() - startTime;
       metrics.recordHttpRequest('DELETE', '/api/notifications/:id', 200, duration / 1000);
@@ -208,18 +207,18 @@ export class NotificationController {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      const errorResponse = formatErrorResponse(error);
+      const errorResponse = formatErrorResponse(handleError(error)); // ✅ Usar handleError
       
       logger.error('Cancel notification failed', {
-        error: errorResponse.message,
+        error: errorResponse.error.message, // ✅ Acceder a error.message
         duration,
         notificationId: req.params.id,
       });
 
-      metrics.recordHttpRequest('DELETE', '/api/notifications/:id', errorResponse.statusCode, duration / 1000);
+      metrics.recordHttpRequest('DELETE', '/api/notifications/:id', errorResponse.error.statusCode, duration / 1000);
       metrics.recordError('notification', 'cancel_failed');
 
-      res.status(errorResponse.statusCode).json(errorResponse);
+      res.status(errorResponse.error.statusCode).json(errorResponse); // ✅ Acceder a error.statusCode
     }
   }
 
@@ -246,17 +245,17 @@ export class NotificationController {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      const errorResponse = formatErrorResponse(error);
+      const errorResponse = formatErrorResponse(handleError(error)); // ✅ Usar handleError
       
       logger.error('Get providers failed', {
-        error: errorResponse.message,
+        error: errorResponse.error.message, // ✅ Acceder a error.message
         duration,
       });
 
-      metrics.recordHttpRequest('GET', '/api/notifications/providers', errorResponse.statusCode, duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/notifications/providers', errorResponse.error.statusCode, duration / 1000);
       metrics.recordError('notification', 'get_providers_failed');
 
-      res.status(errorResponse.statusCode).json(errorResponse);
+      res.status(errorResponse.error.statusCode).json(errorResponse); // ✅ Acceder a error.statusCode
     }
   }
 
@@ -275,7 +274,7 @@ export class NotificationController {
       }
 
       // Check provider status
-      const enabled = this.notificationService.isProviderEnabled(type, provider);
+      const enabled: boolean = this.notificationService.isProviderEnabled(type, provider);
 
       const duration = Date.now() - startTime;
       metrics.recordHttpRequest('GET', '/api/notifications/providers/:type/:provider/status', 200, duration / 1000);
@@ -289,19 +288,19 @@ export class NotificationController {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      const errorResponse = formatErrorResponse(error);
+      const errorResponse = formatErrorResponse(handleError(error)); // ✅ Usar handleError
       
       logger.error('Get provider status failed', {
-        error: errorResponse.message,
+        error: errorResponse.error.message, // ✅ Acceder a error.message
         duration,
         type: req.params.type,
-        provider: req.params.provider,
+        provider: req.params['provider'],
       });
 
-      metrics.recordHttpRequest('GET', '/api/notifications/providers/:type/:provider/status', errorResponse.statusCode, duration / 1000);
+      metrics.recordHttpRequest('GET', '/api/notifications/providers/:type/:provider/status', errorResponse.error.statusCode, duration / 1000);
       metrics.recordError('notification', 'get_provider_status_failed');
 
-      res.status(errorResponse.statusCode).json(errorResponse);
+      res.status(errorResponse.error.statusCode).json(errorResponse); // ✅ Acceder a error.statusCode
     }
   }
 
@@ -319,15 +318,10 @@ export class NotificationController {
         throw new ValidationError('Invalid request body', validationResult.error.errors);
       }
 
-      const { notification, options } = validationResult.data;
-
-      // Ensure it's an email notification
-      if (notification.type !== 'email') {
-        throw new ValidationError('Notification type must be email');
-      }
+      const { notification, options }: { notification: EmailNotification; options?: SendNotificationOptions } = validationResult.data;
 
       // Send email notification
-      const result = await this.notificationService.sendNotification(notification as EmailNotification, options);
+      const result: NotificationResult = await this.notificationService.sendNotification(notification, options);
 
       const duration = Date.now() - startTime;
       metrics.recordHttpRequest('POST', '/api/notifications/email', 200, duration / 1000);
@@ -341,18 +335,18 @@ export class NotificationController {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      const errorResponse = formatErrorResponse(error);
+      const errorResponse = formatErrorResponse(handleError(error)); // ✅ Usar handleError
       
       logger.error('Send email notification failed', {
-        error: errorResponse.message,
+        error: errorResponse.error.message, // ✅ Acceder a error.message
         duration,
         userId: req.body?.notification?.userId,
       });
 
-      metrics.recordHttpRequest('POST', '/api/notifications/email', errorResponse.statusCode, duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/notifications/email', errorResponse.error.statusCode, duration / 1000);
       metrics.recordError('notification', 'email_send_failed');
 
-      res.status(errorResponse.statusCode).json(errorResponse);
+      res.status(errorResponse.error.statusCode).json(errorResponse); // ✅ Acceder a error.statusCode
     }
   }
 
@@ -370,15 +364,10 @@ export class NotificationController {
         throw new ValidationError('Invalid request body', validationResult.error.errors);
       }
 
-      const { notification, options } = validationResult.data;
-
-      // Ensure it's a push notification
-      if (notification.type !== 'push') {
-        throw new ValidationError('Notification type must be push');
-      }
+      const { notification, options }: { notification: PushNotification; options?: SendNotificationOptions } = validationResult.data;
 
       // Send push notification
-      const result = await this.notificationService.sendNotification(notification as PushNotification, options);
+      const result: NotificationResult = await this.notificationService.sendNotification(notification, options);
 
       const duration = Date.now() - startTime;
       metrics.recordHttpRequest('POST', '/api/notifications/push', 200, duration / 1000);
@@ -392,18 +381,18 @@ export class NotificationController {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      const errorResponse = formatErrorResponse(error);
+      const errorResponse = formatErrorResponse(handleError(error)); // ✅ Usar handleError
       
       logger.error('Send push notification failed', {
-        error: errorResponse.message,
+        error: errorResponse.error.message, // ✅ Acceder a error.message
         duration,
         userId: req.body?.notification?.userId,
       });
 
-      metrics.recordHttpRequest('POST', '/api/notifications/push', errorResponse.statusCode, duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/notifications/push', errorResponse.error.statusCode, duration / 1000);
       metrics.recordError('notification', 'push_send_failed');
 
-      res.status(errorResponse.statusCode).json(errorResponse);
+      res.status(errorResponse.error.statusCode).json(errorResponse); // ✅ Acceder a error.statusCode
     }
   }
 
@@ -421,15 +410,10 @@ export class NotificationController {
         throw new ValidationError('Invalid request body', validationResult.error.errors);
       }
 
-      const { notification, options } = validationResult.data;
-
-      // Ensure it's an SMS notification
-      if (notification.type !== 'sms') {
-        throw new ValidationError('Notification type must be sms');
-      }
+      const { notification, options }: { notification: SMSNotification; options?: SendNotificationOptions } = validationResult.data;
 
       // Send SMS notification
-      const result = await this.notificationService.sendNotification(notification as SMSNotification, options);
+      const result: NotificationResult = await this.notificationService.sendNotification(notification, options);
 
       const duration = Date.now() - startTime;
       metrics.recordHttpRequest('POST', '/api/notifications/sms', 200, duration / 1000);
@@ -443,18 +427,18 @@ export class NotificationController {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      const errorResponse = formatErrorResponse(error);
+      const errorResponse = formatErrorResponse(handleError(error)); // ✅ Usar handleError
       
       logger.error('Send SMS notification failed', {
-        error: errorResponse.message,
+        error: errorResponse.error.message, // ✅ Acceder a error.message
         duration,
         userId: req.body?.notification?.userId,
       });
 
-      metrics.recordHttpRequest('POST', '/api/notifications/sms', errorResponse.statusCode, duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/notifications/sms', errorResponse.error.statusCode, duration / 1000);
       metrics.recordError('notification', 'sms_send_failed');
 
-      res.status(errorResponse.statusCode).json(errorResponse);
+      res.status(errorResponse.error.statusCode).json(errorResponse); // ✅ Acceder a error.statusCode
     }
   }
 
@@ -472,15 +456,10 @@ export class NotificationController {
         throw new ValidationError('Invalid request body', validationResult.error.errors);
       }
 
-      const { notification, options } = validationResult.data;
-
-      // Ensure it's a webhook notification
-      if (notification.type !== 'webhook') {
-        throw new ValidationError('Notification type must be webhook');
-      }
+      const { notification, options }: { notification: WebhookNotification; options?: SendNotificationOptions } = validationResult.data;
 
       // Send webhook notification
-      const result = await this.notificationService.sendNotification(notification as WebhookNotification, options);
+      const result: NotificationResult = await this.notificationService.sendNotification(notification, options);
 
       const duration = Date.now() - startTime;
       metrics.recordHttpRequest('POST', '/api/notifications/webhook', 200, duration / 1000);
@@ -494,18 +473,18 @@ export class NotificationController {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      const errorResponse = formatErrorResponse(error);
+      const errorResponse = formatErrorResponse(handleError(error)); // ✅ Usar handleError
       
       logger.error('Send webhook notification failed', {
-        error: errorResponse.message,
+        error: errorResponse.error.message, // ✅ Acceder a error.message
         duration,
         userId: req.body?.notification?.userId,
       });
 
-      metrics.recordHttpRequest('POST', '/api/notifications/webhook', errorResponse.statusCode, duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/notifications/webhook', errorResponse.error.statusCode, duration / 1000);
       metrics.recordError('notification', 'webhook_send_failed');
 
-      res.status(errorResponse.statusCode).json(errorResponse);
+      res.status(errorResponse.error.statusCode).json(errorResponse); // ✅ Acceder a error.statusCode
     }
   }
 
@@ -523,15 +502,10 @@ export class NotificationController {
         throw new ValidationError('Invalid request body', validationResult.error.errors);
       }
 
-      const { notification, options } = validationResult.data;
+      const { notification, options }: { notification: InAppNotification; options?: SendNotificationOptions } = validationResult.data;
 
-      // Ensure it's an in-app notification
-      if (notification.type !== 'in-app') {
-        throw new ValidationError('Notification type must be in-app');
-      }
-
-      // Send in-app notification
-      const result = await this.notificationService.sendNotification(notification as InAppNotification, options);
+      // Send in-app notification (lógica hipotética: guardar en BD para mostrar en UI)
+      const result: NotificationResult = await this.notificationService.sendNotification(notification, options);
 
       const duration = Date.now() - startTime;
       metrics.recordHttpRequest('POST', '/api/notifications/in-app', 200, duration / 1000);
@@ -545,18 +519,32 @@ export class NotificationController {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      const errorResponse = formatErrorResponse(error);
+      const errorResponse = formatErrorResponse(handleError(error)); // ✅ Usar handleError
       
       logger.error('Send in-app notification failed', {
-        error: errorResponse.message,
+        error: errorResponse.error.message, // ✅ Acceder a error.message
         duration,
         userId: req.body?.notification?.userId,
       });
 
-      metrics.recordHttpRequest('POST', '/api/notifications/in-app', errorResponse.statusCode, duration / 1000);
+      metrics.recordHttpRequest('POST', '/api/notifications/in-app', errorResponse.error.statusCode, duration / 1000);
       metrics.recordError('notification', 'in_app_send_failed');
 
-      res.status(errorResponse.statusCode).json(errorResponse);
+      res.status(errorResponse.error.statusCode).json(errorResponse); // ✅ Acceder a error.statusCode
     }
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

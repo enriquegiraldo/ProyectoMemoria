@@ -20,8 +20,8 @@ const NotificationBell: React.FC<NotificationBellProps> = ({ className = '' }) =
     formatTime,
   } = useNotifications();
 
-  const handleNotificationClick = (notificationId: string, isRead: boolean) => {
-    if (!isRead) {
+  const handleNotificationClick = (notificationId: string, is_read: boolean) => {
+    if (!is_read) {
       markAsRead(notificationId);
     }
   };

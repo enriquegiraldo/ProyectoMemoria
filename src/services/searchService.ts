@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { Memory } from '../types';
+import { Memory, Reaction } from '../types';
 
 export interface SearchFilters {
   query: string;
@@ -117,9 +117,9 @@ export class SearchService {
         ...memory,
         commentsCount: memory.comments?.length || 0,
         reactionsCount: memory.reactions?.length || 0,
-        likesCount: memory.reactions?.filter(r => r.type === 'LIKE').length || 0,
-        heartsCount: memory.reactions?.filter(r => r.type === 'HEART').length || 0,
-        sadCount: memory.reactions?.filter(r => r.type === 'SAD').length || 0,
+        likesCount: memory.reactions?.filter((r:Reaction) => r.type === 'LIKE').length || 0,
+        heartsCount: memory.reactions?.filter((r:Reaction) => r.type === 'HEART').length || 0,
+        sadCount: memory.reactions?.filter((r:Reaction) => r.type === 'SAD').length || 0,
       }));
 
       return {
@@ -234,7 +234,7 @@ export class SearchService {
       // Contar tags
       const tags: { [key: string]: number } = {};
       data.forEach(memory => {
-        (memory.tags || []).forEach(tag => {
+        (memory.tags || []).forEach((tag: string) => {
           tags[tag] = (tags[tag] || 0) + 1;
         });
       });

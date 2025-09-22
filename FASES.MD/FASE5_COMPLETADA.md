@@ -114,7 +114,7 @@ enum SubscriptionPlan {
 
 enum SubscriptionStatus {
   ACTIVE
-  CANCELED
+  CANCELLED
   PAST_DUE
   UNPAID
   TRIAL

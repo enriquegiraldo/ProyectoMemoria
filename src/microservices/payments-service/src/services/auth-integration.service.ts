@@ -1,5 +1,6 @@
+// src/microservices/payments-service/src/services/auth-integration.service.ts
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { logger } from '@/utils';
+import  logger  from '@/utils/logger';
 import config from '@/config';
 
 export interface UserInfo {

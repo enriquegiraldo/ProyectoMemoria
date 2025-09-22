@@ -1,3 +1,4 @@
+// src/microservices/payments-service/src/utils/metrics.ts
 import { register, Counter, Histogram, Gauge, collectDefaultMetrics } from 'prom-client';
 import { PaymentStatus, PaymentProvider, PaymentMethod, Currency } from '../types';
 
@@ -385,8 +386,35 @@ export default {
   getMetrics,
   getMetricsJson,
   refundsProcessed: refundTotal,
-  paymentErrors: errorTotal,
   subscriptionsCreated: subscriptionTotal,
   subscriptionErrors: errorTotal,
   subscriptionsCanceled: subscriptionTotal,
+
+
+  paymentIntentsCreated: new Counter({
+    name: 'payment_intents_created_total',
+    help: 'Número total de intenciones de pago creadas',
+    labelNames: ['provider'],
+  }),
+  paymentMethodsCreated: new Counter({
+    name: 'payment_methods_created_total',
+    help: 'Número total de métodos de pago creados',
+    labelNames: ['provider'],
+  }),
+  customersCreated: new Counter({
+    name: 'customers_created_total',
+    help: 'Número total de clientes creados',
+    labelNames: ['provider'],
+  }),
+  refundsCreated: new Counter({
+    name: 'refunds_created_total',
+    help: 'Número total de reembolsos creados',
+    labelNames: ['provider'],
+  }),
+  paymentErrors: new Counter({
+    name: 'payment_errors_total',
+    help: 'Número total de errores de pago',
+    labelNames: ['provider', 'type'],
+    
+  }),
 };

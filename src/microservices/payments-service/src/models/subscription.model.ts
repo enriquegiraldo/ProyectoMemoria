@@ -99,7 +99,7 @@ export class Subscription {
   }
 
   get isCanceled(): boolean {
-    return this.status === SubscriptionStatus.CANCELED;
+    return this.status === SubscriptionStatus.CANCELLED;
   }
 
   get isPastDue(): boolean {
@@ -120,3 +120,19 @@ export class Subscription {
     return this.currentPeriodEnd < new Date();
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

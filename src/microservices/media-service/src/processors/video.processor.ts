@@ -1,22 +1,27 @@
+//src/microservices/media-service/src/processors/video.processor.ts
+// Video Processor using FFmpeg
 import ffmpeg from 'fluent-ffmpeg';
 import { readFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { 
-  ProcessingOptions, 
-  ProcessingResult, 
+import {
+  ProcessingOptions,
+  ProcessingResult,
   VideoMetadata,
-  ProcessingStatus 
+  ProcessingStatus
 } from '../types';
-import  logger  from '../utils/logger';
+import logger from '../utils/logger';
 import { processing } from '../utils/logger';
 import { metrics } from '../utils/metrics';
-import { 
-  ProcessingError, 
-  UnsupportedFormatError, 
-  FileCorruptedError 
+import {
+  ProcessingError,
+  UnsupportedFormatError,
+  FileCorruptedError
 } from '../utils/errors';
 import { config } from '../config';
+
+import crypto from 'crypto';
+
 
 export interface VideoProcessingOptions {
   resize?: {
@@ -77,6 +82,15 @@ export interface VideoProcessingOptions {
 export interface VideoProcessingResult extends ProcessingResult {
   success: boolean;
   metadata: VideoMetadata;
+  jobId: string;
+  status: ProcessingStatus;
+  outputPath: string;
+  duration: number;
+  outputFile: any;
+  processingTime: number;
+  originalSize: number;
+  processedSize: number;
+  compressionRatio: number;
   thumbnails?: {
     preview: string;
     poster: string;
@@ -108,7 +122,7 @@ export class VideoProcessor {
     const jobId = uuidv4();
 
     try {
-      processing.jobStarted(userId, fileId, jobId, 'video_processing');
+      processing.jobStarted({ userId, fileId, jobId, operation: 'video_processing' });
 
       // Validate input file
       if (!existsSync(inputPath)) {
@@ -117,7 +131,7 @@ export class VideoProcessor {
 
       // Get original metadata
       const originalMetadata = await this.getMetadata(inputPath);
-      
+
       // Validate format
       if (!this.supportedFormats.includes(originalMetadata.format || '')) {
         throw new UnsupportedFormatError(`Unsupported video format: ${originalMetadata.format}`);
@@ -139,9 +153,9 @@ export class VideoProcessor {
       let thumbnails;
       if (options.thumbnail || config.processing.enableThumbnails) {
         thumbnails = await this.generateThumbnails(
-          inputPath, 
-          outputDir, 
-          fileId, 
+          inputPath,
+          outputDir,
+          fileId,
           options.thumbnail
         );
       }
@@ -149,7 +163,7 @@ export class VideoProcessor {
       const duration = Date.now() - startTime;
 
       // Log success
-      processing.jobCompleted(userId, fileId, jobId, 'video_processing', duration);
+      processing.jobCompleted({ userId, fileId, jobId, operation: 'video_processing', duration });
 
       // Record metrics
       metrics.recordFileProcessing(userId, 'video', 'process', 'completed', duration / 1000);
@@ -166,13 +180,15 @@ export class VideoProcessor {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      
-      processing.jobFailed(userId, fileId, jobId, 'video_processing', error instanceof Error ? error.message : 'Unknown error');
+
+      processing.jobFailed({ userId, fileId, jobId, operation: 'video_processing', error: error instanceof Error ? error.message : 'Unknown error' });
       metrics.recordFileProcessing(userId, 'video', 'process', 'failed', duration / 1000);
 
       throw new ProcessingError(`Video processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
+    
   }
+  
 
   /**
    * Apply processing options to video
@@ -271,8 +287,11 @@ export class VideoProcessor {
    * Build resize filter
    */
   private buildResizeFilter(resize: VideoProcessingOptions['resize'], metadata: VideoMetadata): string {
+    if (!resize) {
+      return '';
+    }
     const { width, height, maintainAspectRatio = true } = resize;
-    
+
     if (!width && !height) {
       return '';
     }
@@ -296,6 +315,9 @@ export class VideoProcessor {
    * Build crop filter
    */
   private buildCropFilter(crop: VideoProcessingOptions['crop']): string {
+    if (!crop) {
+      return '';
+    }
     return `crop=${crop.width}:${crop.height}:${crop.x}:${crop.y}`;
   }
 
@@ -303,6 +325,9 @@ export class VideoProcessor {
    * Build video filters
    */
   private buildVideoFilters(filter: VideoProcessingOptions['filter']): string {
+    if (!filter) {
+      return '';
+    }
     const filters: string[] = [];
 
     if (filter.brightness !== undefined) {
@@ -336,6 +361,9 @@ export class VideoProcessor {
    * Set output format
    */
   private setOutputFormat(command: ffmpeg.FfmpegCommand, convert: VideoProcessingOptions['convert']): ffmpeg.FfmpegCommand {
+    if (!convert) {
+      return command;
+    }
     const { format, codec = 'h264', quality = 80 } = convert;
 
     switch (format) {
@@ -345,35 +373,35 @@ export class VideoProcessor {
           .outputOptions('-c:a', 'aac')
           .outputOptions('-crf', quality.toString())
           .format('mp4');
-      
+
       case 'webm':
         return command
           .outputOptions('-c:v', codec === 'vp9' ? 'libvpx-vp9' : 'libvpx')
           .outputOptions('-c:a', 'libvorbis')
           .outputOptions('-crf', quality.toString())
           .format('webm');
-      
+
       case 'avi':
         return command
           .outputOptions('-c:v', 'libx264')
           .outputOptions('-c:a', 'mp3')
           .outputOptions('-crf', quality.toString())
           .format('avi');
-      
+
       case 'mov':
         return command
           .outputOptions('-c:v', 'libx264')
           .outputOptions('-c:a', 'aac')
           .outputOptions('-crf', quality.toString())
           .format('mov');
-      
+
       case 'mkv':
         return command
           .outputOptions('-c:v', 'libx264')
           .outputOptions('-c:a', 'aac')
           .outputOptions('-crf', quality.toString())
           .format('matroska');
-      
+
       default:
         return command;
     }
@@ -383,6 +411,9 @@ export class VideoProcessor {
    * Set compression
    */
   private setCompression(command: ffmpeg.FfmpegCommand, compress: VideoProcessingOptions['compress']): ffmpeg.FfmpegCommand {
+    if (!compress) {
+      return command;
+    }
     const { quality = 80, format, codec = 'h264', bitrate } = compress;
 
     if (bitrate) {
@@ -404,6 +435,9 @@ export class VideoProcessor {
    * Apply watermark
    */
   private applyWatermark(command: ffmpeg.FfmpegCommand, watermark: VideoProcessingOptions['watermark']): ffmpeg.FfmpegCommand {
+    if (!watermark) {
+      return command;
+    }
     const { text, imagePath, position = 'bottom-right', opacity = 0.5 } = watermark;
 
     if (text) {
@@ -439,7 +473,7 @@ export class VideoProcessor {
 
     // Generate preview thumbnail
     await this.generateThumbnail(inputPath, previewPath, time, width, height);
-    
+
     // Generate poster thumbnail (larger)
     await this.generateThumbnail(inputPath, posterPath, time, width * 2, height * 2);
 
@@ -474,38 +508,51 @@ export class VideoProcessor {
   /**
    * Get video metadata
    */
+  private calculateChecksum(filePath: string): string {
+    const fileBuffer = readFileSync(filePath);
+    const hashSum = crypto.createHash('sha256');
+    hashSum.update(fileBuffer);
+    return hashSum.digest('hex');
+  }
+  
   async getMetadata(videoPath: string): Promise<VideoMetadata> {
-    return new Promise((resolve, reject) => {
-      ffmpeg.ffprobe(videoPath, (err, metadata) => {
-        if (err) {
-          reject(new FileCorruptedError(`Failed to read video metadata: ${err.message}`));
-          return;
-        }
+  return new Promise((resolve, reject) => {
+    ffmpeg.ffprobe(videoPath, (err, metadata) => {
+      if (err) {
+        reject(new FileCorruptedError(`Failed to read video metadata: ${err.message}`));
+        return;
+      }
 
-        const videoStream = metadata.streams.find(stream => stream.codec_type === 'video');
-        const audioStream = metadata.streams.find(stream => stream.codec_type === 'audio');
+      const videoStream = metadata.streams.find(stream => stream.codec_type === 'video');
+      const audioStream = metadata.streams.find(stream => stream.codec_type === 'audio');
+      
+      // Calculate checksum
+      const checksum = this.calculateChecksum(videoPath);
 
-        resolve({
-          width: videoStream?.width || 0,
-          height: videoStream?.height || 0,
-          duration: metadata.format?.duration ? parseFloat(metadata.format.duration) : 0,
-          format: metadata.format?.format_name || '',
-          size: metadata.format?.size ? parseInt(metadata.format.size) : 0,
-          bitrate: metadata.format?.bit_rate ? parseInt(metadata.format.bit_rate) : 0,
-          fps: videoStream?.r_frame_rate ? this.parseFrameRate(videoStream.r_frame_rate) : 0,
-          codec: videoStream?.codec_name || '',
-          audioCodec: audioStream?.codec_name || '',
-          audioChannels: audioStream?.channels || 0,
-          audioSampleRate: audioStream?.sample_rate ? parseInt(audioStream.sample_rate) : 0,
-        });
+      resolve({
+        width: videoStream?.width || 0,
+        height: videoStream?.height || 0,
+        duration: metadata.format?.duration ? parseFloat(metadata.format.duration.toString()) : 0,
+        format: metadata.format?.format_name || '',
+        size: metadata.format?.size ? parseInt(metadata.format.size.toString()) : 0,
+        bitrate: metadata.format?.bit_rate ? parseInt(metadata.format.bit_rate.toString()) : 0,
+        fps: videoStream?.r_frame_rate ? this.parseFrameRate(videoStream.r_frame_rate) : 0,
+        codec: videoStream?.codec_name || '',
+        audioCodec: audioStream?.codec_name || '',
+        audioChannels: audioStream?.channels || 0,
+        audioSampleRate: audioStream?.sample_rate ? parseInt(audioStream.sample_rate.toString()) : 0,
+        checksum,  // Add this property
       });
     });
-  }
-
+  });
+}
   /**
    * Parse frame rate string
    */
-  private parseFrameRate(frameRate: string): number {
+  private parseFrameRate(frameRate: string | undefined): number {
+    if (!frameRate) {
+      return 0;
+    }
     const parts = frameRate.split('/');
     if (parts.length === 2) {
       return parseInt(parts[0]) / parseInt(parts[1]);

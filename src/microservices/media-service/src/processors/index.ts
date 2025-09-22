@@ -1,27 +1,26 @@
+// src/microservices/media-service/src/processors/index.ts
 import { existsSync, mkdirSync } from 'fs';
 import { join, dirname, extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { 
-  ProcessingOptions, 
-  ProcessingResult, 
+import {
+  ProcessingResult,
   ProcessingStatus,
-  MediaFile,
   MediaType
 } from '../types';
-import  logger, {processing } from '../utils/logger';
+import logger, { processing } from '../utils/logger';
 import { metrics } from '../utils/metrics';
-import { 
-  ProcessingError, 
-  UnsupportedFormatError, 
-  FileCorruptedError 
+import {
+  ProcessingError,
+  UnsupportedFormatError,
+  FileCorruptedError
 } from '../utils/errors';
-import { config } from '../config';
 
 // Import all processors
 import { ImageProcessor, ImageProcessingOptions, ImageProcessingResult } from './image.processor';
 import { VideoProcessor, VideoProcessingOptions, VideoProcessingResult } from './video.processor';
 import { AudioProcessor, AudioProcessingOptions, AudioProcessingResult } from './audio.processor';
 import { DocumentProcessor, DocumentProcessingOptions, DocumentProcessingResult } from './document.processor';
+import { any } from 'zod';
 
 export interface MediaProcessingOptions {
   image?: ImageProcessingOptions;
@@ -42,12 +41,23 @@ export interface MediaProcessingOptions {
 }
 
 export interface MediaProcessingResult extends ProcessingResult {
+  success: boolean;
+  jobId: string;
+  status: ProcessingStatus;
+  outputPath: string;
+  duration: number;
   mediaType: MediaType;
   originalPath: string;
   processedPath: string;
   metadata: any;
-  thumbnails?: Record<string, string>;
+  thumbnails?: { [key: string]: string };
   extractedContent?: any;
+  outputFile: any;
+  processingTime: number;
+  originalSize: number;
+  processedSize: number;
+  compressionRatio: number;
+  waveform?: string;
 }
 
 export class MediaProcessor {
@@ -76,7 +86,7 @@ export class MediaProcessor {
     const jobId = uuidv4();
 
     try {
-      processing.jobStarted(userId, fileId, jobId, 'media_processing');
+      processing.jobStarted({ userId, fileId, jobId, operation: 'media_processing' });
 
       // Validate input file
       if (!existsSync(inputPath)) {
@@ -85,9 +95,9 @@ export class MediaProcessor {
 
       // Determine media type
       const mediaType = this.detectMediaType(inputPath);
-      
+
       // Generate output path
-      const outputPath = this.generateOutputPath(inputPath, options, mediaType);
+      const outputPath = this.generateOutputPath(inputPath, options);
 
       // Ensure output directory exists
       const outputDir = dirname(outputPath);
@@ -100,16 +110,16 @@ export class MediaProcessor {
 
       switch (mediaType) {
         case MediaType.IMAGE:
-          result = await this.processImage(inputPath, outputPath, options, userId, fileId);
+          result = await this.processImage(inputPath, outputPath, options, userId, fileId, jobId);
           break;
         case MediaType.VIDEO:
-          result = await this.processVideo(inputPath, outputPath, options, userId, fileId);
+          result = await this.processVideo(inputPath, outputPath, options, userId, fileId, jobId);
           break;
         case MediaType.AUDIO:
-          result = await this.processAudio(inputPath, outputPath, options, userId, fileId);
+          result = await this.processAudio(inputPath, outputPath, options, userId, fileId, jobId);
           break;
         case MediaType.DOCUMENT:
-          result = await this.processDocument(inputPath, outputPath, options, userId, fileId);
+          result = await this.processDocument(inputPath, outputPath, options, userId, fileId, jobId);
           break;
         default:
           throw new UnsupportedFormatError(`Unsupported media type: ${mediaType}`);
@@ -118,7 +128,7 @@ export class MediaProcessor {
       const duration = Date.now() - startTime;
 
       // Log success
-      processing.jobCompleted(userId, fileId, jobId, 'media_processing', duration);
+      processing.jobCompleted({ userId, fileId, jobId, operation: 'media_processing', duration });
 
       // Record metrics
       metrics.recordFileProcessing(userId, mediaType, 'process', 'completed', duration / 1000);
@@ -132,8 +142,8 @@ export class MediaProcessor {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      
-      processing.jobFailed(userId, fileId, jobId, 'media_processing', error instanceof Error ? error.message : 'Unknown error');
+
+      processing.jobFailed({ userId, fileId, jobId, operation: 'media_processing', error: error instanceof Error ? error.message : 'Unknown error' });
       metrics.recordFileProcessing(userId, 'unknown', 'process', 'failed', duration / 1000);
 
       throw new ProcessingError(`Media processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -148,10 +158,12 @@ export class MediaProcessor {
     outputPath: string,
     options: MediaProcessingOptions,
     userId: string,
-    fileId: string
+    fileId: string,
+    jobId: string
   ): Promise<MediaProcessingResult> {
     const imageOptions = options.image || {};
-    
+
+    const startTime = Date.now();
     const result = await this.imageProcessor.processImage(
       inputPath,
       outputPath,
@@ -159,18 +171,33 @@ export class MediaProcessor {
       userId,
       fileId
     );
+    const processingTime = Date.now() - startTime;
+
+    const fs = await import('fs');
+    const originalStats = fs.statSync(inputPath);
+    const processedStats = fs.statSync(outputPath);
+    const compressionRatio = processedStats.size / originalStats.size;
+
 
     return {
-      success: result.success,
-      jobId: result.jobId,
-      status: result.status,
-      outputPath: result.outputPath,
-      duration: result.duration,
+      success: true,
+      jobId: jobId,
+      status: ProcessingStatus.COMPLETED,
+      outputPath: outputPath,
+      duration: processingTime,
       mediaType: MediaType.IMAGE,
       originalPath: inputPath,
       processedPath: outputPath,
       metadata: result.metadata,
       thumbnails: result.thumbnails,
+      outputFile: outputPath,
+      processingTime: processingTime,
+      originalSize: originalStats.size,
+      processedSize: processedStats.size,
+      compressionRatio: compressionRatio,
+
+
+
     };
   }
 
@@ -182,10 +209,12 @@ export class MediaProcessor {
     outputPath: string,
     options: MediaProcessingOptions,
     userId: string,
-    fileId: string
+    fileId: string,
+    jobId: string
   ): Promise<MediaProcessingResult> {
     const videoOptions = options.video || {};
-    
+
+    const startTime = Date.now();
     const result = await this.videoProcessor.processVideo(
       inputPath,
       outputPath,
@@ -193,18 +222,34 @@ export class MediaProcessor {
       userId,
       fileId
     );
+    const duration = Date.now() - startTime;
+
+    const fs = await import('fs');
+    const originalStats = fs.statSync(inputPath);
+    const processedStats = fs.statSync(outputPath);
+    const compressionRatio = processedStats.size / originalStats.size;
 
     return {
-      success: result.success,
-      jobId: result.jobId,
-      status: result.status,
-      outputPath: result.outputPath,
-      duration: result.duration,
+      success: true,
+      jobId: jobId,
+      status: ProcessingStatus.COMPLETED,
+      outputPath: outputPath,
+      duration: duration,
       mediaType: MediaType.VIDEO,
       originalPath: inputPath,
       processedPath: outputPath,
       metadata: result.metadata,
-      thumbnails: result.thumbnails,
+      // thumbnails: result.thumbnails,
+      thumbnails: result.thumbnails ? {
+        small: result.thumbnails.preview,
+        medium: result.thumbnails.poster,
+        large: result.thumbnails.poster  // o genera una versión large si tienes
+      } : {},
+      outputFile: outputPath,
+      processingTime: duration,
+      originalSize: originalStats.size,
+      processedSize: processedStats.size,
+      compressionRatio: compressionRatio,
     };
   }
 
@@ -216,10 +261,12 @@ export class MediaProcessor {
     outputPath: string,
     options: MediaProcessingOptions,
     userId: string,
-    fileId: string
+    fileId: string,
+    jobId: string
   ): Promise<MediaProcessingResult> {
     const audioOptions = options.audio || {};
-    
+
+    const startTime = Date.now();
     const result = await this.audioProcessor.processAudio(
       inputPath,
       outputPath,
@@ -227,18 +274,25 @@ export class MediaProcessor {
       userId,
       fileId
     );
+    const duration = Date.now() - startTime;
 
     return {
-      success: result.success,
-      jobId: result.jobId,
-      status: result.status,
-      outputPath: result.outputPath,
-      duration: result.duration,
+      success: true,
+      jobId: jobId,
+      status: ProcessingStatus.COMPLETED,
+      outputPath: outputPath,
+      duration: duration,
       mediaType: MediaType.AUDIO,
       originalPath: inputPath,
       processedPath: outputPath,
       metadata: result.metadata,
       extractedContent: result.waveform,
+      //waveform: result.waveform,
+      originalSize: result.originalSize,
+      processedSize: result.processedSize,
+      compressionRatio: result.compressionRatio,
+      outputFile: any,
+      processingTime: duration,
     };
   }
 
@@ -250,10 +304,12 @@ export class MediaProcessor {
     outputPath: string,
     options: MediaProcessingOptions,
     userId: string,
-    fileId: string
+    fileId: string,
+    jobId: string
   ): Promise<MediaProcessingResult> {
     const documentOptions = options.document || {};
-    
+
+    const startTime = Date.now();
     const result = await this.documentProcessor.processDocument(
       inputPath,
       outputPath,
@@ -261,18 +317,24 @@ export class MediaProcessor {
       userId,
       fileId
     );
+    const duration = Date.now() - startTime;
 
     return {
-      success: result.success,
-      jobId: result.jobId,
-      status: result.status,
-      outputPath: result.outputPath,
-      duration: result.duration,
+      success: true,
+      jobId: jobId,
+      status: ProcessingStatus.COMPLETED,
+      outputPath: outputPath,
+      duration: duration,
       mediaType: MediaType.DOCUMENT,
       originalPath: inputPath,
       processedPath: outputPath,
       metadata: result.metadata,
       extractedContent: result.extractedContent,
+      outputFile: outputPath,
+      processingTime: duration,
+      originalSize: result.originalSize,
+      processedSize: result.processedSize,
+      compressionRatio: result.compressionRatio,
     };
   }
 
@@ -281,7 +343,7 @@ export class MediaProcessor {
    */
   private detectMediaType(filePath: string): MediaType {
     const extension = extname(filePath).toLowerCase().slice(1);
-    
+
     // Image formats
     const imageFormats = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg', 'tiff', 'tif', 'ico', 'avif'];
     if (imageFormats.includes(extension)) {
@@ -314,16 +376,15 @@ export class MediaProcessor {
    */
   private generateOutputPath(
     inputPath: string,
-    options: MediaProcessingOptions,
-    mediaType: MediaType
+    options: MediaProcessingOptions
   ): string {
     const inputDir = dirname(inputPath);
     const inputName = inputPath.split('/').pop()?.split('.')[0] || 'processed';
     const timestamp = Date.now();
-    
+
     // Determine output format
     let outputFormat = extname(inputPath).slice(1);
-    
+
     if (options.output?.format) {
       outputFormat = options.output.format;
     } else if (options.image?.convert?.format) {
@@ -436,9 +497,9 @@ export class MediaProcessor {
         const result = await this.processMedia(file.path, file.options, userId, fileId);
         results.push(result);
       } catch (error) {
-        logger.error('Batch processing failed for file', { 
-          file: file.path, 
-          error: error instanceof Error ? error.message : 'Unknown error' 
+        logger.error('Batch processing failed for file', {
+          file: file.path,
+          error: error instanceof Error ? error.message : 'Unknown error'
         });
         // Continue with other files
       }
@@ -474,13 +535,13 @@ export class MediaProcessor {
 
 // Export individual processors for direct access
 export { ImageProcessor, VideoProcessor, AudioProcessor, DocumentProcessor };
-export type { 
-  ImageProcessingOptions, 
+export type {
+  ImageProcessingOptions,
   ImageProcessingResult,
-  VideoProcessingOptions, 
+  VideoProcessingOptions,
   VideoProcessingResult,
-  AudioProcessingOptions, 
+  AudioProcessingOptions,
   AudioProcessingResult,
-  DocumentProcessingOptions, 
+  DocumentProcessingOptions,
   DocumentProcessingResult
 };

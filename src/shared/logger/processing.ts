@@ -11,16 +11,17 @@ export interface ProcessingEvent {
   error?: string;
   details?: any;
   requestId?: string;
+  type?: string;// aqui la correcion pero sale otro error en otro lado
 }
 
 export const createProcessingMethods = (logger: Logger) => ({
-  jobQueued: ({ userId, fileId, jobId, operation, details, requestId }: ProcessingEvent) =>
-    logger.info('Processing job queued', { event: 'processing_job_queued', userId, fileId, jobId, operation, details, requestId, timestamp: new Date().toISOString() }),
+  jobQueued: ({ userId, fileId, jobId, operation, details, requestId, type }: ProcessingEvent) =>
+    logger.info('Processing job queued', { event: 'processing_job_queued', userId, fileId, jobId, operation, details, requestId, type, timestamp: new Date().toISOString() }),
 
-  jobStarted: ({ userId, fileId, jobId, operation, details, requestId }: ProcessingEvent) =>
-    logger.info('Processing job started', { event: 'processing_job_started', userId, fileId, jobId, operation, details, requestId, timestamp: new Date().toISOString() }),
+  jobStarted: ({ userId, fileId, jobId, operation, details, requestId, type }: ProcessingEvent) =>
+    logger.info('Processing job started', { event: 'processing_job_started', userId, fileId, jobId, operation, details, requestId, type, timestamp: new Date().toISOString() }),
 
-  jobCompleted: ({ userId, fileId, jobId, operation, duration, details, requestId }: ProcessingEvent) =>
+  jobCompleted: ({ userId, fileId, jobId, operation, duration, details, requestId, type }: ProcessingEvent) =>
     logger.info('Processing job completed', {
       event: 'processing_job_completed',
       userId,

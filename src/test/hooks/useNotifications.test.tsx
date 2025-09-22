@@ -76,7 +76,7 @@ describe('useNotifications', () => {
           type: 'memory_added',
           title: 'New Memory',
           message: 'A new memory was added',
-          isRead: false,
+          is_read: false,
           createdAt: new Date().toISOString(),
         },
       ];
@@ -234,7 +234,7 @@ describe('useNotifications', () => {
           type: 'memory_added',
           title: 'New Memory',
           message: 'A new memory was added',
-          isRead: false,
+          is_read: false,
           createdAt: new Date().toISOString(),
         },
         {
@@ -243,7 +243,7 @@ describe('useNotifications', () => {
           type: 'comment_added',
           title: 'New Comment',
           message: 'Someone commented on your memory',
-          isRead: true,
+          is_read: true,
           createdAt: new Date().toISOString(),
         },
       ];
@@ -259,7 +259,7 @@ describe('useNotifications', () => {
         wrapper: ({ children }) => wrapper({ children, store }),
       });
 
-      const unreadNotifications = result.current.notifications.filter(n => !n.isRead);
+      const unreadNotifications = result.current.notifications.filter(n => !n.is_read);
       expect(unreadNotifications).toHaveLength(1);
       expect(unreadNotifications[0].id).toBe('1');
     });

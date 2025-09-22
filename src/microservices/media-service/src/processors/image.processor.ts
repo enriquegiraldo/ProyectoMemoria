@@ -1,3 +1,4 @@
+// src/microservices/media-service/src/processors/image.processor.ts
 import sharp from 'sharp';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
@@ -61,7 +62,7 @@ export interface ImageProcessingOptions {
 
 export interface ImageProcessingResult extends ProcessingResult {
   metadata: ImageMetadata;
-  thumbnails?: {
+  thumbnails: {
     small: string;
     medium: string;
     large: string;
@@ -86,7 +87,7 @@ export class ImageProcessor {
     const jobId = uuidv4();
 
     try {
-      processing.jobStarted(userId, fileId, jobId, 'image_processing');
+      processing.jobStarted({userId, fileId, jobId, operation: 'image_processing'});
 
       // Validate input file
       if (!existsSync(inputPath)) {
@@ -129,7 +130,7 @@ export class ImageProcessor {
       const duration = Date.now() - startTime;
 
       // Log success
-      processing.jobCompleted(userId, fileId, jobId, 'image_processing', duration);
+      processing.jobCompleted({userId, fileId, jobId, operation: 'image_processing', duration});
 
       // Record metrics
       metrics.recordFileProcessing(userId, 'image', 'process', 'completed', duration / 1000);
@@ -156,8 +157,8 @@ export class ImageProcessor {
 
     } catch (error) {
       const duration = Date.now() - startTime;
-      
-      processing.jobFailed(userId, fileId, jobId, 'image_processing', error instanceof Error ? error.message : 'Unknown error');
+
+      processing.jobFailed({userId, fileId, jobId, operation: 'image_processing', error: error instanceof Error ? error.message : 'Unknown error'});
       metrics.recordFileProcessing(userId, 'image', 'process', 'failed', duration / 1000);
 
       throw new ProcessingError(`Image processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
@@ -242,6 +243,7 @@ export class ImageProcessor {
    * Apply crop operation
    */
   private applyCrop(image: sharp.Sharp, crop: ImageProcessingOptions['crop']): sharp.Sharp {
+    
     return image.extract({
       left: crop.x,
       top: crop.y,

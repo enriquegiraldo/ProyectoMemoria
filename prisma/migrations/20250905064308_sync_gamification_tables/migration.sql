@@ -2,7 +2,7 @@
 CREATE TYPE "public"."SubscriptionPlan" AS ENUM ('FREE', 'BASIC', 'PRO', 'ENTERPRISE');
 
 -- CreateEnum
-CREATE TYPE "public"."SubscriptionStatus" AS ENUM ('ACTIVE', 'CANCELED', 'PAST_DUE', 'UNPAID', 'TRIAL');
+CREATE TYPE "public"."SubscriptionStatus" AS ENUM ('ACTIVE', 'CANCELLED', 'PAST_DUE', 'UNPAID', 'TRIAL');
 
 -- AlterTable
 ALTER TABLE "public"."_MemoryTag" ADD CONSTRAINT "_MemoryTag_AB_pkey" PRIMARY KEY ("A", "B");

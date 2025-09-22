@@ -165,7 +165,7 @@ describe('NotificationBell', () => {
           type: 'memory_added',
           title: 'Nueva Memoria',
           message: 'Se agregó una nueva memoria',
-          isRead: false,
+          is_read: false,
           createdAt: new Date().toISOString(),
         },
         {
@@ -174,7 +174,7 @@ describe('NotificationBell', () => {
           type: 'comment_added',
           title: 'Nuevo Comentario',
           message: 'Alguien comentó en tu memoria',
-          isRead: true,
+          is_read: true,
           createdAt: new Date().toISOString(),
         },
       ];
@@ -246,7 +246,7 @@ describe('NotificationBell', () => {
           type: 'memory_added',
           title: 'Nueva Memoria',
           message: 'Se agregó una nueva memoria',
-          isRead: false,
+          is_read: false,
           createdAt: new Date().toISOString(),
         },
       ];
@@ -282,7 +282,7 @@ describe('NotificationBell', () => {
           type: 'memory_added',
           title: 'Nueva Memoria',
           message: 'Se agregó una nueva memoria',
-          isRead: false,
+          is_read: false,
           createdAt: new Date().toISOString(),
         },
       ];
@@ -318,7 +318,7 @@ describe('NotificationBell', () => {
           type: 'memory_added',
           title: 'Nueva Memoria',
           message: 'Se agregó una nueva memoria',
-          isRead: false,
+          is_read: false,
           createdAt: new Date().toISOString(),
         },
       ];

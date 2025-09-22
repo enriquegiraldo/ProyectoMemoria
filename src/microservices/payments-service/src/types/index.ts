@@ -1,14 +1,45 @@
 // src/microservices/payments-service/src/types/index.ts
+
 // Payment Types
+export enum PaymentMethodType {
+  CARD = 'card',
+  SEPA_DEBIT = 'sepa_debit',
+  PAYPAL = 'paypal',
+  ALIPAY = 'alipay',
+  IDEAL = 'ideal',
+  SOFORT = 'sofort',
+  BANCONTACT = 'bancontact',
+  GIROPAY = 'giropay',
+  EPS = 'eps',
+  P24 = 'p24',
+  GRABPAY = 'grabpay',
+  FPX = 'fpx',
+  BECS_DEBIT = 'becs_debit',
+  ACSS_DEBIT = 'acss_debit',
+  AFFIRM = 'affirm',
+  AFTERPAY_CLEARPAY = 'afterpay_clearpay',
+  KLARNA = 'klarna',
+  US_BANK_ACCOUNT = 'us_bank_account',
+  CASHAPP = 'cashapp',
+  CUSTOMER_BALANCE = 'customer_balance',
+  LINK = 'link'
+}
+
 export enum PaymentStatus {
-  PENDING = 'pending',
+  PENDING = 'requires_payment_method',  // Alineado con Stripe para precisión
   PROCESSING = 'processing',
   SUCCEEDED = 'succeeded',
-  FAILED = 'failed',
-  CANCELLED = 'cancelled',
-  REFUNDED = 'refunded',
+  FAILED = 'failed',  // O usa 'canceled' para fallos
+  CANCELLED = 'canceled',
+  REFUNDED = 'refunded',  // Extensión para tu lógica
   PARTIALLY_REFUNDED = 'partially_refunded',
   DISPUTED = 'disputed',
+  EXPIRED = 'expired',
+  REQUIRES_ACTION = 'requires_action',
+  REQUIRES_PAYMENT_METHOD = 'requires_payment_method',
+  REQUIRES_CONFIRMATION = 'requires_confirmation',
+  REQUIRES_CAPTURE = 'requires_capture',
+  AUTHORIZED = 'authorized',  // Mapeo personalizado para requires_capture
 }
 
 export enum PaymentMethod {
@@ -21,13 +52,59 @@ export enum PaymentMethod {
   WALLET = 'wallet',
 }
 
-export enum PaymentProvider {
+export enum PaymentProviderType {  // Renombrado para evitar conflicto con la interface
   STRIPE = 'stripe',
   PAYPAL = 'paypal',
   MERCADOPAGO = 'mercadopago',
   BITCOIN = 'bitcoin',
   ETHEREUM = 'ethereum',
   USDT = 'usdt',
+  OTHER = 'other',
+}
+
+export interface PaymentProvider {  // Interface para el contrato de proveedores
+  createPaymentIntent(data: {
+    amount: number;
+    currency: Currency;
+    customerId?: string;
+    paymentMethodId?: string;
+    description?: string;
+    metadata?: Record<string, string>;
+  }): Promise<PaymentIntent>;
+  confirmPaymentIntent(paymentIntentId: string, paymentMethodId?: string | undefined): Promise<PaymentIntent>;
+  getPaymentIntent(paymentIntentId: string): Promise<PaymentIntent>;
+  createPaymentMethod(data: {
+    type: PaymentMethodType;
+    card?: {
+      number: string;
+      expMonth: number;
+      expYear: number;
+      cvc: string;
+    };
+    billingDetails?: {
+      name?: string;
+      email?: string;
+      phone?: string;
+      address?: Address;
+    };
+  }): Promise<PaymentMethod>;
+  createCustomer(data: {
+    email: string;
+    name?: string;
+    phone?: string;
+    address?: Address;
+    metadata?: Record<string, string>;
+  }): Promise<Customer>;
+  createRefund(data: {
+    paymentIntentId: string;
+    amount?: number;
+    reason?: RefundReason;
+    metadata?: Record<string, string>;
+  }): Promise<Refund>;
+  createSubscription(data: any): Promise<any>;
+  updateSubscription(data: any): Promise<any>;
+  cancelSubscription(data: any): Promise<any>;
+  healthCheck(): Promise<boolean>;
 }
 
 export enum Currency {
@@ -52,13 +129,13 @@ export interface PaymentIntent {
   amount: number;
   currency: Currency;
   status: PaymentStatus;
-  paymentMethod: PaymentMethod;
-  provider: PaymentProvider;
-  customerId: string;
+  paymentMethod?: PaymentMethod;  // Opcional para alinearse con Stripe (no siempre disponible inmediatamente)
+  provider?: PaymentProviderType;  // Usa el enum renombrado
+  customerId?: string;
   description?: string;
   metadata?: Record<string, any>;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt?: Date;  // Opcional para flexibilidad
   expiresAt?: Date;
 }
 
@@ -69,7 +146,7 @@ export interface Payment {
   currency: Currency;
   status: PaymentStatus;
   paymentMethod: PaymentMethod;
-  provider: PaymentProvider;
+  provider: PaymentProviderType;  // Usa el enum renombrado
   providerPaymentId: string;
   customerId: string;
   description?: string;
@@ -85,7 +162,7 @@ export interface Payment {
 export interface PaymentMethodData {
   id: string;
   type: PaymentMethod;
-  provider: PaymentProvider;
+  provider: PaymentProviderType;  // Usa el enum renombrado
   providerMethodId: string;
   customerId: string;
   isDefault: boolean;
@@ -109,6 +186,19 @@ export enum SubscriptionStatus {
   UNPAID = 'unpaid',
   TRIAL = 'trial',
   PAUSED = 'paused',
+  INCOMPLETE = 'incomplete',
+  INCOMPLETE_EXPIRED = 'incomplete_expired',
+  CANCELED = 'canceled',
+  EXPIRED = 'expired',
+  trialing = 'trialing',
+  active = 'active',
+  past_due = 'past_due',
+  canceled = 'canceled',
+  unpaid = 'unpaid',
+  incomplete = 'incomplete',
+  incomplete_expired = 'incomplete_expired',
+  paused = 'paused',
+  expired = 'expired',
 }
 
 export enum BillingCycle {
@@ -139,7 +229,7 @@ export interface Subscription {
   customerId: string;
   planId: string;
   status: SubscriptionStatus;
-  provider: PaymentProvider;
+  provider: PaymentProviderType;  // Usa el enum renombrado
   providerSubscriptionId: string;
   currentPeriodStart: Date;
   currentPeriodEnd: Date;
@@ -151,6 +241,15 @@ export interface Subscription {
   metadata?: Record<string, any>;
   createdAt: Date;
   updatedAt: Date;
+  cancelReason?: string;
+  quantity?: number;
+  price?: number;
+  currency?: Currency;
+  interval?: string;
+  intervalCount?: number;
+  planName?: string;
+  isTest?: boolean;
+  
 }
 
 // Billing Types
@@ -227,8 +326,8 @@ export interface Refund {
   amount: number;
   currency: Currency;
   status: RefundStatus;
-  reason: RefundReason;
-  provider: PaymentProvider;
+  reason?: RefundReason | null;
+  provider: PaymentProviderType;  // Usa el enum renombrado
   providerRefundId: string;
   description?: string;
   metadata?: Record<string, any>;
@@ -257,7 +356,7 @@ export enum WebhookEventType {
 export interface WebhookEvent {
   id: string;
   type: WebhookEventType;
-  provider: PaymentProvider;
+  provider: PaymentProviderType;  // Usa el enum renombrado
   providerEventId: string;
   data: Record<string, any>;
   processed: boolean;
@@ -274,23 +373,23 @@ export interface WebhookEvent {
 // Customer Types
 export interface Customer {
   id: string;
-  email: string;
+  email: string | null;
   name?: string;
   phone?: string;
   address?: Address;
   taxId?: string;
   metadata?: Record<string, any>;
   createdAt: Date;
-  updatedAt: Date;
+  updatedAt?: Date;  // Opcional para flexibilidad
 }
 
 export interface Address {
-  line1: string;
+  line1?: string;  // Opcional para alinearse con Stripe
   line2?: string;
-  city: string;
-  state: string;
-  postalCode: string;
-  country: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
 }
 
 // Dispute Types
@@ -325,7 +424,7 @@ export interface Dispute {
   currency: Currency;
   status: DisputeStatus;
   reason: DisputeReason;
-  provider: PaymentProvider;
+  provider: PaymentProviderType;  // Usa el enum renombrado
   providerDisputeId: string;
   evidence?: DisputeEvidence;
   dueBy?: Date;
@@ -382,18 +481,17 @@ export interface PaginatedResponse<T> {
   };
 }
 
-// Request Types
+// Request Types (mantengo como están, pero usa PaymentProviderType donde corresponda)
 export interface CreatePaymentIntentRequest {
   userId: string;
   amount: number;
   currency: Currency;
   paymentMethod: PaymentMethod;
-  provider: PaymentProvider;
+  provider: PaymentProviderType;  // Usa el enum renombrado
   customerId: string;
   subscriptionId?: string;
   invoiceId?: string;
   paymentMethodId?: string;
-  // Additional properties used by the service
   isTest?: boolean;
   description?: string;
   metadata?: Record<string, any>;
@@ -405,18 +503,17 @@ export interface ConfirmPaymentRequest {
   paymentIntentId: string;
   paymentMethodId: string;
   returnUrl?: string;
-  provider: string
+  provider: PaymentProviderType;  // Usa el enum renombrado
   metadata?: Record<string, any>;
 }
 
 export interface CreateSubscriptionRequest {
   customerId: string;
   planId: string;
-  provider: PaymentProvider;
+  provider: PaymentProviderType;  // Usa el enum renombrado
   paymentMethodId?: string;
   trialDays?: number;
   metadata?: Record<string, any>;
-  // Additional properties used by the service
   userId: string;
   amount: number;
   currency?: Currency;
@@ -433,7 +530,6 @@ export interface UpdateSubscriptionRequest {
   paymentMethodId?: string;
   trialDays?: number;
   metadata?: Record<string, any>;
-  // Additional properties used by the service
   quantity?: number;
   amount?: number;
 }
@@ -454,12 +550,12 @@ export interface RefundRequest {
   metadata?: Record<string, any>;
 }
 
-// Query Types
+// Query Types (usa PaymentProviderType)
 export interface PaymentQuery {
   userId?: string;
   customerId?: string;
   status?: PaymentStatus;
-  provider?: PaymentProvider;
+  provider?: PaymentProviderType;
   paymentMethod?: PaymentMethod;
   startDate?: Date;
   endDate?: Date;
@@ -473,7 +569,7 @@ export interface PaymentQuery {
 export interface SubscriptionQuery {
   customerId?: string;
   status?: SubscriptionStatus;
-  provider?: PaymentProvider;
+  provider?: PaymentProviderType;
   planId?: string;
   startDate?: Date;
   endDate?: Date;
@@ -491,7 +587,7 @@ export interface InvoiceQuery {
   limit?: number;
 }
 
-// Analytics Types
+// Analytics Types (usa PaymentProviderType)
 export interface PaymentAnalytics {
   totalPayments: number;
   totalAmount: number;
@@ -501,7 +597,7 @@ export interface PaymentAnalytics {
   refundRate: number;
   chargebackRate: number;
   byStatus: Record<PaymentStatus, number>;
-  byProvider: Record<PaymentProvider, number>;
+  byProvider: Record<PaymentProviderType, number>;  // Usa el enum renombrado
   byCurrency: Record<Currency, number>;
   byMonth: Array<{
     month: string;
@@ -518,7 +614,7 @@ export interface SubscriptionAnalytics {
   averageLifetime: number;
   byStatus: Record<SubscriptionStatus, number>;
   byPlan: Record<string, number>;
-  byProvider: Record<PaymentProvider, number>;
+  byProvider: Record<PaymentProviderType, number>;  // Usa el enum renombrado
   byMonth: Array<{
     month: string;
     new: number;
@@ -547,7 +643,6 @@ export interface HealthCheck {
   error?: string;
   details?: any;
 }
-
 
 export const Permissions = {
   PAYMENTS_READ: 'payments:read',

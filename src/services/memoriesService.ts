@@ -93,9 +93,9 @@ export class MemoriesService {
         ...memory,
         commentsCount: memory.comments?.length || 0,
         reactionsCount: memory.reactions?.length || 0,
-        likesCount: memory.reactions?.filter(r => r.type === 'LIKE').length || 0,
-        heartsCount: memory.reactions?.filter(r => r.type === 'HEART').length || 0,
-        sadCount: memory.reactions?.filter(r => r.type === 'SAD').length || 0,
+        likesCount: memory.reactions?.filter((r: Reaction) => r.type === 'LIKE').length || 0,
+        heartsCount: memory.reactions?.filter((r: Reaction) => r.type === 'HEART').length || 0,
+        sadCount: memory.reactions?.filter((r: Reaction) => r.type === 'SAD').length || 0,
       })) || [];
 
       return {
@@ -158,9 +158,9 @@ export class MemoriesService {
         ...data,
         commentsCount: data.comments?.length || 0,
         reactionsCount: data.reactions?.length || 0,
-        likesCount: data.reactions?.filter(r => r.type === 'LIKE').length || 0,
-        heartsCount: data.reactions?.filter(r => r.type === 'HEART').length || 0,
-        sadCount: data.reactions?.filter(r => r.type === 'SAD').length || 0,
+        likesCount: data.reactions?.filter((r: Reaction) => r.type === 'LIKE').length || 0,
+        heartsCount: data.reactions?.filter((r: Reaction) => r.type === 'HEART').length || 0,
+        sadCount: data.reactions?.filter((r: Reaction) => r.type === 'SAD').length || 0,
       };
 
       return {

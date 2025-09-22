@@ -117,7 +117,8 @@ const config = configSchema.parse({
     secretKey: process.env["STRIPE_SECRET_KEY"] || 'sk_test_...',
     publishableKey: process.env["STRIPE_PUBLISHABLE_KEY"] || 'pk_test_...',
     webhookSecret: process.env["STRIPE_WEBHOOK_SECRET"] || 'whsec_...',
-    apiVersion: process.env["STRIPE_API_VERSION"] || '2023-10-16',
+    apiVersion: process.env["STRIPE_API_VERSION"] || '2025-08-27.basil',
+    // providers: ['stripe'],
   },
   paypal: {
     clientId: process.env["PAYPAL_CLIENT_ID"] || 'your-paypal-client-id',

@@ -6,14 +6,14 @@ import {
   createUploadMethods,
   createProcessingMethods,
   LoggerConfig,
-} from '@/shared/logger';
+} from '@../../../src/shared/logger';
 import { config } from '../config';
 
 const loggerConfig: LoggerConfig = {
   service: 'media-service',
   logLevel: config.monitoring?.logLevel || 'info',
   environment: config.server?.nodeEnv || 'development',
-  logDir: process.env.LOG_DIR || 'logs',
+  logDir: process.env["LOG_DIR"] || 'logs',
 };
 
 const baseLogger = createBaseLogger(loggerConfig);

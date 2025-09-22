@@ -246,7 +246,7 @@ export interface ErrorResponse {
   error: {
     message: string;
     code?: string;
-    
+    statusCode: number;
     timestamp: string;
   };
 }

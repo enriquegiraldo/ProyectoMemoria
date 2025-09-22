@@ -1,3 +1,4 @@
+// src/microservices/payments-service/src/utils/validation.ts
 import { z } from 'zod';
 import {
   PaymentMethod,
@@ -8,6 +9,7 @@ import {
   InvoiceStatus,
   BillingCycle
 } from '../types';
+
 
 // Common validation schemas
 export const uuidSchema = z.string().uuid('Invalid UUID format');

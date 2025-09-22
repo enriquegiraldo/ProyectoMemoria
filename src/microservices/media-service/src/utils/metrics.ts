@@ -21,6 +21,78 @@ export const httpRequestTotal = new Counter({
   labelNames: ['method', 'route', 'status_code'],
 });
 
+export const httpRequestsInProgress = new Gauge({
+  name: 'http_requests_in_progress',
+  help: 'Number of HTTP requests currently in progress',
+  labelNames: ['method', 'route'],
+});
+
+export const paymentIntentsCreated = new Counter({
+  name: 'payment_intents_created_total',
+  help: 'Total number of payment intents created',
+  labelNames: ['provider'],
+});
+
+export const paymentMethodsCreated = new Counter({
+  name: 'payment_methods_created_total',
+  help: 'Total number of payment methods created',
+  labelNames: ['provider'],
+});
+
+export const customersCreated = new Counter({
+  name: 'customers_created_total',
+  help: 'Total number of customers created',
+  labelNames: ['provider'],
+});
+
+export const refundsCreated = new Counter({
+  name: 'refunds_created_total',
+  help: 'Total number of refunds created',
+  labelNames: ['provider'],
+});
+
+export const paymentsProcessed = new Counter({
+  name: 'payments_processed_total',
+  help: 'Total number of payments processed',
+  labelNames: ['provider', 'status'],
+});
+
+export const paymentErrors = new Counter({
+  name: 'payment_errors_total',
+  help: 'Total number of payment errors',
+  labelNames: ['provider', 'error'],
+});
+
+export const refundsProcessed = new Counter({
+  name: 'refunds_processed_total',
+  help: 'Total number of refunds processed',
+  labelNames: ['provider', 'status', 'reason'],
+});
+
+export const subscriptionsCreated = new Counter({
+  name: 'subscriptions_created_total',
+  help: 'Total number of subscriptions created',
+  labelNames: ['provider'],
+});
+
+export const subscriptionsUpdated = new Counter({
+  name: 'subscriptions_updated_total',
+  help: 'Total number of subscriptions updated',
+  labelNames: ['provider'],
+});
+
+export const subscriptionsCanceled = new Counter({
+  name: 'subscriptions_canceled_total',
+  help: 'Total number of subscriptions canceled',
+  labelNames: ['provider'],
+});
+
+export const subscriptionErrors = new Counter({
+  name: 'subscription_errors_total',
+  help: 'Total number of subscription errors',
+  labelNames: ['provider', 'error'],
+});
+
 export const httpRequestInProgress = new Gauge({
   name: 'http_requests_in_progress',
   help: 'Number of HTTP requests currently in progress',
@@ -210,6 +282,38 @@ export const throughputRequestsPerSecond = new Gauge({
 
 // Utility functions for metrics
 export const metrics = {
+  recordPayment: (status: string, provider: string, paymentMethod: any, currency: string, amount: number) => { 
+    paymentIntentsCreated.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+    paymentMethodsCreated.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+    customersCreated.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+    refundsCreated.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+    paymentsProcessed.inc({ provider, status });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+    paymentErrors.inc({ provider, error: paymentMethod.error });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+    refundsProcessed.inc({ provider, status, reason: paymentMethod.reason });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+    subscriptionsCreated.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+    subscriptionsUpdated.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+    subscriptionsCanceled.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+    subscriptionErrors.inc({ provider, error: paymentMethod.error });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+    paymentMethod.amount = amount;//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+    paymentMethod.currency = currency;//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+
+    // Implementación existente
+  },
+  httpRequestDuration,
+  httpRequestTotal,
+  httpRequestsInProgress,
+  paymentIntentsCreated,
+  paymentMethodsCreated,
+  customersCreated,
+  refundsCreated,
+  paymentsProcessed,
+  paymentErrors,
+  refundsProcessed,
+  subscriptionsCreated,
+  subscriptionsUpdated,
+  subscriptionsCanceled,
+  subscriptionErrors,
+  // ... otras funciones existentes ...
   // HTTP metrics
   recordHttpRequest: (method: string, route: string, statusCode: number, duration: number) => {
     httpRequestDuration.observe({ method, route, status_code: statusCode }, duration);

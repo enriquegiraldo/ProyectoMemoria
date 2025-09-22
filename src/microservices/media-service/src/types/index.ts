@@ -17,16 +17,24 @@ export interface MediaFile {
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
-}
+};
+export enum MediaType{ 
+  IMAGE = 'image', 
+  VIDEO = 'video',
+  AUDIO = 'audio',
+  DOCUMENT = 'document', 
+  ARCHIVE = 'archive', 
+  OTHER = 'other',
+  UNKNOWN = 'unknown'
+};
 
-export type MediaType = 'image' | 'video' | 'audio' | 'document' | 'archive' | 'other';
-
-export type ProcessingStatus = 
-  | 'pending'
-  | 'processing'
-  | 'completed'
-  | 'failed'
-  | 'cancelled';
+export enum ProcessingStatus {
+  PENDING = 'pending',
+  PROCESSING = 'processing',
+  COMPLETED = 'completed',
+  FAILED = 'failed',
+  CANCELLED = 'cancelled'
+};
 
 export interface MediaMetadata {
   width?: number;
@@ -279,19 +287,20 @@ export interface ProcessingJob {
   completedAt?: Date;
 }
 
-export type ProcessingJobType = 
-  | 'resize'
-  | 'crop'
-  | 'compress'
-  | 'convert'
-  | 'watermark'
-  | 'filter'
-  | 'enhance'
-  | 'thumbnail'
-  | 'optimize'
-  | 'batch';
+export enum ProcessingJobType {
+  RESIZE = 'resize',
+  CROP = 'crop',
+  COMPRESS = 'compress',
+  CONVERT = 'convert',
+  WATERMARK = 'watermark',
+  FILTER = 'filter',
+  ENHANCE = 'enhance',
+  THUMBNAIL = 'thumbnail',
+  OPTIMIZE = 'optimize',
+  BATCH = 'batch'
+};
 
-export type ProcessingJobStatus = 
+export type ProcessingJobStatus =
   | 'queued'
   | 'processing'
   | 'completed'
@@ -300,8 +309,8 @@ export type ProcessingJobStatus =
 
 export interface ProcessingResult {
   outputFile: MediaFile;
-  processingTime: number;
-  originalSize: number;
+  processingTime?: number;
+  originalSize?: number;
   processedSize: number;
   compressionRatio: number;
   metadata: Record<string, any>;
@@ -480,7 +489,7 @@ export interface MediaEvent {
   timestamp: Date;
 }
 
-export type MediaEventType = 
+export type MediaEventType =
   | 'file.uploaded'
   | 'file.processed'
   | 'file.deleted'
@@ -540,4 +549,17 @@ export interface ErrorDetail {
   fileId?: string;
   userId?: string;
   stack?: string;
+}
+export interface VideoMetadata extends MediaMetadata {
+  width: number;             // Resolución horizontal
+  height: number;            // Resolución vertical
+  duration: number;          // Duración en segundos
+  format: string;            // Formato contenedor (mp4, avi, webm, etc.)
+  size: number;              // Tamaño en bytes
+  bitrate: number;           // Bitrate total (bps)
+  fps: number;               // Frames por segundo
+  codec: string;             // Codec de video (h264, vp9, av1, etc.)
+  audioCodec?: string;       // Codec de audio (aac, mp3, opus, etc.)
+  audioChannels?: number;    // Número de canales de audio
+  audioSampleRate?: number;  // Frecuencia de muestreo del audio
 }

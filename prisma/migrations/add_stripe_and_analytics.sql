@@ -42,7 +42,7 @@ ALTER TABLE users ADD CONSTRAINT check_subscription_plan
 
 -- Add constraints for subscription_status
 ALTER TABLE users ADD CONSTRAINT check_subscription_status 
-    CHECK (subscription_status IN ('ACTIVE', 'CANCELED', 'PAST_DUE', 'UNPAID', 'TRIAL'));
+    CHECK (subscription_status IN ('ACTIVE', 'CANCELLED', 'PAST_DUE', 'UNPAID', 'TRIAL'));
 
 -- Update existing users to have FREE plan if not set
 UPDATE users SET subscription_plan = 'FREE' WHERE subscription_plan IS NULL;
@@ -52,7 +52,7 @@ UPDATE users SET subscription_status = 'ACTIVE' WHERE subscription_status IS NUL
 COMMENT ON COLUMN users.stripe_customer_id IS 'Stripe customer ID for payment processing';
 COMMENT ON COLUMN users.stripe_subscription_id IS 'Stripe subscription ID';
 COMMENT ON COLUMN users.subscription_plan IS 'User subscription plan (FREE, BASIC, PRO, ENTERPRISE)';
-COMMENT ON COLUMN users.subscription_status IS 'Subscription status (ACTIVE, CANCELED, PAST_DUE, UNPAID, TRIAL)';
+COMMENT ON COLUMN users.subscription_status IS 'Subscription status (ACTIVE, CANCELLED, PAST_DUE, UNPAID, TRIAL)';
 COMMENT ON COLUMN users.subscription_end_date IS 'Date when subscription ends';
 COMMENT ON COLUMN users.last_payment_date IS 'Date of last successful payment';
 COMMENT ON COLUMN users.last_payment_failed IS 'Date of last failed payment';

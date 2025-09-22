@@ -39,6 +39,7 @@
       "@/middleware/*": ["middleware/*"],
       "@/providers/*": ["providers/*"]
     }
+    
   },
   "include": [
     "src/**/*"
@@ -52,4 +53,18 @@
   "ts-node": {
     "require": ["tsconfig-paths/register"]
   }
+  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

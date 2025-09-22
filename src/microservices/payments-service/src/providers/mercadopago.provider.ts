@@ -262,7 +262,7 @@ export class MercadoPagoProvider implements PaymentProvider {
       case 'rejected':
         return PaymentStatus.FAILED;
       case 'cancelled':
-        return PaymentStatus.CANCELED;
+        return PaymentStatus.CANCELLED;
       case 'refunded':
         return PaymentStatus.REFUNDED;
       case 'charged_back':

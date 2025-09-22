@@ -1,3 +1,4 @@
+
 // Notification Types
 export enum NotificationType {
   EMAIL = 'email',
@@ -150,6 +151,61 @@ export interface WebhookResult {
   error?: string;
   provider: string;
   timestamp: Date;
+}
+
+// InApp Notification Types
+export interface InAppNotification {
+  title: string;
+  message: string;
+  icon?: string;
+  image?: string;
+  url?: string;
+  data?: Record<string, any>;
+  actions?: InAppAction[];
+  priority?: NotificationPriority;
+  timestamp?: Date;
+  isRead?: boolean;
+  expiresAt?: Date;
+}
+
+export interface InAppAction {
+  action: string;
+  title: string;
+  url?: string;
+}
+
+// Send Notification Options
+export interface SendNotificationOptions {
+  priority?: NotificationPriority;
+  scheduledAt?: Date;
+  timezone?: string;
+  template?: string;
+  templateData?: Record<string, any>;
+  retries?: number;
+  maxRetries?: number;
+  timeout?: number;
+  metadata?: Record<string, any>;
+}
+
+// Send Bulk Notification Options
+export interface SendBulkNotificationOptions extends SendNotificationOptions {
+  batchSize?: number;
+  parallel?: boolean;
+  delayBetweenBatches?: number;
+  maxConcurrent?: number;
+}
+
+// Notification Result
+export interface NotificationResult {
+  success: boolean;
+  notificationId?: string;
+  messageId?: string;
+  status: NotificationStatus;
+  error?: string;
+  provider: string;
+  timestamp: Date;
+  retryCount: number;
+  metadata?: Record<string, any>;
 }
 
 // Subscription Types

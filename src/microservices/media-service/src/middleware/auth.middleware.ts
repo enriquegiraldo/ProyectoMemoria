@@ -23,7 +23,8 @@ import {
   TokenExpiredError,
   TokenInvalidError 
 } from '../utils/errors';
-import { logger, audit } from '../utils/logger';
+import logger from '../utils/logger';
+import {audit } from '../utils/logger';
 import { metrics } from '../utils/metrics';
 
 // Extend Express Request interface

@@ -259,7 +259,7 @@ export class PayPalProvider implements PaymentProvider {
       case 'APPROVED':
         return PaymentStatus.AUTHORIZED;
       case 'VOIDED':
-        return PaymentStatus.CANCELED;
+        return PaymentStatus.CANCELLED;
       case 'COMPLETED':
         return PaymentStatus.SUCCEEDED;
       case 'PAYER_ACTION_REQUIRED':
