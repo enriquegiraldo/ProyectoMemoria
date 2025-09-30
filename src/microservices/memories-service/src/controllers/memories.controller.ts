@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { MemoriesService } from '../services/memories.service';
-import { logger } from '../utils/logger';
+import logger from '../utils/logger';
 import { handleError, formatErrorResponse } from '../utils/errors';
 import { CreateMemoryRequest, UpdateMemoryRequest, SearchFilters } from '../types';
 
@@ -81,7 +81,7 @@ export class MemoriesController {
       const customError = handleError(error as Error);
       logger.error('Get memory by ID controller error', {
         error: customError.message,
-        memoryId: req.params.id,
+        memoryId: req.params["id"],
         userId: req.user?.id,
         ip: req.ip,
       });
@@ -169,7 +169,7 @@ export class MemoriesController {
 
       const filters: SearchFilters = {
         query: req.query.query as string,
-        type: req.query.type ? (req.query.type as string).split(',') : undefined,
+        type: req.query["type"] ? (req.query["type"] as string).split(',') : undefined,
         status: req.query.status ? (req.query.status as string).split(',') : undefined,
         visibility: req.query.visibility ? (req.query.visibility as string).split(',') : undefined,
         tags: req.query.tags ? (req.query.tags as string).split(',') : undefined,

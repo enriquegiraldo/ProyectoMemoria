@@ -1,3 +1,4 @@
+//src/microservices/media-service/src/middleware/auth.middleware.ts
 import { Request, Response, NextFunction } from 'express';
 import { 
   extractTokenFromHeader, 

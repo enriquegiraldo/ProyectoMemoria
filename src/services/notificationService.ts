@@ -137,3 +137,5 @@ export class NotificationService {
     callback: (notification: Notification) => void
   ) => { unsubscribe: () => void };
 }
+
+//este es dond e esta el callback del arroe anterior

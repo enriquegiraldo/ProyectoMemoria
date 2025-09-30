@@ -1,3 +1,4 @@
+// src/microservices/notifications-service/src/services/scheduler.service.ts
 import { v4 as uuidv4 } from 'uuid';
 import cron from 'node-cron';
 import Queue from 'bull';
@@ -16,7 +17,7 @@ import {
   ValidationError,
   InvalidScheduleError 
 } from '../utils/errors';
-import { config } from '../config';
+import {config}  from '../config';
 
 export class SchedulerService {
   private schedules: Map<string, Schedule> = new Map();

@@ -1,9 +1,10 @@
+// src/integrations/email/mailgun.ts
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
 
 export interface MailgunEmail {
   to: string | string[];
-  from: string;
+  from?: string;
   subject: string;
   text?: string;
   html?: string;
@@ -141,6 +142,7 @@ export class MailgunIntegration {
   ): Promise<boolean> {
     const emailData: MailgunEmail = {
       to,
+      from: `${this.fromName} <${this.fromEmail}>`,
       subject: '¡Bienvenido a Memoria Eterna!',
       text: `Hola ${userName},\n\n¡Bienvenido a Memoria Eterna! Estamos emocionados de que te unas a nuestra comunidad para preservar y compartir recuerdos especiales.\n\nComienza creando tu primera memoria hoy mismo.\n\nSaludos,\nEl equipo de Memoria Eterna`,
       html: `
@@ -176,6 +178,7 @@ export class MailgunIntegration {
   ): Promise<boolean> {
     const emailData: MailgunEmail = {
       to,
+      from: `${this.fromName} <${this.fromEmail}>`,
       subject: `Recordatorio: ${memoryTitle}`,
       text: `Hola ${userName},\n\nTe recordamos que hoy es el aniversario de "${memoryTitle}" (${memoryDate}).\n\nVisita tu memoria para recordar este momento especial: ${memoryUrl}\n\nSaludos,\nEl equipo de Memoria Eterna`,
       html: `
@@ -211,6 +214,7 @@ export class MailgunIntegration {
   ): Promise<boolean> {
     const emailData: MailgunEmail = {
       to,
+      from: `${this.fromName} <${this.fromEmail}>`,
       subject,
       html: content,
       template,
@@ -235,6 +239,7 @@ export class MailgunIntegration {
   ): Promise<boolean> {
     const emailData: MailgunEmail = {
       to,
+      from: `${this.fromName} <${this.fromEmail}>`,
       subject: 'Restablecer Contraseña - Memoria Eterna',
       text: `Hola ${userName},\n\nHas solicitado restablecer tu contraseña. Haz clic en el siguiente enlace para continuar:\n\n${resetUrl}\n\nEste enlace expirará en 1 hora.\n\nSi no solicitaste este cambio, puedes ignorar este email.\n\nSaludos,\nEl equipo de Memoria Eterna`,
       html: `
@@ -270,6 +275,7 @@ export class MailgunIntegration {
   ): Promise<boolean> {
     const emailData: MailgunEmail = {
       to,
+      from: `${this.fromName} <${this.fromEmail}>`,
       subject: 'Verificar Email - Memoria Eterna',
       text: `Hola ${userName},\n\nGracias por registrarte en Memoria Eterna. Por favor, verifica tu dirección de email haciendo clic en el siguiente enlace:\n\n${verificationUrl}\n\nSaludos,\nEl equipo de Memoria Eterna`,
       html: `
@@ -304,6 +310,7 @@ export class MailgunIntegration {
   ): Promise<boolean> {
     const emailData: MailgunEmail = {
       to,
+      from: `${this.fromName} <${this.fromEmail}>`,
       subject: 'Confirmación de Suscripción - Memoria Eterna',
       text: `Hola ${userName},\n\nGracias por suscribirte al plan ${planName} de Memoria Eterna.\n\nDetalles de la suscripción:\n- Plan: ${planName}\n- Monto: ${amount}\n\nYa puedes disfrutar de todas las funcionalidades premium.\n\nSaludos,\nEl equipo de Memoria Eterna`,
       html: `
@@ -345,6 +352,7 @@ export class MailgunIntegration {
   ): Promise<boolean> {
     const emailData: MailgunEmail = {
       to,
+      from: `${this.fromName} <${this.fromEmail}>`,
       subject: `${sharedBy} ha compartido una memoria contigo`,
       text: `Hola ${userName},\n\n${sharedBy} ha compartido la memoria "${memoryTitle}" contigo en Memoria Eterna.\n\nPuedes verla aquí: ${memoryUrl}\n\nSaludos,\nEl equipo de Memoria Eterna`,
       html: `
@@ -392,6 +400,7 @@ export class MailgunIntegration {
 
       const emailData: MailgunEmail = {
         to,
+        from: `${this.fromName} <${this.fromEmail}>`,
         subject,
         html: content,
         template,

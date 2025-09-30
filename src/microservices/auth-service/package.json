@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Authentication microservice for Memoria Eterna",
   "main": "dist/index.js",
+  "overrides": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "node-fetch": "^2.6.7"
+  },
   "scripts": {
     "start": "node dist/index.js",
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
@@ -77,6 +82,7 @@
     "@types/node": "^24.3.0",
     "@types/nodemailer": "^7.0.1",
     "@types/passport": "^1.0.17",
+    "@types/bull": "^4.10.1", 
     "@types/passport-facebook": "^3.0.3",
     "@types/passport-linkedin-oauth2": "^1.5.6",
     "@types/passport-saml": "^1.1.7",

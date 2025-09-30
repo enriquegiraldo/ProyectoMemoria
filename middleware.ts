@@ -1,6 +1,8 @@
 // middleware.ts
+//src/middleware.ts
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { z } from 'zod'
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -44,3 +46,14 @@ export const config = {
     '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 }
+const createPaymentSchema = z.object({
+  body: z.object({
+    amount: z.number().positive(),
+    currency: z.string().optional(),
+    customerId: z.string().optional(),
+    paymentMethodId: z.string().optional(),
+    description: z.string().optional(),
+    metadata: z.record(z.string()).optional(),
+    isTest: z.boolean().optional(),
+  })
+});

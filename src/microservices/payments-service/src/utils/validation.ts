@@ -124,3 +124,4 @@ export const validateExpiryDate = (month: number, year: number): boolean => {
 
 // Import PaymentStatus for validation functions
 import { PaymentStatus } from '../types';
+export const providerSchema = z.enum(['stripe', 'paypal', 'mercadopago', 'crypto']);

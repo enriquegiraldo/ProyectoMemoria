@@ -283,19 +283,19 @@ export const throughputRequestsPerSecond = new Gauge({
 // Utility functions for metrics
 export const metrics = {
   recordPayment: (status: string, provider: string, paymentMethod: any, currency: string, amount: number) => { 
-    paymentIntentsCreated.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
-    paymentMethodsCreated.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
-    customersCreated.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
-    refundsCreated.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
-    paymentsProcessed.inc({ provider, status });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
-    paymentErrors.inc({ provider, error: paymentMethod.error });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
-    refundsProcessed.inc({ provider, status, reason: paymentMethod.reason });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
-    subscriptionsCreated.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
-    subscriptionsUpdated.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
-    subscriptionsCanceled.inc({ provider });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
-    subscriptionErrors.inc({ provider, error: paymentMethod.error });//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
-    paymentMethod.amount = amount;//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
-    paymentMethod.currency = currency;//lo agrago la IA del vscode copilot despues de pegar tu sigerencia 
+    paymentIntentsCreated.inc({ provider }); 
+    paymentMethodsCreated.inc({ provider });
+    customersCreated.inc({ provider }); 
+    refundsCreated.inc({ provider }); 
+    paymentsProcessed.inc({ provider, status }); 
+    paymentErrors.inc({ provider, error: paymentMethod.error }); 
+    refundsProcessed.inc({ provider, status, reason: paymentMethod.reason });
+    subscriptionsCreated.inc({ provider }); 
+    subscriptionsUpdated.inc({ provider }); 
+    subscriptionsCanceled.inc({ provider }); 
+    subscriptionErrors.inc({ provider, error: paymentMethod.error }); 
+    paymentMethod.amount = amount; 
+    paymentMethod.currency = currency; 
 
     // Implementación existente
   },

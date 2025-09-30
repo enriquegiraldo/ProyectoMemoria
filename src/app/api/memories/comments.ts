@@ -17,8 +17,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!response.success) {
       return res.status(400).json({ message: response.error });
     }
+    if (!response.data || response.data.length === 0) {
+      return res.status(500).json({ message: 'Error al crear el comentario' });
+    }
     return res.status(200).json(response.data[0]);
   }
 
   return res.status(405).json({ message: 'Método no permitido' });
 }
+

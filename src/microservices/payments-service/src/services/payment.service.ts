@@ -113,12 +113,12 @@ export class PaymentService {
         throw new PaymentError('Payment not found');
       }
 
-      if (payment.status !== PaymentStatus.PENDING) {
-        throw new PaymentError(`Payment is not in pending status: ${payment.status}`);
+      if (payment["status"] !== PaymentStatus.PENDING) {
+        throw new PaymentError(`Payment is not in pending status: ${payment["status"]}`);
       }
 
       // Get payment provider
-      const provider = PaymentProviderFactory.createProvider(payment.provider);
+      const provider = PaymentProviderFactory.createProvider(payment["provider"]);
 
       // Confirm payment with provider
       const confirmedPayment = await provider.confirmPayment(
@@ -133,11 +133,11 @@ export class PaymentService {
       payment.processedAt = new Date();
 
       if (confirmedPayment.status === PaymentStatus.SUCCEEDED) {
-        payment.processedAt = new Date();
+        payment["processedAt"] = new Date();
       } else if (confirmedPayment.status === PaymentStatus.FAILED) {
-        payment.failedAt = new Date();
-        payment.failureReason = confirmedPayment.failureReason;
-        payment.failureCode = confirmedPayment.failureCode;
+        payment["failedAt"] = new Date();
+        payment["failureReason"] = confirmedPayment["failureReason"];
+        payment["failureCode"] = confirmedPayment["failureCode"];
       }
 
       await this.paymentRepository.save(payment);
@@ -145,37 +145,37 @@ export class PaymentService {
       // Send notifications based on payment status
       if (confirmedPayment.status === PaymentStatus.SUCCEEDED) {
         await notificationsIntegrationService.sendPaymentSuccessNotification(
-          payment.userId,
+          payment["userId"],
           {
-            amount: payment.amount,
-            currency: payment.currency,
-            paymentMethod: payment.paymentMethod,
-            provider: payment.provider,
-            transactionId: payment.providerPaymentId || payment.id
+            amount: payment["amount"],
+            currency: payment["currency"],
+            paymentMethod: payment["paymentMethod"],
+            provider: payment["provider"],
+            transactionId: payment["providerPaymentId"] || payment.id
           }
         );
       } else if (confirmedPayment.status === PaymentStatus.FAILED) {
         await notificationsIntegrationService.sendPaymentFailureNotification(
-          payment.userId,
+          payment["userId"],
           {
-            amount: payment.amount,
-            currency: payment.currency,
-            paymentMethod: payment.paymentMethod,
-            provider: payment.provider,
-            reason: confirmedPayment.failureReason || 'Payment failed'
+            amount: payment["amount"],
+            currency: payment["currency"],
+            paymentMethod: payment["paymentMethod"],
+            provider: payment["provider"],
+            reason: confirmedPayment["failureReason"] || 'Payment failed'
           }
         );
       }
 
       // Record metrics
       metrics.paymentsProcessed.inc({ 
-        provider: payment.provider, 
-        status: payment.status 
+        provider: payment["provider"], 
+        status: payment["status"] 
       });
 
       logger.info('Payment confirmed successfully', { 
-        paymentId: payment.id, 
-        status: payment.status 
+        paymentId: payment["id"], 
+        status: payment["status"] 
       });
 
       return payment;
@@ -249,42 +249,42 @@ export class PaymentService {
         throw new PaymentError('Payment not found');
       }
 
-      if (payment.status !== PaymentStatus.SUCCEEDED) {
+      if (payment["status"] !== PaymentStatus.SUCCEEDED) {
         throw new PaymentError('Payment must be successful to refund');
       }
 
-      if (request.amount > payment.refundableAmount) {
+      if (request.amount > payment["refundableAmount"]) {
         throw new PaymentError('Refund amount exceeds refundable amount');
       }
 
       // Get payment provider
-      const provider = PaymentProviderFactory.createProvider(payment.provider);
+      const provider = PaymentProviderFactory.createProvider(payment["provider"]);
 
       // Process refund with provider
       const refund = await provider.createRefund(
-        payment.providerPaymentId!,
+        payment["providerPaymentId"]!,
         request.amount,
         request.reason
       );
 
       // Update payment
-      payment.refundedAmount += request.amount;
-      payment.refundedAt = new Date();
+      payment["refundedAmount"] += request.amount;
+      payment["refundedAt"] = new Date();
 
-      if (payment.refundedAmount >= payment.amount) {
-        payment.status = PaymentStatus.REFUNDED;
+      if (payment["refundedAmount"] >= payment["amount"]) {
+        payment["status"] = PaymentStatus.REFUNDED;
       }
 
       await this.paymentRepository.save(payment);
 
       // Record metrics
       metrics.refundsProcessed.inc({ 
-        provider: payment.provider, 
+        provider: payment["provider"], 
         amount: request.amount 
       });
 
       logger.info('Refund processed successfully', { 
-        paymentId: payment.id, 
+        paymentId: payment["id"], 
         refundAmount: request.amount 
       });
 

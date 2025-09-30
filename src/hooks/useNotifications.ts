@@ -118,7 +118,11 @@ export function useNotifications(): UseNotificationsReturn {
     if (!user?.id) return false;
 
     try {
-      const success = await NotificationService.subscribeToNotifications(user.id);
+      const success = await NotificationService.sendPushNotification(
+        user.id,
+      'Notificaciones activadas',
+      'Has activado las notificaciones push'
+      );
       if (success) {
         console.log('Push notifications enabled successfully');
       }
@@ -250,3 +254,5 @@ function subscribeToNotifications(userId: string, callback: (notification: Notif
 
 // Agregar la función al servicio
 NotificationService.subscribeToNotifications = subscribeToNotifications;
+
+

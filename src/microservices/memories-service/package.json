@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Memories Service for Memoria Eterna Platform",
   "main": "dist/index.js",
+  "overrides": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "node-fetch": "^2.6.7"
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
@@ -112,6 +117,7 @@
     "@types/node": "^20.10.4",
     "@types/lodash": "^4.14.202",
     "@types/multer-s3": "^3.0.0",
+    "@types/bull": "^4.10.1",
     "@types/fluent-ffmpeg": "^2.1.24",
     "@types/geoip-lite": "^1.4.4",
     "@types/ua-parser-js": "^0.7.39",

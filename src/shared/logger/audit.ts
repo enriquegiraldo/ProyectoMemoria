@@ -20,6 +20,7 @@ export interface SecurityEvent {
   source?: string;
   details?: any;
   requestId?: string;
+  
 }
 
 export interface FileEvent {

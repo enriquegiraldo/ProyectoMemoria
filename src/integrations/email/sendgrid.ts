@@ -1,3 +1,4 @@
+// src/integrations/email/sendgrid.ts
 import sgMail from '@sendgrid/mail';
 
 export interface SendGridEmail {

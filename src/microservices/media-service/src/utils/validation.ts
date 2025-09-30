@@ -357,4 +357,4 @@ export const schemas = {
   apiResponseSchema,
 };
 
-// Fuerza el archivo a ser tratado como módulo para evitar TS2323
+export const providerSchema = z.enum(['stripe', 'paypal', 'mercadopago', 'crypto']);

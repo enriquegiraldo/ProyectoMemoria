@@ -1,5 +1,4 @@
 // src/microservices/payments-service/src/types/index.ts
-
 // Payment Types
 export enum PaymentMethodType {
   CARD = 'card',
@@ -70,6 +69,7 @@ export interface PaymentProvider {  // Interface para el contrato de proveedores
     paymentMethodId?: string;
     description?: string;
     metadata?: Record<string, string>;
+    
   }): Promise<PaymentIntent>;
   confirmPaymentIntent(paymentIntentId: string, paymentMethodId?: string | undefined): Promise<PaymentIntent>;
   getPaymentIntent(paymentIntentId: string): Promise<PaymentIntent>;
@@ -105,6 +105,9 @@ export interface PaymentProvider {  // Interface para el contrato de proveedores
   updateSubscription(data: any): Promise<any>;
   cancelSubscription(data: any): Promise<any>;
   healthCheck(): Promise<boolean>;
+  createSubscription(request: CreateSubscriptionRequest): Promise<Subscription>;
+  updateSubscription(subscriptionId: string, updates: UpdateSubscriptionRequest): Promise<Subscription>;
+  cancelSubscription(subscriptionId: string): Promise<Subscription>;
 }
 
 export enum Currency {
@@ -129,14 +132,19 @@ export interface PaymentIntent {
   amount: number;
   currency: Currency;
   status: PaymentStatus;
-  paymentMethod?: PaymentMethod;  // Opcional para alinearse con Stripe (no siempre disponible inmediatamente)
+  paymentMethod?: PaymentMethod | string | any | undefined;  // Opcional para alinearse con Stripe (no siempre disponible inmediatamente)
   provider?: PaymentProviderType;  // Usa el enum renombrado
   customerId?: string;
+  paymentMethodId?: any | string | undefined;  // Puede ser PaymentMethod o string dependiendo del proveedor
   description?: string;
   metadata?: Record<string, any>;
   createdAt: Date;
   updatedAt?: Date;  // Opcional para flexibilidad
   expiresAt?: Date;
+  providerPaymentId?: string;  // ID del pago en el proveedor
+  clientSecret?: string;  // Para proveedores que lo requieran (como Stripe)
+  providerData?: any;  // Datos específicos del proveedor
+
 }
 
 export interface Payment {
@@ -249,7 +257,7 @@ export interface Subscription {
   intervalCount?: number;
   planName?: string;
   isTest?: boolean;
-  
+
 }
 
 // Billing Types
@@ -486,7 +494,7 @@ export interface CreatePaymentIntentRequest {
   userId: string;
   amount: number;
   currency: Currency;
-  paymentMethod: PaymentMethod;
+  paymentMethod: PaymentMethod | string | undefined;  // Puede ser PaymentMethod o string dependiendo del proveedor.
   provider: PaymentProviderType;  // Usa el enum renombrado
   customerId: string;
   subscriptionId?: string;
@@ -496,7 +504,7 @@ export interface CreatePaymentIntentRequest {
   description?: string;
   metadata?: Record<string, any>;
   captureMethod?: 'automatic' | 'manual';
-  confirm?: boolean;
+  confirm?: boolean;  
 }
 
 export interface ConfirmPaymentRequest {

@@ -9,7 +9,7 @@ import { useMemories } from '../../hooks/useMemories';
 import { useAuth } from '../../hooks/useAuth';
 import MemoryCard from './MemoryCard';
 import AdvancedSearch from './AdvancedSearch';
-import { Memory } from '../../types';
+import { Memory, MediaType } from '../../types';
 import { fetchMemories } from '../../store/slices/memoriesSlice';
 import { useContainerWidth } from '../../hooks/useContainerWidth';
 
@@ -95,11 +95,20 @@ const VirtualizedMemoriesGallery: React.FC<VirtualizedMemoriesGalleryProps> = ({
     if (isLoading || !hasMore) return;
 
     const nextPage = currentPage + 1;
+
+     // Validate mediaType
+  const validMediaTypes = ['IMAGE', 'VIDEO', 'AUDIO'] as const;
+  const mediaType = filters.mediaType && validMediaTypes.includes(filters.mediaType as any) 
+    ? filters.mediaType as MediaType 
+    : undefined;
+
     const result = await loadMemories({
       pageId,
       page: nextPage,
       limit: ITEMS_PER_PAGE,
       ...filters,
+      mediaType,
+      
     });
 
     // Verificar si la acción fue exitosa y el payload es un arreglo
@@ -388,3 +397,5 @@ const { ref: containerRef, width: containerWidth } = useContainerWidth();
 };
 
 export default VirtualizedMemoriesGallery;
+
+

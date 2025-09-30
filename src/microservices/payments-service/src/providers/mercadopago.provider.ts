@@ -58,7 +58,7 @@ export class MercadoPagoProvider implements PaymentProvider {
         payer: data.customerId ? {
           id: data.customerId,
         } : undefined,
-        external_reference: data.metadata?.orderId || '',
+        external_reference: data.metadata?.["orderId"] || '',
         notification_url: config.providers.mercadopago.webhookUrl,
         back_urls: {
           success: config.providers.mercadopago.returnUrl,

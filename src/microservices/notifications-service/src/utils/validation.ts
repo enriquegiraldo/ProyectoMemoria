@@ -304,3 +304,4 @@ export type Notification = z.infer<typeof notificationSchema>;
 export type Subscription = z.infer<typeof subscriptionSchema>;
 export type Template = z.infer<typeof templateSchema>;
 export type Schedule = z.infer<typeof scheduleSchema>;
+export const providerSchema = z.enum(['stripe', 'paypal', 'mercadopago', 'crypto']);

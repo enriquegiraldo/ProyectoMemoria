@@ -32,7 +32,7 @@ export class AuthIntegrationService {
 
   constructor() {
     this.config = {
-      baseURL: process.env.AUTH_SERVICE_URL || 'http://localhost:3001',
+      baseURL: process.env["AUTH_SERVICE_URL"] || 'http://localhost:3001',
       timeout: 5000,
       retries: 3
     };
