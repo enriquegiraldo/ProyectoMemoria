@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
-import { logger } from '../utils/logger';
+import logger from '../utils/logger';
 import { audit } from '../utils/logger';
 import { metrics } from '../utils/metrics';
 import { config } from '../config';

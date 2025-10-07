@@ -1,3 +1,4 @@
+// src/microservices/analytics-service/src/models/Analytics.ts
 import {
   Entity,
   PrimaryGeneratedColumn,

@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import { eventSourcingService } from '../services/event-sourcing.service';
 import { analyticsService } from '../services/analytics.service';
 import { EventType, EventSource } from '../models/Event';
-import { logger } from '../utils';
-import { ValidationError } from '../utils/errors';
+import  logger  from '../../../../utils/logger';
+import { ValidationError } from '../../../notifications-service/src/utils/errors';
 
 export class AnalyticsController {
   /**

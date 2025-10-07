@@ -4,7 +4,7 @@ import { loadStripe } from '@stripe/stripe-js';
 // Configuración del servidor
 
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
+  apiVersion: '2025-08-27.basil',
   typescript: true,
 });
 
@@ -131,7 +131,7 @@ export const getSubscription = async (subscriptionId: string) => {
   return await stripe.subscriptions.retrieve(subscriptionId);
 };
 
-export const cancelSubscription = async (subscriptionId: string): Promise<Stripe.subscription>=> {
+export const cancelSubscription = async (subscriptionId: string): Promise<Stripe.Subscription>=> {
   return await stripe.subscriptions.cancel(subscriptionId);
 };
 

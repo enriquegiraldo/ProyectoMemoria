@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import rateLimit from 'express-rate-limit';
 import { createConnection } from 'typeorm';
-import { logger } from '../../../../src/utils/logger';
+import logger  from '../../../../src/utils/logger';
 import config from './config';
 import { Event } from './models/Event';
 import { Metric, KPI } from './models/Analytics';

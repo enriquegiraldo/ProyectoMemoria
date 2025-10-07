@@ -10,8 +10,7 @@ import {
   VideoMetadata,
   ProcessingStatus
 } from '../types';
-import logger from '../utils/logger';
-import { processing } from '../utils/logger';
+import logger, { processing } from '../utils/logger';
 import { metrics } from '../utils/metrics';
 import {
   ProcessingError,

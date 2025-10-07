@@ -45,7 +45,7 @@ import {
   ResourceConflictError,
   ResourceLockedError
 } from '../utils/errors';
-import { logger } from '@/utils/logger';
+import logger from '@/utils/logger';
 import { metrics } from '@/utils/metrics';
 import { config } from '@/config';
 

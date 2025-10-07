@@ -8,7 +8,7 @@ import {
   AudioMetadata,
   ProcessingStatus 
 } from '../types';
-import { logger, processing } from '../utils/logger';
+import  logger, {processing } from '../utils/logger';
 import { metrics } from '../utils/metrics';
 import { 
   ProcessingError, 
@@ -86,8 +86,8 @@ export class AudioProcessor {
 
   constructor() {
     // Set FFmpeg path if needed
-    if (process.env.FFMPEG_PATH) {
-      ffmpeg.setFfmpegPath(process.env.FFMPEG_PATH);
+    if (process.env["FFMPEG_PATH"]) {
+      ffmpeg.setFfmpegPath(process.env["FFMPEG_PATH"]);
     }
   }
 

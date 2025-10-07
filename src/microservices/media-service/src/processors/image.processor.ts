@@ -9,7 +9,7 @@ import {
   ImageMetadata,
   ProcessingStatus 
 } from '../types';
-import { logger, processing } from '../utils/logger';
+import logger, {processing } from '../utils/logger';
 import { metrics } from '../utils/metrics';
 import { 
   ProcessingError, 

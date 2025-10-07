@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import rateLimit from 'express-rate-limit';
 import slowDown from 'express-slow-down';
-import { logger } from '../utils/logger';
+import logger from '../utils/logger';
 import { metrics } from '../utils/metrics';
 import { audit } from '../utils/logger';
 import { RateLimitError } from '../utils/errors';
